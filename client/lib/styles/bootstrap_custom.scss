@@ -1,0 +1,24 @@
+
+$body-color: #1f1e1e;
+$body-bg: #fff;
+
+$theme-colors: (
+  "primary": #28a795,
+  "secondary": #868E96,
+  "success": #B9FF06,
+  
+  "warning": #F49917,
+  "danger": #DC3545,
+  // "info": #145,
+  "info": #77F9EA,
+  "dark": #2D2D2D,
+);
+
+$colors: (
+  "teal": #00B297,
+  "green":#B9FF06,
+);
+
+$headings-color: #343a40;
+
+@import '{}/imports/bootstrap/scss/bootstrap.scss';

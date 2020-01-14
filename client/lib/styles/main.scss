@@ -1,0 +1,13 @@
+// @import "{}/node_modules/bootstrap/scss/bootstrap";
+// Below must be a symlink to the actual npm package (as originally above)
+
+$fa-font-path:  "fonts/";
+
+.navbar {
+  background-color: #122A32;
+  
+}
+
+#app-wrapper {
+  margin-top: 24px;
+}

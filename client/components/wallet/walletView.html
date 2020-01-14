@@ -1,0 +1,28 @@
+<template name="walletView">
+
+  {{#unless unlocked}}
+  <div class="btn btn-success float-right"><i class="fa fa-lock"></i></div>
+    <h3>Unlock wallet</h3>
+    <br>
+    <form id="wallet-unlock-form" class="form">
+      <input type="password" class="form-control mb-4" name="password">
+      <input type="submit" class="form-control btn btn-primary" value="unlock">
+    </form>
+  {{else}}
+  <div class="btn btn-warning float-right" data-event="walletLock"><i class="fa fa-unlock"></i></div>
+    <h3>Wallet</h3>
+    <!-- <input type="button" class="btn btn-primary fa fa-lock" value="lock" data-event="walletLock"> -->
+
+    <div class="card">
+      <div class="card-body">
+        {{#each keyring in keyrings}}
+          {{keyring.type}}
+          <div>keys!</div>
+          {{#each keyring.accounts}}
+            <div>{{this}}</div>
+          {{/each}}
+        {{/each}}
+      </div>
+    </div>
+  {{/unless}}
+</template>

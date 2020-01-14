@@ -1,0 +1,5 @@
+node_modules/
+
+version.desktop
+
+*.code-workspace
