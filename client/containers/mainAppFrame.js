@@ -18,7 +18,7 @@ if (Meteor.isClient) {
     self.autorun(function () {
       self.setIsVault();
       if (self.isVault.get()) {
-        FlowRouter.go("walletView");
+        // FlowRouter.go("walletAssets");
       } else {
         FlowRouter.go("walletGenerate");
       }
