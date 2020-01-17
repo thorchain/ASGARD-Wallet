@@ -1,7 +1,7 @@
 <template name="walletView">
 
   {{#unless unlocked}}
-  <div class="btn btn-success float-right"><i class="fa fa-lock"></i></div>
+    <div class="btn btn-success float-right"><i class="fa fa-lock"></i></div>
     <h3>Unlock wallet</h3>
     <br>
     <form id="wallet-unlock-form" class="form">
@@ -9,20 +9,24 @@
       <input type="submit" class="form-control btn btn-primary" value="unlock">
     </form>
   {{else}}
-  <div class="btn btn-warning float-right" data-event="walletLock"><i class="fa fa-unlock"></i></div>
+    <div class="btn btn-warning float-right" data-event="walletLock"><i class="fa fa-unlock"></i></div>
     <h3>Wallet</h3>
     <!-- <input type="button" class="btn btn-primary fa fa-lock" value="lock" data-event="walletLock"> -->
+    <input type="button" class="btn btn-sm btn-info" value="New Binance keyring" data-event="addNewKeyring" data-param="cosmos">
+    <input type="button" class="btn btn-sm btn-info" value="New HD keyring" data-event="addNewKeyring" data-param="HD Key Tree">
+    <input type="button" class="btn btn-sm btn-info" value="New Simple keyring" data-event="addNewKeyring" data-param="Simple Key Pair">
 
-    <div class="card">
-      <div class="card-body">
         {{#each keyring in keyrings}}
-          {{keyring.type}}
+          <div class="card">
+            <div class="card-body">
+          <div class="card-title"><span class="btn btn-sm btn-success float-right" data-event="addNewAccount" data-param="{{keyring.type}}"><i class="fa fa-plus"></i></span>{{keyring.type}}</div>
           <div>keys!</div>
           {{#each keyring.accounts}}
             <div>{{this}}</div>
           {{/each}}
+            </div>
+          </div>
         {{/each}}
-      </div>
-    </div>
+
   {{/unless}}
 </template>

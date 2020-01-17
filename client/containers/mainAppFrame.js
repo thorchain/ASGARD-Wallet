@@ -4,9 +4,7 @@ if (Meteor.isClient) {
     self.isVault = new ReactiveVar();
 
     self.setIsVault = function () {
-      console.log("re-routing based on wallet file");
       const vault = window.localStorage.getItem("vault");
-      console.log(vault);
       const val = vault ? true : false;
       self.isVault.set(val);
     }
@@ -18,7 +16,6 @@ if (Meteor.isClient) {
     // then let user choose between create/import
     
     self.autorun(function () {
-      console.log("this ran?");
       self.setIsVault();
       if (self.isVault.get()) {
         FlowRouter.go("walletView");

@@ -1,33 +1,23 @@
-import WalletController from "./wallet";
+import WalletController from "./WalletController";
 
 if (Meteor.isClient) {
   const State = new Mongo.Collection(null);
   Template.walletView.onCreated(function () {
-    var self = this;
-    console.log("looking at wallet");
-    console.log(keyringController.memStore.getState());
-    self.setState = function () {
-      const keyringState = keyringController.memStore.getState()
+    const self = this;
+    keyringController.on('update', (e) => {
+      self.setState();
+    })
+    keyringController.on('newAccount', (e) => {
+      self.setState();
+    })
+    self.setState = async function () {
+      const keyringState = await keyringController.memStore.getState()
       const doc = State.findOne();
       const id = doc && doc._id ? {_id: doc._id} : {};
       State.update(id, keyringState, {upsert: true});
     }
-    self.unlock = async function (pw) {
-      console.log("unlocking keyringController/wallet");
-      
-      // await Wallet.unlock(pw);
-      await keyringController.submitPassword(pw);
-      console.log("did we unlock?");
-      
-      self.setState();
-    }
-    self.lock = async function () {
-      await keyringController.setLocked();
-      self.setState();
-    }
+    self.setState()
     self.autorun(function () {
-      console.log("can we reactively switch the view?");
-      self.setState();
     });
   });
 
@@ -38,6 +28,15 @@ if (Meteor.isClient) {
     },
     keyrings: function () {
       const doc = State.findOne();
+      const keyrings = doc.keyrings.map(ring => {
+        if (ring.type === "cosmos") {
+          ring.accounts = ring.accounts.map(e =>{
+            const e2 = e.substr(2)
+            return e2
+          })
+        }
+        return ring;
+      })
       return doc.keyrings;
     },
     unlocked: function () {
@@ -51,11 +50,28 @@ if (Meteor.isClient) {
       event.preventDefault();
       const tar = event.currentTarget;
       const pw = tar && tar.password.value;
-      self.unlock(pw);
+      keyringController.submitPassword(pw); 
     },
-    "click [data-event='walletLock']": function (event, self) {
+    "click [data-event='walletLock']": async function (event, self) {
       event.preventDefault();
-      self.lock();
+      keyringController.setLocked();
     },
+    "click [data-event='addNewKeyring']": async function (event, self) {
+      event.preventDefault();
+      const keyringType = event.currentTarget.dataset.param
+      const newring = await keyringController.addNewKeyring(keyringType);
+      const newVault = await keyringController.store.getState().vault;
+      window.localStorage.setItem("vault", newVault);
+    },
+    "click [data-event='addNewAccount']": async function (event, self) {
+      event.preventDefault();
+      const keyringType = event.currentTarget.dataset.param
+      const keyring = keyringController.getKeyringsByType(keyringType)[0]
+      await keyringController.addNewAccount(keyring);
+      
+      const newVault = await keyringController.store.getState().vault;
+      window.localStorage.setItem("vault", newVault);
+
+    }
   });
 }

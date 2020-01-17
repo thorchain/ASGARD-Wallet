@@ -4,7 +4,6 @@ import { Mutex } from 'await-semaphore'
 
 export default class WalletController {
    constructor (keyringController) {
-     console.log("constructing the wallet class");
      this.keyringController = keyringController;
      this.createVaultMutex = new Mutex()
    }
@@ -17,7 +16,6 @@ export default class WalletController {
       releaseLock()
       throw err
     }
-    console.log("using wallet class to unlock...")
     return this.keyringController.submitPassword(pw);
    }
    async addNewAccount (keyring) {
@@ -29,7 +27,6 @@ export default class WalletController {
     const oldAccounts = await keyringController.getAccounts()
     const keyState = await keyringController.addNewAccount(keyring)
     const newAccounts = await keyringController.getAccounts()
-    console.log(newAccounts);
     
 
     // await this.verifySeedPhrase()
@@ -80,14 +77,12 @@ export default class WalletController {
     if (!newring) {
       throw new Error('WalletController - No cosmos keyring created')
     } else {
-      console.log("using the wallet lib")
       // const keyringController = this.keyringController
       // const oldAccounts = await keyringController.getAccounts()
       // const keyState = await keyringController.addNewAccount(keyringType)
       // await this.addNewAccount(keyringType);
       // const newAccounts = await keyringController.getAccounts()
     }
-    console.log(newring);
     const newVault = await keyringController.memStore.getState();
     window.localStorage.setItem("vault", newVault);
     return newVault;

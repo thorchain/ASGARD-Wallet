@@ -1,49 +1,20 @@
-// this file will be the keyring file
-// following the protocol spec
-
-// class keyring {
-//   constructor() {
-//       super()
-//       this.type = type
-//       this.wallets = []
-//       this.deserialize(opts)
-//   }
-
-//   serialize (params) { //   }
-
-//   deserialize () { //   }
-
-//   addAccounts () { //   }
-
-//   getAccounts () { //   }
-
-//   signTransaction () { //   }
-
-//   signMessage () { //   }
-
-//   exportAccoutn () { //   }
-// }
-
 // Cosmos Keyring
 cosmosjs = require("@cosmostation/cosmosjs");
+// TODO: Below can be replaced
 cosmos = cosmosjs.network("https://lcd-do-not-abuse.cosmostation.io","cosmos-2")
-// const cosmos = require('cosmos-lib');
-
-const EventEmitter = require('events').EventEmitter
-// const Wallet = require('ethereumjs-wallet')
-// const ethUtil = require('ethereumjs-util')
+import Wallet from "./cosmos-wallet"
+import { EventEmitter } from "events";
 const type = 'cosmos'
-// const sigUtil = require('eth-sig-util')
 
 class CosmosKeyring extends EventEmitter {
 
   /* PUBLIC METHODS */
 
-  constructor (opts) {
+  constructor (opts = {}) {
     super()
     this.type = type
     this.wallets = []
-    // this.deserialize(opts)
+    this.deserialize(opts)
   }
 
   serialize () {
@@ -52,40 +23,32 @@ class CosmosKeyring extends EventEmitter {
 
   deserialize (privateKeys = []) {
     return new Promise((resolve, reject) => {
-    //   try {
-    //     this.wallets = privateKeys.map((privateKey) => {
-    //       const stripped = ethUtil.stripHexPrefix(privateKey)
-    //       const buffer = new Buffer(stripped, 'hex')
-    //       const wallet = Wallet.fromPrivateKey(buffer)
-    //       return wallet
-    //     })
-    //   } catch (e) {
-    //     reject(e)
-    //   }
-    //   resolve()
+      try {
+        const keysArr = []
+        keysArr.concat(privateKeys)
+        this.wallets = keysArr.map((privateKey) => {
+          // const stripped = ethUtil.stripHexPrefix(privateKey)
+          // const buffer = new Buffer(stripped, 'hex')
+          const wallet = Wallet.fromPrivateKey(privateKey)
+          return wallet
+        })
+      } catch (e) {
+        reject(e)
+      }
+      resolve()
     })
   }
 
-  addAccounts (n = 1, mnemonic) {
+  addAccounts (n = 1) {
     var newWallets = []
     for (var i = 0; i < n; i++) {
-      // This just generates a new key...?
-      // should generate an account compatible with ICAP Direct
-      // newWallets.push(Wallet.generate())
-      // does it even matter? this is just a store, we handle our
-      // own singing etc.
-      console.log("adding new account to cosmos keyring")
-      cosmos.setPath("m/44'/118'/0'/0/0");
-      cosmos.setBech32MainPrefix("cosmos");
-      // wtf....
-      const address = cosmos.getAddress(mnemonic);
-      const ecpairPriv = cosmos.getECPairPriv(mnemonic);
-
+      
+      const wallet = Wallet.generate()
+      newWallets.push(wallet)
     }
     this.wallets = this.wallets.concat(newWallets)
     const hexWallets = newWallets.map((w) => {
-      // ethUtil.bufferToHex(w.getAddress())
-      return w;
+      return w.getAddress()
     });
     return Promise.resolve(hexWallets)
   }
@@ -93,7 +56,7 @@ class CosmosKeyring extends EventEmitter {
   getAccounts () {
     return Promise.resolve(this.wallets.map(w => {
       // ethUtil.bufferToHex(w.getAddress())
-      return w
+      return w.getAddress()
     }))
   }
 
@@ -218,7 +181,7 @@ class CosmosKeyring extends EventEmitter {
   // exportAccount should return a hex-encoded private key:
   exportAccount (address, opts = {}) {
     const wallet = this._getWalletForAccount(address, opts)
-    // return Promise.resolve(wallet.getPrivateKey().toString('hex'))
+    return Promise.resolve(wallet.getPrivateKey().toString('hex'))
   }
 
   removeAccount (address) {
