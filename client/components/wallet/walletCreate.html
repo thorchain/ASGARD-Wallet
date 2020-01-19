@@ -1,0 +1,39 @@
+<template name="walletCreate">
+  <div class="row">
+    <div class="col-md-6 mr-auto ml-auto">
+  
+      {{!-- <a class="btn btn-sm btn-info" href="{{pathFor 'walletImport'}}">import</a> --}}
+      <h2 class="mb-4">Start new wallet</h2>
+  
+      {{#unless isMnemonic}}
+        <input type="button" class="btn btn-sm btn-info" value="Use HD Mnemonic" data-event="toggleMnemonic">
+      {{else}}
+        <button type="button" class="btn btn-sm btn-warning float-right" data-event="toggleMnemonic"><i class="fa fa-times"></i></button>
+        <h5>Mnemonic HD wallet seed</h5>
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="h3 text-justify">
+              {{#each word in wordslist}}
+                <span class="badge badge-lg badge-light">{{word}}</span>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      {{/unless}}
+  
+      <form name="generate-wallet-form" id="generate-wallet-form" class="">
+  
+      <h5>Encryption password</h5>
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <input type="password" class="form-control form-control-lg" id="inputPassword" placeholder="password" name="password">
+          </div>
+          <div class="form-group col-md-12">
+            <input type="submit" class="form-control form-control-lg btn btn-primary" value="Generate" id="inputPassword4">
+          </div>
+        </div>
+      </form>
+  
+    </div>
+  </div>
+</template>

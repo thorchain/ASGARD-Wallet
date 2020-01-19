@@ -9,13 +9,22 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto float-right">
       <li class="nav-item">
-        <a class="nav-link {{#if (isActive 'walletView')}}active{{/if}}" href="{{pathFor 'walletView'}}">Wallet</a>
+        <a class="nav-link {{#if (isActive 'walletAccounts')}}active{{/if}}" href="{{pathFor 'walletAccounts'}}">Accounts</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{#if (isActive 'walletAssets')}}active{{/if}}" href="{{pathFor 'walletAssets'}}">Assets</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{#if (isActive 'walletSend')}}active{{/if}}" href="{{pathFor 'walletSend'}}">Send</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link {{#if (isActive 'walletReceive')}}active{{/if}}" href="{{pathFor 'walletReceive'}}">Receive</a>
       </li>
       <li class="nav-item">
         <a class="nav-link {{#if (isActive 'settings')}}active{{/if}}" href="{{pathFor 'settings'}}">Settings</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        <a class="nav-link" href="#" tabindex="-1" data-event="lockWallet">Lock</a>
       </li>
     </ul>
   </div>
