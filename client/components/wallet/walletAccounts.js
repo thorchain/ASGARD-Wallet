@@ -1,33 +1,46 @@
-const sdk = require('@binance-chain/javascript-sdk')
+// const sdk = require('@binance-chain/javascript-sdk')
+// console.log(sdk)
 // const BnbApiClient = require('@binance-chain/javascript-sdk');
-
+// sdk = BNB
+// import Binance from "../../lib/binance.js"; // Binance
 
 if (Meteor.isClient) {
   Template.walletAccounts.onCreated(function() {
     const self = this
-    self.State = new Mongo.Collection(null);
-    const url = 'https://testnet-dex.binance.org/'
-    console.log("created the account template");
-    // console.log(sdk.client);
-    // const rpc = new sdk('https://testnet-dex.binance.org/')
-    // const rest = rpc.getAccount('bnb1qfmufc2q30cgw82ykjlpfeyauhcf5mad6p5y8t').then(x => {
-    // console.log('',JSON.stringify(x))
-    // console.log(x)
-    // })
-    const bnbClient = new sdk(url);
+    self.State = new Meteor.Collection(null);
+  
     const vault = window.localStorage.getItem("binance")
-    if (!vault) {
-      const privateKey = sdk.crypto.generatePrivateKey()
-      // console.log(privateKey.toString("hex"));
-      console.log(privateKey);
-      const keystore = sdk.crypto.generateKeyStore(privateKey, "asdf")
-      console.log(keystore);
-      window.localStorage.setItem("binance", JSON.stringify(keystore));
-    } else {
+    self.setState = async function () {
+      // const keyringState = await keyringController.memStore.getState()
       const doc = self.State.findOne();
       const id = doc && doc._id ? {_id: doc._id} : {};
-      const newDoc = JSON.parse(vault)
-      self.State.update(id, newDoc, {upsert: true});
+      self.State.update(id, JSON.parse(vault), {upsert: true});
+    }
+    self.getVault = function () {
+      // here we get the vault
+    }
+    console.log("created the account template");
+    
+    // const bnbClient = new Binance();
+    const sdk = BNB.sdk
+    
+    let privateKey;
+    if (!vault) {
+      // privateKey = sdk.crypto.generatePrivateKey()
+      // console.log(privateKey.toString("hex"));
+      // console.log(privateKey);
+      // const keystore = sdk.crypto.generateKeyStore(privateKey, "asdf")
+      // console.log(keystore);
+      // window.localStorage.setItem("binance", JSON.stringify(keystore));
+    } else {
+      // WE NEED TO UNLOCK THE VAULT
+      // const doc = self.State.findOne();
+      // const id = doc && doc._id ? {_id: doc._id} : {};
+      // const newDoc = JSON.parse(vault)
+      // self.State.update(id, newDoc, {upsert: true});
+      // we need the stored private to to reconnect the client(?)
+      // since we are using Binance only
+      // self.setState()
       console.log("we updated the state collection");
     }
     // console.log(bnbClient);
@@ -36,6 +49,10 @@ if (Meteor.isClient) {
     
     // console.log(bnbClient.setPrivateKey);
 
+    // const res = bnbClient.setPrivateKey(privateKey)
+    // const account = bnbClient.getClientKeyAddress()
+    // console.log(res);
+    
     // bnbClient.setPrivateKey(privateKey.toString("hex")).then(e => {
     //   console.log("did we set the key?");
       
@@ -46,11 +63,8 @@ if (Meteor.isClient) {
     // const address = bnbClient.setPrivateKey(privateKey); // sender address string (e.g. bnb1...)
     // console.log(bnbClient);
     
-    self.setState = async function () {
-      const keyringState = await keyringController.memStore.getState()
-      const doc = State.findOne();
-      const id = doc && doc._id ? {_id: doc._id} : {};
-      State.update(id, keyringState, {upsert: true});
+    self.unlockVault = function () {
+
     }
     
     
@@ -58,9 +72,7 @@ if (Meteor.isClient) {
   Template.walletAccounts.helpers({
 
     walletState: function () {
-      const doc = Template.instance().State.findOne();
-      return doc;
+      return UserAccount.findOne()
     },
-
   })
 }
