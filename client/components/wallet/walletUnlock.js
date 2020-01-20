@@ -6,8 +6,10 @@ if (Meteor.isClient) {
 			const vault = localStorage.getItem('binance');
 			const keystore = JSON.parse(vault)
 			const account = BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+			account.keystore = keystore
 			const doc = UserAccount.findOne();
 			const select = doc && doc._id ? {_id: doc._id} : {};
+      BNB.setPrivateKey(account.privateKey)
 			return UserAccount.update(select, account, {upsert: true})
 		}
 	})

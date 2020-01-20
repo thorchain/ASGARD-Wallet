@@ -1,6 +1,5 @@
 const bip39 = require('bip39')
-// import Binance from "../../lib/binance.js"; // Binance
-// const bnbClient = new Binance();
+
 if (Meteor.isClient) {
 const sdk = BNB.sdk
   
@@ -22,54 +21,76 @@ const sdk = BNB.sdk
       return mnemonic.length ? mnemonic.split(" ") : [] ;
     }
 
-    self.generateWallet = async function (pw) {
-      // const res = sdk.crypto.getPrivateKeyFromMnemonic(self.wlist.get())
-      // Check the vault
+    self.generateNewWallet = async function (pw, mnemonic) {
       const vault = window.localStorage.getItem("binance");
-      console.log(typeof vault)
       if (vault) {
-        // console.error("wallet exists")
-        throw new Error("Wallet already exists")
+        throw new Error("Wallet vault already exists")
       } else {
-        // Generate the key/keystore/vault
         let account
+        let words
         if (self.isMnemonic.get()) {
           const words = self.wlist.get();
           account = await BNB.bnbClient.recoverAccountFromMnemonic(words)
-          const doc = UserAccount.findOne();
-          const select = doc && doc._id ? {_id: doc._id} : {};
           account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
-          UserAccount.update(select, account, {upsert: true})
-          // Security: Below coud output private keys
-          console.log(account)
-          window.localStorage.setItem("binance", JSON.stringify(account.keystore));
+        } else if (mnemonic) {
+          account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
         } else {
           account = await BNB.bnbClient.createAccountWithKeystore(pw)
-          const doc = UserAccount.findOne();
-          const select = doc && doc._id ? {_id: doc._id} : {};
-          UserAccount.update(select, account, {upsert: true})
-          // Security: Below coud output private keys
-          console.log(account)
-
-          
-          window.localStorage.setItem("binance", JSON.stringify(account.keystore));
         }
-        
+        self.updateVault(account.keystore)
+        self.updateUserAccount(account)
       }
-
-
 
     }
 
-    self.setWlist();
+    // self.generateNewMnemonicWallet = async (mnemonic, pw) => {
 
+    // }
+
+    self.importWalletFile = async (file, pw) => {
+      const reader = new FileReader();
+      reader.onerror = (event) => { throw new Error("File could not be read! Code " + event.target.error.code); };
+      reader.onload = (event) => {
+        var contents = event.target.result;
+        const keystore = JSON.parse(contents)
+        if (keystore && keystore.version) {
+          const account = BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+          account.keystore = keystore
+          self.updateVault(keystore)
+          self.updateUserAccount(account)
+        }
+      };
+      
+      // Execute file read
+      reader.readAsText(file)
+      return true;
+    }
+    self.updateUserAccount = async (account) => {
+      console.log("setting Binance client");
+      await BNB.setPrivateKey(account.privateKey)
+      console.log("good to go?");
+      
+      const doc = UserAccount.findOne();
+      const select = doc && doc._id ? {_id: doc._id} : {};
+      UserAccount.update(select, account, {upsert: true})
+    }
+    self.updateVault = (keystore) => {
+      window.localStorage.setItem("binance", JSON.stringify(keystore));
+    }
+
+    self.setWlist()
     self.autorun(function() {
+      // if there is a user here we need to redirect
     });
     
   });
 
   Template.walletCreate.helpers({
-    wordslist: function () {
+    isImport: function () {
+      const method = FlowRouter.getParam('method')
+      return (method === "import")
+    },
+    wordsList: function () {
       return Template.instance().getWlistArray();
     },
     isMnemonic: function () {
@@ -87,11 +108,35 @@ const sdk = BNB.sdk
       event.preventDefault();
       try {
         if (!event.currentTarget.password.value) throw "no password"
-        await self.generateWallet(event.currentTarget.password.value);
+        await self.generateNewWallet(event.currentTarget.password.value);
         FlowRouter.go('walletAccounts')
       } catch (err) {
         console.error(err);
       }
+    },
+    "change #upload-file-input": function (event, self) {
+      // TODO: rework below for ui updating
+      // event.preventDefault()
+      // const file = event.currentTarget.files[0]
+    },
+    "submit #upload-keystore-form": async function (event, self) {
+      event.preventDefault()
+      const t = event.currentTarget
+      const file = t.keystoreFile.files[0];
+      const pw = t.password.value;
+      try {
+        if (!event.currentTarget.password.value) throw "no password"
+        await self.importWalletFile(file, pw)
+        FlowRouter.go('walletAccounts')
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    "submit #import-mnemonic-form": function (event, self) {
+      event.preventDefault()
+      // TODO: Temporary validation of mnemonic
+      console.log("importing from mnemonic");
     }
   });
+
 }
