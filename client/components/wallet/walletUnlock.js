@@ -1,25 +1,30 @@
 if (Meteor.isClient) {
 	Template.walletUnlock.onCreated(function() {
 		const self = this
-		self.unlockWallet = (pw) => {
+		self.unlockWallet = async (pw) => {
 			const vault = localStorage.getItem('binance');
 			const keystore = JSON.parse(vault)
-			const account = BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+			const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
 			account.keystore = keystore
-			self.setUserData(account)
+			await self.setUserData(account)
 		}
 		self.setUserData = async (account) => {
-      BNB.setPrivateKey(account.privateKey)
+      await BNB.initializeClient(account.privateKey)
 			const doc = UserAccount.findOne();
 			const select = doc && doc._id ? {_id: doc._id} : {};
-			// This inits the binance client as well
-			UserAccount.update(select, account, {upsert: true})
-			await BNB.binanceTokens().then(e => {
-				TokenData.batchInsert(e.data)
-			})
+      await BNB.getBalances().then(e => {
+        account.assets = e.map(function(elem) {
+          elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
+          return elem
+        })
+				UserAccount.remove({})
+        UserAccount.update(select, account, {upsert: true})
+      })
 			await BNB.bnbClient.getTransactions(account.address).then(e => {
+        UserTransactions.remove({})
 				UserTransactions.batchInsert(e.result.tx)
 			})
+
 		}
 	})
 	Template.walletUnlock.events({
@@ -27,9 +32,8 @@ if (Meteor.isClient) {
       event.preventDefault();
       const tar = event.currentTarget;
 			const pw = tar && tar.password.value;
-			// self.unlockWallet(pw);
 			try {
-				self.unlockWallet(pw)
+				await self.unlockWallet(pw)
 				FlowRouter.go("home")
 			} catch (err) {
 				console.error(err)

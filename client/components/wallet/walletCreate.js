@@ -68,13 +68,11 @@ const sdk = BNB.sdk
         const keystore = JSON.parse(contents)
         if (keystore && keystore.version) {
           const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
-          console.log("got result from binance client");
-          
           account.keystore = keystore
           self.updateVault(keystore)
           self.updateUserAccount(account)
         }
-        FlowRouter.go('home')
+        FlowRouter.go('home') // TODO: Place in proper async chain
       };
       
       // Execute file read
@@ -82,26 +80,20 @@ const sdk = BNB.sdk
       
       await reader.readAsText(file)
     }
-    self.updateUserAccountX = async (account) => {
-      console.log("setting Binance client");
-      await BNB.setPrivateKey(account.privateKey)
-      console.log("good to go?");
-      
-      const doc = UserAccount.findOne();
-      const select = doc && doc._id ? {_id: doc._id} : {};
-      UserAccount.update(select, account, {upsert: true})
-    }
     self.updateUserAccount = async (account) => {
-      console.log("updating account");
-      BNB.setPrivateKey(account.privateKey)
+      await BNB.initializeClient(account.privateKey)
 			const doc = UserAccount.findOne();
 			const select = doc && doc._id ? {_id: doc._id} : {};
-			// This inits the binance client as well
-			UserAccount.update(select, account, {upsert: true})
-			await BNB.binanceTokens().then(e => {
-				TokenData.batchInsert(e.data)
-			})
+      await BNB.getBalances().then(e => {
+        account.assets = e.map(function(elem) {
+          elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
+          return elem
+        })
+				UserAccount.remove({})
+        UserAccount.update(select, account, {upsert: true})
+      })
 			await BNB.bnbClient.getTransactions(account.address).then(e => {
+        UserTransactions.remove({})
 				UserTransactions.batchInsert(e.result.tx)
 			})
 		}

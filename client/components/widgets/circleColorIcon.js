@@ -17,7 +17,7 @@ if (Meteor.isClient) {
       const style = "background-image: linear-gradient(45deg,"+ c.start +", " + c.stop +")"
       return {
         style,
-        class: "circle-icon-sm d-flex align-items-center text-white"
+        class: "circle-icon-md d-flex align-items-center text-white"
       }
     }
   });

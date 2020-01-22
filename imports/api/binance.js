@@ -38,7 +38,7 @@ class Binance {
     this.bnbTokens = new TokenManagement(this.bnbClient).tokens;
   }
 
-  setPrivateKey = async privateKey => {
+  initializeClient = async privateKey => {
     try {
       await this.bnbClient.setPrivateKey(privateKey);
       this.bnbClient.chooseNetwork(this.net);
@@ -88,11 +88,22 @@ class Binance {
     return this.httpClient.get('/fees');
   };
 
-  binanceTokens = () => {
-    return this.httpClient.get('/tokens');
+  getTokens = (options) => {
+    let query = "/tokens"
+    if (options && options.limit) {
+      query += "?limit=" + options.limit
+      if (options.offset) {
+        query += "&offset=" + options.offset
+      }
+    }
+    return this.httpClient.get(query);
+  }
+  getTokenInfo = (symbol) => {
+    const query = "/tokens?token=" + symbol
+    return this.httpClient.get()
   }
 
-  price = async symbol => {
+  getMarketRate = async symbol => {
     const bnb = await axios.get(
       'https://api.cryptonator.com/api/ticker/bnb-usd',
     );
@@ -113,6 +124,14 @@ class Binance {
   getBalances = address => {
     return this.bnbClient.getBalance(address);
   };
+
+  getTransactions = (address, limit) => {
+    let query = '/transactions?address=' + address
+    if (parseInt(limit)) {
+      query += '&limit=' + limit
+    }
+    return this.httpClient(query)
+  }
 
   getAccount = address => {
     return this.bnbClient.getAccount(address);

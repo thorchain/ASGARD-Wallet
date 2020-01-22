@@ -18,6 +18,10 @@ Ultra fast prototyping framework.
 
 Plugin is used to take multi-platform build capabilities of Meteor and extend it to desktop/electron platform.
 
+**Binance**
+
+Uses libraries for accessing Binance blockchain/dex API's
+
 **Keyring-controller:**
 
 Commonly used and testing in the wild keyring/wallet management library. Uses blockchain/key agnostic keyring protocol.
@@ -26,4 +30,31 @@ Commonly used and testing in the wild keyring/wallet management library. Uses bl
 
 Several different cosmos API libs are beign tested for features etc.
 
-During this phase of early development, this codebase repository will be used to share information and demonstrate the theory behind a multi-key wallet capable of supporting multiple platforms, as well as interacting with the Thorchain network.
+### Dev Setup
+
+*Note: Untested*
+
+1. Install [Meteor](https://www.meteor.com/developers) if not already
+
+`curl https://install.meteor.com/ | sh`
+
+
+2. Clone the repository
+  
+`git clone git@gitlab.com:thorchain/asgard-wallet.git`
+
+3. Install npm dependencies in new repo directory
+
+`npm install`
+
+4. Run meteor
+
+`meteor run --mobile-server=127.0.0.1:3000`
+
+5. Meteor should tell you which additional packages, if it needs (repeat step 4 until no errors)
+
+`meteor add <package name>`
+
+6. In seperate shell/terminal session
+
+`npm run desktop`

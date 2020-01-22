@@ -15,6 +15,9 @@
         <a class="nav-link {{#if (isActive 'walletSend')}}active{{/if}}" href="{{pathFor 'walletSend'}}">Send</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link {{#if (isActive 'walletTransactionsList')}}active{{/if}}" href="{{pathFor 'walletTransactionsList'}}">Transactions</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link {{#if (isActive 'walletReceive')}}active{{/if}}" href="{{pathFor 'walletReceive'}}">Receive</a>
       </li>
       <li class="nav-item">

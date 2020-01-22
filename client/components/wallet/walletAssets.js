@@ -2,57 +2,120 @@
 if (Meteor.isClient) {
   Template.walletAssets.onCreated(function() {
     const self = this;
-
-    self.initAssets = function () {
-      // TODO: Determine better approach for descreasing requests
-      return BNB.getBalances().then(e => {
-        // We also want the token info...
-        // now we have TokenData
-        // need the symbols...
-        
-        // we want to add the symbols to the assets?
-        
-        const doc = UserAccount.findOne()
-        UserAccount.update({_id:doc._id},{$set: {assets:e}})
-      })
-    }
     self.getAssets = () => {
-      // return the assets...
-      const assets = UserAccount.findOne().assets
+      return assets = UserAccount.findOne().assets
+    }
+
+    self.initAssets = async() => {
+      const usr = UserAccount.findOne()
+      const assets = usr.assets
       if (assets && assets.length > 0) {
         
-        // const symbols = assets.map(asset => {
-        //   return asset.symbol
-        // })
-        // more efficient than in loop
-        const tokens = TokenData.find().fetch() 
-        // attach the token data for each asset
-        const res = assets.map(function(elem) {
-          // get the token asset
-          const token = tokens.find(function(e) {
-            return (elem.symbol === e.symbol)
-          });
-          elem.token = token
-          elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
-          return elem
+        const symbols = assets.map(asset => {
+          return asset.symbol
         })
-        return res
+
+        let page = 1;
+        let tokensFound = []
+        const initialOffset = 0
+        const limit = 2000
+        while (tokensFound.length < symbols.length) {
+          let request, options = {}
+          options.offset = ((page -1) * limit) + initialOffset
+          options.limit = limit
+
+          try {
+            request = await BNB.getTokens(options)
+          } catch (error) {
+            break
+          }
+
+          if (request && request.data && request.data.length > 0) {
+            // Go through the tokens
+            for (let i = 0; i < request.data.length; i++) {
+              const e = request.data[i];
+              // Check for a match to account assets
+              const match = symbols.find(s => { return s === e.symbol })
+              if (match) { tokensFound.push(e) }
+              if (tokensFound.length === symbols.length) { break }
+              
+            }
+            // Safeguard
+            if (request.data.length < limit) {
+              break
+            }
+            
+          }
+          page+=1
+        } // end while()
+
+        TokenData.remove({})
+        TokenData.batchInsert(tokensFound)
+
       }
     }
 
-    self.initAssets()
+    if (!TokenData.find().fetch().length) {
+      self.initAssets()
+    }
     self.autorun(function() {
-
     });
   });
   Template.walletAssets.helpers({
-    assetsList: function () {
+    assetsList () {
       return Template.instance().getAssets()
     },
-    decimals: function (val) {
+    tokenName (symbol) {
+      const token = TokenData.findOne({symbol:symbol})
+      return token && token.name
+    },
+    decimals (val) {
       val = parseFloat(val)
       return val.toFixed(2)
     }
 
   });
 }
+const tokenNames = {
+  BNB: {
+    mainnet: 'BNB',
+    testnet: 'BNB',
+  },
+  RUNE: {
+    mainnet: 'RUNE-B1A',
+    testnet: 'RUNE-A1F',
+  },
+  LOK: {
+    mainnet: 'LOKI-6A9',
+    testnet: 'LOK-3C0',
+  },
+  LOKI: {
+    mainnet: 'LOKI-6A9',
+    testnet: 'LOK-3C0',
+  },
+  ERD: {
+    mainnet: 'ERD-D06',
+    testnet: 'ERD-D85',
+  },
+  FSN: {
+    mainnet: 'FSN-E14',
+    testnet: 'FSN-F1B',
+  },
+  FTM: {
+    mainnet: 'FTM-A64',
+    testnet: 'FTM-585',
+  },
+  TCAN: {
+    mainnet: 'CAN-677',
+    testnet: 'TCAN-014',
+  },
+  CAN: {
+    mainnet: 'CAN-677',
+    testnet: 'TCAN-014',
+  },
+  TOMOB: {
+    mainnet: 'TOMOB-4BC',
+    testnet: 'TOMOB-1E1',
+  },
+};
+
