@@ -1,3 +1,25 @@
 <template name="walletSend">
-  <h3>Send Funds:</h3>
+  <h3>Send Funds: <small>{{param 'asset'}}</small></h3>
+
+  {{#if (param 'asset')}}
+    <div class="font-italic">Available balance: {{availableBalance (param 'asset')}}</div>
+  {{/if}}
+
+  <form id="send-transaction-form" class="form" autocomplete="off">
+
+    <input class="form-control mb-2" type="text" name="recipient" placeholder="recipient">
+    <input class="form-control mb-2" type="text" name="amount" placeholder="amount">
+
+    {{#unless (param 'asset')}}
+      <select class="form-control mb-2" name="asset">
+
+        {{#each userAssets}}
+          <option value="test">{{symbol}} ({{availableBalance symbol}})</option>
+        {{/each}}
+
+      </select>
+    {{/unless}}
+
+    <input class="btn btn-primary w-100" type="submit" value="submit">
+  </form>
 </template>

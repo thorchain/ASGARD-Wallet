@@ -1,6 +1,23 @@
 <template name="walletAssets">
   <h3>Assets</h3>
-  <pre>
-    {{toJSON assetsList}}
-  </pre>
+
+  <ul class="list-unstyled">
+
+    {{#each assetsList}}
+    <li class="media d-flex mb-1 p-2 align-items-center" data-nav="{{pathFor "walletAssetDetails" symbol=symbol}}">
+      {{!-- <img src="..." class="mr-3" alt="..."> --}}
+      <div class="mr-3">
+        {{> circleColorIcon}}
+      </div>
+      <div class="media-body">
+
+        <span class="float-right">{{decimals free}}</span>
+        <div class="font-weight-bolder mt-0 mb-1">{{symbol}}</div>
+
+      </div>
+    </li>
+    {{/each}}
+
+  </ul>
 </template>
+

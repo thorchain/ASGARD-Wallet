@@ -88,6 +88,10 @@ class Binance {
     return this.httpClient.get('/fees');
   };
 
+  binanceTokens = () => {
+    return this.httpClient.get('/tokens');
+  }
+
   price = async symbol => {
     const bnb = await axios.get(
       'https://api.cryptonator.com/api/ticker/bnb-usd',

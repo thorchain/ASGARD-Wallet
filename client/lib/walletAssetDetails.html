@@ -1,0 +1,41 @@
+<template name="walletAssetDetails">
+  <h3>Asset Detail</h3>
+  <div>Name:</div>
+  <div>Icon:</div>
+  <div>Symbol: {{balances.symbol}}</div>
+  <div class="font-weight-bold">Balance:</div>
+  <h3>{{balances.free}}</h3>
+
+  <dl>
+    <dt>frozen:</dt>
+    <dd>{{balances.frozen}}</dd>
+    <dt>locked:</dt>
+    <dd>{{balances.locked}}</dd>
+  </dl>
+  
+  <h4>Transact</h4>
+  <div class="row">
+
+    <div class="col-6">
+      <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletSend' asset=(param 'symbol')}}" value="send">
+    </div>
+
+    <div class="col-6">
+      <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletReceive'}}" value="recieve">
+    </div>
+
+  </div>
+  <h5>Transactions</h5>
+  {{#each transactions}}
+    <pre>{{toJSON this}}</pre>
+  {{/each}}
+  {{!-- <ul class="list-unstyled">
+    <li class="media">
+      <img src="..." class="mr-3" alt="...">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">List-based media object</h5>
+        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+      </div>
+    </li>
+  </ul> --}}
+</template>

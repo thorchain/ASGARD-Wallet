@@ -1,4 +1,17 @@
 <template name="walletAccounts">
   <h3>Account</h3>
-  <pre>{{toJSON walletState}}</pre>
+  
+  <dl>
+    <dt>Address</dt>
+    <dd>{{user.address}}</dd>
+    <dt>Private Key</dt>
+    <dd>{{user.privateKey}}</dd>
+    <dt>Keystore Version</dt>
+    <dd>v {{user.keystore.version}}</dd>
+    <dt>Client Network</dt>
+    <dd>{{client.network}}</dd>
+    <dt>Chain ID</dt>
+    <dd>{{client.chainId}}</dd>
+  </dl>
+
 </template>

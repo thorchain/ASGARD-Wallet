@@ -27,12 +27,12 @@ const sdk = BNB.sdk
         throw new Error("Wallet vault already exists")
       } else {
         let account
-        let words
         if (self.isMnemonic.get()) {
           const words = self.wlist.get();
           account = await BNB.bnbClient.recoverAccountFromMnemonic(words)
           account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
         } else if (mnemonic) {
+          // NOTE: This no longer works...?
           account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
         } else {
           account = await BNB.bnbClient.createAccountWithKeystore(pw)
@@ -43,29 +43,46 @@ const sdk = BNB.sdk
 
     }
 
-    // self.generateNewMnemonicWallet = async (mnemonic, pw) => {
+    self.importMnemonicWallet = async (mnemonic, pw) => {
+      const vault = window.localStorage.getItem("binance");
+      if (vault) {
+        throw new Error("wallet vault already exists")
+      } else {
+        let account
+        if (self.isMnemonic.get()) { // just confirmation...
+          account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
+          account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
+        } // else error
 
-    // }
+        self.updateVault(account.keystore)
+        self.updateUserAccount(account)
+
+      }
+    }
 
     self.importWalletFile = async (file, pw) => {
       const reader = new FileReader();
       reader.onerror = (event) => { throw new Error("File could not be read! Code " + event.target.error.code); };
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         var contents = event.target.result;
         const keystore = JSON.parse(contents)
         if (keystore && keystore.version) {
-          const account = BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+          const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+          console.log("got result from binance client");
+          
           account.keystore = keystore
           self.updateVault(keystore)
           self.updateUserAccount(account)
         }
+        FlowRouter.go('home')
       };
       
       // Execute file read
-      reader.readAsText(file)
-      return true;
+      console.log("executing reading file...");
+      
+      await reader.readAsText(file)
     }
-    self.updateUserAccount = async (account) => {
+    self.updateUserAccountX = async (account) => {
       console.log("setting Binance client");
       await BNB.setPrivateKey(account.privateKey)
       console.log("good to go?");
@@ -74,6 +91,20 @@ const sdk = BNB.sdk
       const select = doc && doc._id ? {_id: doc._id} : {};
       UserAccount.update(select, account, {upsert: true})
     }
+    self.updateUserAccount = async (account) => {
+      console.log("updating account");
+      BNB.setPrivateKey(account.privateKey)
+			const doc = UserAccount.findOne();
+			const select = doc && doc._id ? {_id: doc._id} : {};
+			// This inits the binance client as well
+			UserAccount.update(select, account, {upsert: true})
+			await BNB.binanceTokens().then(e => {
+				TokenData.batchInsert(e.data)
+			})
+			await BNB.bnbClient.getTransactions(account.address).then(e => {
+				UserTransactions.batchInsert(e.result.tx)
+			})
+		}
     self.updateVault = (keystore) => {
       window.localStorage.setItem("binance", JSON.stringify(keystore));
     }
@@ -109,7 +140,7 @@ const sdk = BNB.sdk
       try {
         if (!event.currentTarget.password.value) throw "no password"
         await self.generateNewWallet(event.currentTarget.password.value);
-        FlowRouter.go('walletAccounts')
+        FlowRouter.go('home')
       } catch (err) {
         console.error(err);
       }
@@ -117,7 +148,15 @@ const sdk = BNB.sdk
     "change #upload-file-input": function (event, self) {
       // TODO: rework below for ui updating
       // event.preventDefault()
-      // const file = event.currentTarget.files[0]
+      const file = event.currentTarget.files[0]
+      console.log(file);
+      // change button text, and make disabled
+      $('#upload-file-button').attr({value: file.name, disabled: true})
+    },
+    "click #upload-file-button": function (event, self) {
+      event.preventDefault()
+      console.log("Triggering file upload");
+      $('#upload-file-input').click()
     },
     "submit #upload-keystore-form": async function (event, self) {
       event.preventDefault()
@@ -127,15 +166,23 @@ const sdk = BNB.sdk
       try {
         if (!event.currentTarget.password.value) throw "no password"
         await self.importWalletFile(file, pw)
-        FlowRouter.go('walletAccounts')
+        // FlowRouter.go('home')
       } catch (err) {
         console.error(err)
       }
     },
-    "submit #import-mnemonic-form": function (event, self) {
+    "submit #import-mnemonic-form": async function (event, self) {
       event.preventDefault()
       // TODO: Temporary validation of mnemonic
-      console.log("importing from mnemonic");
+      const words = event.currentTarget.mnemonic.value
+      const pw = event.currentTarget.password.value
+      try {
+        if (!event.currentTarget.password.value) throw "no password"
+        await self.importMnemonicWallet(words, pw)
+        FlowRouter.go('home')
+      } catch (err) {
+        console.error(err)
+      }
     }
   });
 

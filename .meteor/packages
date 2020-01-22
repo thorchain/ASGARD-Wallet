@@ -38,3 +38,4 @@ reactive-dict
 momentjs:moment
 gwendall:body-events
 steedos:cors
+mikowals:batch-insert
