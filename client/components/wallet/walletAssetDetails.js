@@ -6,6 +6,10 @@ if (Meteor.isClient) {
     },
     transactions () {
       return []
+    },
+    token () {
+      const symbol = FlowRouter.getParam('symbol')
+      return TokenData.findOne({symbol: symbol})
     }
   })
 }

@@ -3,10 +3,12 @@ if (Meteor.isClient) {
   Template.walletAssets.onCreated(function() {
     const self = this;
     self.getAssets = () => {
-      return assets = UserAccount.findOne().assets
+      const usr = UserAccount.findOne()
+      return usr && usr.assets 
     }
 
-    self.initAssets = async() => {
+    // TODO: Remove from this component, and place in controller class
+    self.initTokens = async() => {
       const usr = UserAccount.findOne()
       const assets = usr.assets
       if (assets && assets.length > 0) {
@@ -55,8 +57,10 @@ if (Meteor.isClient) {
       }
     }
 
+    // Only initTokens if there is no token data
+    // TODO: Add ability to sync for new tokens in wallet
     if (!TokenData.find().fetch().length) {
-      self.initAssets()
+      self.initTokens()
     }
     self.autorun(function() {
     });
@@ -72,6 +76,9 @@ if (Meteor.isClient) {
     decimals (val) {
       val = parseFloat(val)
       return val.toFixed(2)
+    },
+    price (symbol) {
+      return "$0.00"
     }
 
   });

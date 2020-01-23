@@ -48,15 +48,54 @@ export default class Wallet {
         UserTransactions.batchInsert(res.data.tx)
       })
   }
-  async initializeTokenData () {
-    // used for syncing tokens store to chain
-    // we only need the tokens for balances?
-    // get balances
-    BNB.getBanaces(address)
-    // loop through balances/tokens getting names etc.
-    // await BNB.binanceTokens().then(e => {
-    //   TokenData.batchInsert(e.data)
-    // })
+
+  initializeTokenData = async() => {
+    const usr = UserAccount.findOne()
+    const assets = usr.assets
+    if (assets && assets.length > 0) {
+      
+      const symbols = assets.map(asset => {
+        return asset.symbol
+      })
+
+      let page = 1;
+      let tokensFound = []
+      const initialOffset = 0
+      const limit = 2000
+      while (tokensFound.length < symbols.length) {
+        let request, options = {}
+        options.offset = ((page -1) * limit) + initialOffset
+        options.limit = limit
+
+        try {
+          request = await BNB.getTokens(options)
+        } catch (error) {
+          break
+        }
+
+        if (request && request.data && request.data.length > 0) {
+          // Go through the tokens
+          for (let i = 0; i < request.data.length; i++) {
+            const e = request.data[i];
+            // Check for a match to account assets
+            const match = symbols.find(s => { return s === e.symbol })
+            if (match) { tokensFound.push(e) }
+            if (tokensFound.length === symbols.length) { break }
+            
+          }
+          // Safeguard
+          if (request.data.length < limit) {
+            break
+          }
+          
+        }
+        page+=1
+      } // end while()
+
+      TokenData.remove({})
+      TokenData.batchInsert(tokensFound)
+
+    }
   }
   
 }

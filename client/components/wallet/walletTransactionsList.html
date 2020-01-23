@@ -1,4 +1,29 @@
 <template name="walletTransactionsList">
   <h3>Transactions</h3>
-  <pre>{{toJSON transactions}}</pre>
+
+  {{#unless transactions}}<div class="text-italic text-muted">No transactions yet...</div>{{/unless}}
+
+  <ul class="list-group">
+    {{#each transactions}}
+
+      <li class="media list-group-item p-1">
+        <div class="media-body d-flex align-items-center justify-content-start">
+
+          <div class="font-weight-bold small mr-2">{{txType}}</div>
+
+          <div class="text-truncate mr-auto p-1">
+            <div class="small text-truncate"><strong>To:</strong> {{toAddr}}</div>
+            <div class="small text-truncate"><strong>From:</strong> {{fromAddr}}</div>
+          </div>
+
+          <div class="pl-1">
+            <div class="text-right">{{decimals value}}</div>
+            <div class="small text-right">{{txAsset}}</div>
+          </div>
+
+        </div>
+      </li>
+
+    {{/each}}
+</ul>
 </template>

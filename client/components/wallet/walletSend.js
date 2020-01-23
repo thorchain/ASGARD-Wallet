@@ -21,12 +21,11 @@ if (Meteor.isClient) {
       const amount = parseInt(t.amount.value)
       const param = FlowRouter.getParam('asset')
       const asset = param || t.asset && t.asset.value
-      console.log("sending transaction...")
-      // BNB.transfer(from, to, amount, asset).then(e => console.log(e))
-      BNB.bnbClient.transfer(from, to, amount, asset).then(e => {
-        console.log("something happened then...")
-        console.log(e);
-        
+      
+      BNB.transfer(from, to, amount, asset).then(async (e) => {
+        // Update balances
+        // get from websockets?
+        FlowRouter.go("walletAssets")
       })
     }
   });

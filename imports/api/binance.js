@@ -39,6 +39,7 @@ class Binance {
   }
 
   initializeClient = async privateKey => {
+    // TODO: Add switch for types of networks (test/main)
     try {
       await this.bnbClient.setPrivateKey(privateKey);
       this.bnbClient.chooseNetwork(this.net);
@@ -125,10 +126,16 @@ class Binance {
     return this.bnbClient.getBalance(address);
   };
 
-  getTransactions = (address, limit) => {
+  getTransactions = (address, options) => {
     let query = '/transactions?address=' + address
-    if (parseInt(limit)) {
-      query += '&limit=' + limit
+    // TODO: Valid options not checked yet
+    if (options) {
+      for (const key in options) {
+        if (options.hasOwnProperty(key)) {
+          const element = options[key];
+          query += '&' + key + '=' + element
+        }
+      }
     }
     return this.httpClient(query)
   }

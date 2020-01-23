@@ -7,7 +7,10 @@ import Binance from "/imports/api/binance.js"; // Binance
 import Wallet from './wallet';
 BNB = new Binance();
 
-// WALLET = new Wallet();
+// NOTE: Below becomes more and more like KeyringController
+// when starting to support mulitple key types
+// WALLET = new Wallet([BNB]);
+
 
 Meteor.startup(function() {
   // console.log("Meteor starting...")

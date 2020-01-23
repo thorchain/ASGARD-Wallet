@@ -1,5 +1,7 @@
 <template name="walletCreate">
   <div class="row">
+    <div class="col-sm-12">
+    </div>
     {{#unless (param 'method')}}
       <div class="col-md-8 col-lg-6 ml-auto mr-auto">
         <h3>Welcome to Asgard</h3>
@@ -7,6 +9,10 @@
         <a class="btn btn-lg btn-primary float-right w-100 mb-4" href="{{pathFor 'walletCreate' method='import'}}">Import</a>
       </div>
     {{else}}
+
+      {{#if isLoading}}
+        <div class="col-sm-12">Loading... {{loadingMsg}}</div>
+      {{else}}
 
         {{#if isImport}}
           <div class="col-12">
@@ -18,7 +24,10 @@
           </div>
         {{/if}}
 
-      {{/unless}}
+      {{/if}}
+
+
+    {{/unless}}
 
   </div>
 </template>

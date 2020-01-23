@@ -2,7 +2,7 @@
   <h3>Assets</h3>
 
   <ul class="list-unstyled">
-
+    {{#unless assetsList}}<div class="text-italic text-muted">No assets yet...</div>{{/unless}}
     {{#each assetsList}}
     <li class="media d-flex mb-1 p-2 align-items-center" data-nav="{{pathFor "walletAssetDetails" symbol=symbol}}">
       {{!-- <img src="..." class="mr-3" alt="..."> --}}
@@ -16,7 +16,7 @@
           <div class="small">{{symbol}}</div>
         </div>
         <div class="">
-          <div class="text-right font-italic color-grey small">$price</div>
+          <div class="text-right font-italic color-grey small">{{price symbol}}</div>
           <div class="text-right">{{decimals free}}</div>
         </div>
 
