@@ -30,6 +30,7 @@
     "moment": "^2.24.0",
     "moment-shortformat": "^2.1.0",
     "popper.js": "^1.16.0",
+    "qrcode": "^1.4.4",
     "utf-8-validate": "^5.0.2",
     "web3": "^1.2.5-rc.0"
   },
