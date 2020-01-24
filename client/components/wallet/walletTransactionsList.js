@@ -32,8 +32,14 @@ if (Meteor.isClient) {
     self.setTransactions()
   });
   Template.walletTransactionsList.helpers({
-    transactions: function () {
-      return UserTransactions.find().fetch()
+    transactions () {
+      const symbol = FlowRouter.getParam('symbol')
+      const select = {}
+      if (symbol) {
+        select.txAsset = symbol
+      }
+      // we want to add a filter here
+      return UserTransactions.find(select).fetch()
     },
     decimals (val) {
       val = parseFloat(val)

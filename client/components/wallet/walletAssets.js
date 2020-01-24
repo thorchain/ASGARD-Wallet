@@ -6,6 +6,15 @@ if (Meteor.isClient) {
       const usr = UserAccount.findOne()
       return usr && usr.assets 
     }
+    self.initMarkets = async () => {
+      // get the prices
+      const assets = self.getAssets()
+      // get an array of symbols
+      if (assets && assets.length > 0) {
+        const symbols = assets.map(e => {return e.symbol})
+        BNB.setMarketRates(symbols)
+      }
+    }
 
     // TODO: Remove from this component, and place in controller class
     self.initTokens = async() => {
@@ -61,6 +70,7 @@ if (Meteor.isClient) {
     // TODO: Add ability to sync for new tokens in wallet
     if (!TokenData.find().fetch().length) {
       self.initTokens()
+      self.initMarkets()
     }
     self.autorun(function() {
     });
@@ -78,7 +88,11 @@ if (Meteor.isClient) {
       return val.toFixed(2)
     },
     price (symbol) {
-      return "$0.00"
+      const res = MarketData.findOne({base_asset_symbol: symbol}) 
+      if (res && res.list_price) {
+        return res.list_price
+      }
+      return "1.23"
     }
 
   });

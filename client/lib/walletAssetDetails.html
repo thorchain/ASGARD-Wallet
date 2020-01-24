@@ -1,7 +1,8 @@
 <template name="walletAssetDetails">
   <h3>Asset Detail</h3>
   <div>Name: {{token.name}}</div>
-  <div>Icon:</div>
+  <div>Icon: {{> circleColorIcon shortSymbol=balances.shortSymbol}}</div>
+        
   <div>Symbol: {{balances.symbol}}</div>
   <div class="font-weight-bold">Balance:</div>
   <h3>{{balances.free}}</h3>
@@ -26,7 +27,5 @@
 
   </div>
   <h5>Transactions</h5>
-  {{#each transactions}}
-    <pre>{{toJSON this}}</pre>
-  {{/each}}
+  {{> walletTransactionsList}}
 </template>
