@@ -1,7 +1,24 @@
 <template name="walletTransactionsList">
-  <h3>Transactions</h3>
 
-  {{#unless transactions}}<div class="text-italic text-muted">No transactions yet...</div>{{/unless}}
+  {{#unless eq type 'table'}}
+    <h5 class="text-center">Transactions</h5>
+
+    {{#unless transactions}}<div class="text-italic text-muted">No transactions yet...</div>{{/unless}}
+
+    {{> transactionsList 
+      transactions=transactions
+      amount=(decimals value)
+    }}
+
+  {{else}}
+
+{{!-- Table stuff goes here --}}
+    {{> transactionsTable transactions=transactions sender=(sender fromAddr) amount=(decimals value) }}
+
+  {{/unless}}
+</template>
+
+<template name="transactionsList">
 
   <ul class="list-group">
     {{#each transactions}}
@@ -17,7 +34,7 @@
           </div>
 
           <div class="pl-1">
-            <div class="text-right">{{decimals value}}</div>
+            <div class="text-right">{{toCurrency value}}</div>
             <div class="small text-right">{{txAsset}}</div>
           </div>
 
@@ -25,5 +42,44 @@
       </li>
 
     {{/each}}
-</ul>
+  </ul>
+</template>
+
+
+<template name="transactionsTable">
+{{#unless transactions}}
+  <div class="text-italic text-muted">No transactions yet...</div>
+{{else}}
+
+  <table class="table table-sm table-dark table-borderless">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Type</th>
+        <th scope="col">From</th>
+        <th scope="col">To</th>
+        {{!-- <th scope="col">Memo</th> --}}
+        {{!-- <th scope="col">Fee</th> --}}
+        <th scope="col">Amount</th>
+        <th scope="col">View</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      {{#each transactions}}
+        <tr>
+          <th>{{momentShort timeStamp}}</th>
+          <td>{{txType}}</td>
+          <td><div class="text-truncate">{{selfAddr fromAddr}}</div></td>
+          <td><div class="text-truncate">{{selfAddr toAddr}}</div></td>
+          {{!-- <td>{{memo}}</td> --}}
+          {{!-- <td>{{txFee}}</td> --}}
+          <td>{{toCurrency value}} {{shortSymbol txAsset}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+
+{{/unless}}
+
 </template>

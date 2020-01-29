@@ -1,0 +1,136 @@
+
+// Needed for later?
+
+// @import "{}/imports/bootstrap/scss/functions";
+// @import "{}/imports/bootstrap/scss/variables";
+
+
+// Notes from examples
+// Navbar:#2B3946
+// Button:? #1C2731
+// Primary button border: #4F6375 //#455767
+// Input(Button?) border: #505A64
+// highlight/hover: #848E9B
+
+
+// Brand Colour Pallete: 
+$Asgard-Green: #33FF99; // #58E2C2 //#58E2C2
+$Accent-Green: #58E2C2;
+$Accent-Blue: #00CCFF;
+$Warning-Red: #EC5569; // #EC5569
+$Caution-Yellow: #F0B90B;
+
+
+// Brand Grays
+$Black-Gray: #000000; // highlighted button (?)
+$Darker-Gray: #101921; // page background (
+$Dark-Gray: #1C2731; // TODO: confirm this is backwards with below?
+$Primary-Gray: #2B3947; // basic button backgroun (primary?)
+$Middle-Gray: #455767;
+$Light-Gray: #505A64;
+$Lighter-Gray: #848E9B;
+$Highlight-Gray: #90A1B0; // uknown if wanted...
+$White-Gray: #EBEBEB; // probably font-white?
+
+
+
+/* Bootstrap Variable Overrides *************** */
+
+// $black:    #000 !default;
+$gray-900: $Black-Gray;
+$gray-800: $Darker-Gray;
+$gray-700: $Dark-Gray;
+$gray-600: $Primary-Gray;
+$gray-500: $Middle-Gray;
+$gray-400: $Light-Gray;
+$gray-300: $Lighter-Gray;
+$gray-200: $Highlight-Gray;
+$gray-100: $White-Gray;
+// $white:    #fff !default;
+
+
+$body-color: $White-Gray;
+$body-bg: $Darker-Gray;
+
+// $blue:	#5b6064;
+// $indigo:	#6610f2;
+// $purple:	#6f42c1;
+// $pink:	#e83e8c;
+// $red:	#dc3545;
+// $orange:	#fd7e14;
+// $yellow:	#ffc107;
+// $green:	#28a745;
+// $teal:	#20c997;
+// $cyan:	#17a2b8;
+
+
+// Unneeded because we overwrote vars up top
+// $grays: (
+//     "100": $Black-Gray,
+//     "200": $Darker-Gray,
+//     "300": $Dark-Gray,
+//     "400": $Primary-Gray,
+//     "500": $Middle-Gray,
+//     "600": $Light-Gray,
+//     "700": $Lighter-Gray,
+//     "800": $Highlight-Gray,
+//     "900": $White-Gray
+// );
+
+// $colors: (
+//     "blue": $Accent-Blue,
+//     "indigo": $indigo,
+//     "purple": $purple,
+//     "pink": $pink,
+//     "red": $Warning-Red,
+//     "orange": $Caution-Yellow,
+//     "yellow": $yellow,
+//     "green": $Asgard-Green,
+//     "teal": $teal,
+//     "cyan": $cyan,
+//     "white": $white,
+//     "gray": $Primary-Gray,
+//     "gray-dark": $Darker-Gray
+// );
+
+$theme-colors: (
+  "primary": $Primary-Gray,
+  "secondary": $Light-Gray,
+  "success": $Asgard-Green,
+  "danger": $Warning-Red,
+  "warning": $Caution-Yellow,
+  "info": $Accent-Blue,
+  "light": $Light-Gray,
+  "dark": $Dark-Gray
+);
+
+
+// Fonts:
+// $headings-color: #343a40;
+
+
+$btn-white-space: 'nowrap';
+
+// Forms:
+$input-bg: $Darker-Gray;
+$input-border-color: $Light-Gray;
+$input-color: $Lighter-Gray;
+
+// Lists
+// $list-group-color: $body-bg;
+$list-group-bg: $body-bg;
+
+// Typography
+// stylelint-disable value-keyword-case
+// $font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+// $font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
+// $font-family-base:            $font-family-sans-serif !default;
+// stylelint-enable value-keyword-case
+
+$link-color: $Accent-Green;
+
+// Cards
+
+$card-bg: null; // doesnt not fully work
+
+@import '{}/imports/bootstrap/scss/bootstrap.scss';

@@ -1,7 +1,8 @@
 <template name="settings">
-  <h3>Settings</h3>
-  <!-- <input type="button" class="btn btn-success w-100 mb-2" value="add new account" data-event="addNewAccount"> -->
-  <!-- <input type="button" class="btn btn-success w-100 mb-2" value="Export" data-event="addNewAccount"> -->
-  <a href="{{downloadLink}}" download="keystore.txt" class="btn btn-primary w-100 mb-2">Export</a>
-  <input type="button" class="btn btn-danger w-100 mb-2" value="DELETE VAULT" data-event="deleteVault" />
+  <h5 class="text-center mb-2">Settings</h5>
+
+  <input type="button" class="btn btn-primary w-100 my-2" value="Lock Wallet" data-event="lockWallet">
+  <a href="{{downloadLink}}" download="keystore.txt" class="btn btn-primary w-100 mb-2">Export Keystore</a>
+  <input type="button" class="btn btn-danger w-100 my-3" value="Remove Wallet" data-event="deleteVault" />
+
 </template>

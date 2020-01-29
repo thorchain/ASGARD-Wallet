@@ -58,3 +58,12 @@ Several different cosmos API libs are beign tested for features etc.
 6. In seperate shell/terminal session
 
 `npm run desktop`
+
+
+### Final Build
+
+As per docs of "meteor-desktop" `--help` file
+
+**Important Note**
+
+On Mac OS Catalina (11.15+) the `.zip` produced by "electron-builder" will not work. This is a known issue: [https://medium.com/cacher-app/getting-your-electron-app-working-on-macos-catalina-10-15-63e53f397da2](https://medium.com/cacher-app/getting-your-electron-app-working-on-macos-catalina-10-15-63e53f397da2). Limiting buid support to `.dmg` for the time being.

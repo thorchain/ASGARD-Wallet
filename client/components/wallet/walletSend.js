@@ -10,6 +10,18 @@ if (Meteor.isClient) {
     availableBalance (symbol) {
       const assets = UserAccount.findOne().assets
       return assets && assets.length > 0 ? assets.find(e => e.symbol === symbol).free : null
+    },
+    asset () {
+      const param = FlowRouter.getParam('asset')
+      const acc = UserAcount.findOne()
+      console.log(acc);
+      console.log(param);
+      
+      
+      return acc.assets.find(e => { return e.symbol === param})
+    },
+    shortSymbol (symbol) {
+      return symbol.split("-")[0].substr(0,4)
     }
   });
   Template.walletSend.events({

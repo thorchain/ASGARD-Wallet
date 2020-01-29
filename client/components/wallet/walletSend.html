@@ -1,8 +1,25 @@
 <template name="walletSend">
-  <h3>Send Funds: <small>{{param 'asset'}}</small></h3>
+  <h5 class="text-center">Send {{shortSymbol (param 'asset')}}</h5>
 
   {{#if (param 'asset')}}
+
+  <div class="media">
+
+    <div class="d-flex mr-3">
+
+      {{> circleColorIcon shortSymbol=(shortSymbol (param 'asset')) size="md"}}
+
+    </div>
+
+    <div class="media-body">
+      <div class="mt-0">{{asset.name}}</div>
+      <a href="#">Change</a>
+    </div>
+  </div>
+
+
     <div class="font-italic">Available balance: {{availableBalance (param 'asset')}}</div>
+
   {{/if}}
 
   <form id="send-transaction-form" class="form" autocomplete="off">

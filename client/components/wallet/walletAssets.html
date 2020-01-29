@@ -1,5 +1,5 @@
 <template name="walletAssets">
-  <h3>Assets</h3>
+  <h5 class="text-center mb-3">Assets</h5>
 
   <ul class="list-unstyled">
     {{#unless assetsList}}<div class="text-italic text-muted">No assets yet...</div>{{/unless}}
@@ -7,7 +7,7 @@
     <li class="media d-flex mb-1 p-2 align-items-center" data-nav="{{pathFor "walletAssetDetails" symbol=symbol}}">
       {{!-- <img src="..." class="mr-3" alt="..."> --}}
       <div class="mr-3">
-        {{> circleColorIcon shortSymbol=shortSymbol}}
+        {{> circleColorIcon shortSymbol=shortSymbol size="md"}}
       </div>
       <div class="media-body d-flex">
 

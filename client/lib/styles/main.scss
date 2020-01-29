@@ -1,4 +1,5 @@
 // Below must be a symlink to the actual npm package (as originally above)
+@import './bootstrap_custom';
 
 $fa-font-path:  "fonts/";
 
@@ -7,9 +8,6 @@ body, html, #app-wrapper {
   min-height: 100vh;
 }
 
-.navbar {
-  background-color: #122A32;
-}
 
 #app-wrapper {
   padding-top: 72px;
@@ -21,29 +19,141 @@ body, html, #app-wrapper {
 }
 
 li.media[data-nav]:hover {
-  background-color: #e5fafb;
+  // background-color: #e5fafb;
+  // background-color: #848E9B;
+  background-color: $Light-Gray;
+}
+
+
+// Bootstrap & Theme Customization:
+// Overrides and custom styles for bootstrap components etc.
+.navbar {
+  // background-color: #122A32;
+}
+
+// Breadcrump
+
+.breadcrumb {
+  z-index: 900;
+  background: none;
+  padding: 0;
+  margin: 0;
+  >.breadcrumb-item {
+    color: $Accent-Green;
+  }
+}
+
+// Buttons
+.btn {
+  text-transform: uppercase;
+}
+.btn-text {
+  color: $Accent-Green;
+}
+
+.btn-primary {
+  border-color: $Middle-Gray;
+}
+
+// Cards
+.card:not([class^='bg-']) {
+  background-color: transparent;
+}
+
+// Nav-tabs
+.nav.nav-tabs {
+  border-bottom: none;
+  > .nav-item { 
+    border: none;
+    // Use links for styling because they get 'active' class
+    // Clear border styles
+    > .nav-link, .nav-link:hover, .nav-link.active, .nav-link.active:hover {
+      border: none;
+      border-bottom: 2px solid transparent;
+    }
+    // New styles
+    > .nav-link {
+      color: $gray-500;
+      text-transform: uppercase;
+      border-bottom: 1px solid $gray-500;
+      margin-bottom: 1px;
+      &:hover {
+        color: $gray-200;
+        border-bottom: 1px solid $gray-500;
+        margin-bottom: 1px;
+      }
+      &.active {
+        color: $Accent-Green;
+        border-bottom: 2px solid $Accent-Green !important;
+        // & :hover {
+        //   border-bottom: 2px solid $Accent-Green;
+        // }
+      }
+    }
+  }
+}
+
+
+// Forms
+.form-text { 
+  position: absolute;
+  margin-top: -10px;
 }
 
 
 
+// Custom General Utilities
+
+.hr {
+  border-bottom: 1px solid $Light-Gray;
+  height: 0;
+  margin: 0 -15px 0 -15px; // account for container margin
+}
+
+
+h1, h2, h3, h4 ,h5 {
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+
+
+// Custom Styles
+
+
+// Icon circle
 .circle {
   border-radius: 50%;
 }
 
+.circle-icon-lg {
+  @extend .circle;
+  width: 48px;
+  height: 48px;
+  font-size: 12px;
+  // box-shadow: rgb(47, 74, 87) 0px 0px 4px 1px;
+  border-color: rgb(44, 50, 54);
+  
+  // box-shadow: $Black-Gray 0px 0px 4px 1px;
+}
 
 .circle-icon-md {
   @extend .circle;
   width: 42px;
   height: 42px;
-  font-size: 12px;
-  box-shadow: rgb(153, 230, 255) 0px 0px 4px 1px;
+  font-size: 11px;
+  // box-shadow: rgb(47, 74, 87) 0px 0px 4px 1px;
+  border-color: rgb(44, 50, 54);
+  
+  // box-shadow: $Black-Gray 0px 0px 4px 1px;
 }
 .circle-icon-sm {
   @extend .circle;
   width: 36px;
   height: 36px;
   font-size: 9px;
-  box-shadow: rgb(153, 230, 255) 0px 0px 4px 1px;
+  // box-shadow: rgb(7, 17, 20) 0px 0px 4px 1px;
+  border-color: rgb(44, 50, 54);
 }
 
 // @import "{}/imports/bootstrap/scss/variables";

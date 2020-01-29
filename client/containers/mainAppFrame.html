@@ -1,7 +1,18 @@
 <template name="mainAppFrame">
   {{> navbar}}
   <div id="app-wrapper" class="container-fluid">
+    {{> breadcrumb}}
     {{> Template.dynamic template=content}}
   </div>
 </template>
 
+
+<template name="bareAppFrame">
+
+  <div id="app-wrapper" class="container-fluid">
+
+    {{> Template.dynamic template=content}}
+
+  </div>
+
+</template>

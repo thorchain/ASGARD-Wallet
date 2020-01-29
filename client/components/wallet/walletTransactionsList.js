@@ -41,10 +41,23 @@ if (Meteor.isClient) {
       // we want to add a filter here
       return UserTransactions.find(select).fetch()
     },
+    sender (addr) {
+      const acc = UserAccount.findOne()
+      return acc.address === addr ? "self" : addr
+    },
     decimals (val) {
       val = parseFloat(val)
       return val.toFixed(2)
     },
   });
+  Template.transactionsTable.helpers({
+    selfAddr (addr) {
+      const acc = UserAccount.findOne()
+      return acc.address === addr ? "self" : addr
+    },
+    shortSymbol (symbol) {
+      return symbol.split("-")[0].substr(0,4)
+    }
+  })
 }
 

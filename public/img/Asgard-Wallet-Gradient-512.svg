@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="531px" height="490px" viewBox="0 0 531 490" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57 (83077) - https://sketch.com -->
+    <title>Logo/Asgard</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="86.9852535%" x2="74.9152148%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#33FF99" offset="0%"></stop>
+            <stop stop-color="#00CCFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="DESKTOP" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" fill="url(#linearGradient-1)">
+            <g id="Logo/Asgard" transform="translate(-0.903553, -0.652614)">
+                <g id="Logo/All-Gradient" transform="translate(1.000000, 126.000000)">
+                    <path d="M355.498,247 L423.807107,364.5 L6.82121026e-13,364.5 L68.309,247 L131.89,247 L95.8275148,309 L327.327515,309 L291.264,247 L355.498,247 Z M211.903553,0 L315.675,178.5 L251.421,178.5 L211.577515,110 L171.733,178.5 L108.132,178.5 L211.903553,0 Z" id="Combined-Shape"></path>
+                </g>
+                <g id="Logo/All-Gradient" transform="translate(267.819215, 337.152614) rotate(-120.000000) translate(-267.819215, -337.152614) translate(55.819215, 154.652614)">
+                    <path d="M355.498,247 L423.807107,364.5 L6.82121026e-13,364.5 L68.309,247 L131.89,247 L95.8275148,309 L327.327515,309 L291.264,247 L355.498,247 Z M211.903553,0 L315.675,178.5 L251.421,178.5 L211.577515,110 L171.733,178.5 L108.132,178.5 L211.903553,0 Z" id="Combined-Shape"></path>
+                </g>
+                <g id="Logo/All-Gradient" transform="translate(264.953189, 275.500000) rotate(120.000000) translate(-264.953189, -275.500000) translate(52.953189, 93.000000)">
+                    <path d="M355.498,247 L423.807107,364.5 L6.82121026e-13,364.5 L68.309,247 L131.89,247 L95.8275148,309 L327.327515,309 L291.264,247 L355.498,247 Z M211.903553,0 L315.675,178.5 L251.421,178.5 L211.577515,110 L171.733,178.5 L108.132,178.5 L211.903553,0 Z" id="Combined-Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

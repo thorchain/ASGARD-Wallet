@@ -3,7 +3,7 @@ if (Meteor.isClient) {
     downloadLink () {
       const keystore = localStorage.getItem('binance')
       return 'data:text/plain;charset=utf-8,' + encodeURIComponent(keystore)
-    }
+    },
   })
 
   Template.settings.events({

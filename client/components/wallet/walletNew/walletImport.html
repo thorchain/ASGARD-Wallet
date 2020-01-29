@@ -1,0 +1,72 @@
+<template name="walletImport">
+  <div class="row">
+
+    {{#if isLoading}}
+      <div class="col-sm-12">Loading... {{loadingMsg}}</div>
+    {{else}}
+
+      <div class="col-md-6 mr-auto ml-auto">
+
+        <h4 class="mb-4 text-center">Import existing wallet</h4>
+        {{!-- Nav Tabs --}}
+        <ul class="nav nav-tabs d-flex justify-content-center mb-4">
+          <li class="nav-item">
+            <a class="nav-link{{#unless isMnemonic}} active{{/unless}}" href="#" data-event="toggleMnemonic">Keystore</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{{#if isMnemonic}} active{{/if}}" href="#" data-event="toggleMnemonic">Mnemonic</a>
+          </li>
+        </ul>
+
+      {{#unless isMnemonic}}
+
+        <form id="upload-keystore-form" class="form" autocomplete="off">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <input id="upload-file-button" type="button" class="form-control btn btn-primary mb-3" value="select file" data-event="triggerFileInput">
+              <small id="fileHelp" class="form-text text-{{formFileHelpMsg.color}}">{{formFileHelpMsg.text}}</small>
+            </div>
+            <input id="upload-file-input" type="file" class="d-none" name="keystoreFile">
+
+            <div class="form-group col-md-12">
+              <label for="inputPassword">Encryption Password</label>
+              <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
+              <small id="passwordHelp" class="form-text text-{{formPWHelpMsg.color}}">{{formPWHelpMsg.text}}</small>
+            </div>
+
+            <div class="form-group col-md-12">
+              <input type="submit" class="form-control form-control-lg btn btn-primary" value="Import">
+            </div>
+
+          </div> 
+        </form>
+
+      {{else}}
+
+        <form id="import-mnemonic-form" class="form" autocomplete="off">
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label for="inputPassword">Phrase</label>
+              <input type="text" id="wordlist-input" class="form-control mb-3" placeholder="enter phrase..." name="mnemonic">
+              <small id="mnemonicHelp" class="form-text text-{{formMnemonicHelpMsg.color}}">{{formMnemonicHelpMsg.text}}</small>
+            </div>
+            <div class="form-group col-md-12">
+              <label for="inputPassword">Encryption Password</label>
+              <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
+              <small id="passwordHelp" class="form-text text-{{formPWHelpMsg.color}}">{{formPWHelpMsg.text}}</small>
+            </div>
+            <div class="form-group col-md-12">
+              <input type="submit" class="form-control form-control-lg btn btn-primary" value="Import">
+            </div>
+          </div>
+        </form>
+
+      {{/unless}}
+
+
+      </div>
+
+    {{/if}}
+
+  </div>
+</template>

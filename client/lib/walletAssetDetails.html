@@ -1,31 +1,60 @@
 <template name="walletAssetDetails">
-  <h3>Asset Detail</h3>
-  <div>Name: {{token.name}}</div>
-  <div>Icon: {{> circleColorIcon shortSymbol=balances.shortSymbol}}</div>
-        
-  <div>Symbol: {{balances.symbol}}</div>
-  <div class="font-weight-bold">Balance:</div>
-  <h3>{{balances.free}}</h3>
 
-  <dl>
-    <dt>frozen:</dt>
-    <dd>{{balances.frozen}}</dd>
-    <dt>locked:</dt>
-    <dd>{{balances.locked}}</dd>
-  </dl>
-  
-  <h4>Transact</h4>
-  <div class="row">
+  <div class="row mt-2">
+    <div class="col text-center">
 
-    <div class="col-6">
-      <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletSend' asset=(param 'symbol')}}" value="send">
+      <div class="d-flex justify-content-center mb-2">{{> circleColorIcon shortSymbol=balances.shortSymbol size="lg"}}</div>
+            
+      <div class="h4 my-2">{{token.name}} {{balances.shortSymbol}}</div>
+
+      <div class="my-4">{{balances.symbol}}</div>
+
+      <h3 class="text-center">{{toCurrency balances.full}} <small>{{balances.shortSymbol}}</small></h3>
+
+    </div>
+  </div>
+
+
+  <div class="col d-flex justify-content-center">
+
+    <div class="p-3">
+      <div>Free:</div>
+      <h5>{{toCurrency balances.free}}</h5>
     </div>
 
-    <div class="col-6">
-      <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletReceive'}}" value="recieve">
+    <div class="p-3">
+      <div>Frozen:</div>
+      <h5>{{toCurrency balances.frozen}}</h5>
+    </div>
+
+    <div class="p-3">
+      <div>Locked:</div>
+      <h5>{{toCurrency balances.locked}}</h5>
     </div>
 
   </div>
-  <h5>Transactions</h5>
-  {{> walletTransactionsList}}
+
+
+  
+  <div class="hr mb-4"></div>
+
+  <div class="row">
+
+    <div class="col-6 my-4 text-center">
+      <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletSend' asset=(param 'symbol')}}" value="send">
+      <input type="button" class="btn btn-text mt-3" value="Freeze">
+      <div class="small">Freeze assets on address</div>
+    </div>
+
+    <div class="col-6 my-4 text-center">
+      <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletReceive'}}" value="recieve">
+      <input type="button" class="btn btn-text mt-3" value="Unfreeze">
+      <div class="small">Unfreeze assets on address</div>
+    </div>
+
+  </div>
+
+  <div class="hr mb-2"></div>
+
+  {{> walletTransactionsList type="table"}}
 </template>

@@ -1,9 +1,3 @@
-// const sdk = require('@binance-chain/javascript-sdk')
-// console.log(sdk)
-// const BnbApiClient = require('@binance-chain/javascript-sdk');
-// sdk = BNB
-// import Binance from "../../lib/binance.js"; // Binance
-
 if (Meteor.isClient) {
   Template.walletAccounts.onCreated(function() {
 
@@ -15,6 +9,9 @@ if (Meteor.isClient) {
     },
     client: function() {
       return BNB.bnbClient
+    },
+    shortSymbol (symbol) {
+      return symbol.split("-")[0].substr(0,4)
     }
   })
 }

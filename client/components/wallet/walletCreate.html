@@ -1,114 +1,67 @@
 <template name="walletCreate">
   <div class="row">
-    <div class="col-sm-12">
-    </div>
-    {{#unless (param 'method')}}
-      <div class="col-md-8 col-lg-6 ml-auto mr-auto">
-        <h3>Welcome to Asgard</h3>
-        <a class="btn btn-lg btn-primary float-right w-100 mb-4" href="{{pathFor 'walletCreate' method='new'}}">New</a>
-        <a class="btn btn-lg btn-primary float-right w-100 mb-4" href="{{pathFor 'walletCreate' method='import'}}">Import</a>
-      </div>
+
+    {{#if isLoading}}
+      <div class="col-sm-12">Loading... {{loadingMsg}}</div>
     {{else}}
 
-      {{#if isLoading}}
-        <div class="col-sm-12">Loading... {{loadingMsg}}</div>
-      {{else}}
+      <div class="col-md-10 mr-auto ml-auto">
+        <h5 class="mb-4 text-center">Create New Wallet</h5>
 
-        {{#if isImport}}
-          <div class="col-12">
-            {{> importWallet isMnemonic=isMnemonic}}
-          </div>
-        {{else}}
-          <div class="col-12">
-            {{> newWallet isMnemonic=isMnemonic wordsList=wordsList}}
-          </div>
-        {{/if}}
+        {{!-- Nav Tabs --}}
+        <ul class="nav nav-tabs d-flex justify-content-center mb-4">
+          <li class="nav-item">
+            <a class="nav-link{{#unless isMnemonic}} active{{/unless}}" href="#" data-event="toggleMnemonic">Keystore</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{{#if isMnemonic}} active{{/if}}" href="#" data-event="toggleMnemonic">Mnemonic</a>
+          </li>
+        </ul>
 
-      {{/if}}
-
-
-    {{/unless}}
-
-  </div>
-</template>
-
-
-<template name="importWallet">
-  <div class="row">
-    <div class="col-md-6 mr-auto ml-auto">
-      <a class="btn btn-sm btn-info float-right" href="{{pathFor 'walletCreate' method='new'}}">New</a>
-      <h2 class="mb-4">Import existing wallet</h2>
-      <button class="btn btn-sm btn-secondary mb-1" data-event="toggleMnemonic">
-        {{#if isMnemonic}}Use File{{else}}Use HD Mnemonic{{/if}}
-      </button>
-
-{{#unless isMnemonic}}
-    <form id="upload-keystore-form" autocomplete="off">
-      <input id="upload-file-button" type="button" class="btn btn-primary w-100 mb-2" value="select file" data-event="triggerFileInput">
-      <input id="upload-file-input" type="file" class="d-none" name="keystoreFile">
-      <input type="password" class="form-control form-control-lg mb-2" placeholder="password" name="password">
-      <input type="submit" class="form-control form-control-lg btn btn-primary" value="Import">
-    </form>
-
-{{else}}
-
-    <form id="import-mnemonic-form" autocomplete="off">
-      <div class="form-row">
-        <div class="form-group col-md-12">
-          <input type="textarea" class="form-control form-control-lg" placeholder="mnemonic" name="mnemonic">
-        </div>
-        <div class="form-group col-md-12">
-          <input type="password" class="form-control form-control-lg" placeholder="password" name="password">
-        </div>
-        <div class="form-group col-md-12">
-          <input type="submit" class="form-control form-control-lg btn btn-primary" value="Import">
-        </div>
-      </div>
-    </form>
-
-{{/unless}}
-
-
-    </div>
-  </div>
-</template>
-
-<template name="newWallet">
-  <div class="row">
-    <div class="col-md-6 mr-auto ml-auto">
-      <a class="btn btn-sm btn-info float-right" href="{{pathFor 'walletCreate' method='import'}}">Import</a>
-      <h2 class="mb-4">Start new wallet</h2>
-  
-      {{#unless isMnemonic}}
-        <button class="btn btn-sm btn-secondary mb-1" data-event="toggleMnemonic">Use HD Mnemonic</button>
-      {{else}}
-        <button type="button" class="btn btn-sm btn-warning float-right" data-event="toggleMnemonic"><i class="fa fa-times"></i></button>
-        <h5>Mnemonic HD wallet seed</h5>
-        <div class="card mb-4">
-          <div class="card-body">
-            <div class="h3 text-justify">
-              {{#each word in wordsList}}
-                <span class="badge badge-lg badge-light">{{word}}</span>
-              {{/each}}
+    
+        {{#if isMnemonic}}
+          <label>Mnemonic HD wallet seed</label>
+          <div class="card mb-3 border">
+            <div class="card-body">
+              <div class="h3 text-justify">
+                {{#each word in wordsList}}
+                  <span class="badge badge-lg badge-light">{{word}}</span>
+                {{/each}}
+              </div>
             </div>
           </div>
-        </div>
-      {{/unless}}
-  
-      <form name="generate-wallet-form" id="generate-wallet-form" class="">
-  
-      <h5>Encryption password</h5>
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <input type="password" class="form-control form-control-lg" id="inputPassword" placeholder="password" name="password">
-          </div>
-          <div class="form-group col-md-12">
-            <input type="submit" class="form-control form-control-lg btn btn-primary" value="Generate" id="inputPassword4">
-          </div>
-        </div>
-      </form>
-  
-    </div>
-  </div>
+        {{/if}}
+    
+        <form name="generate-wallet-form" id="generate-wallet-form" class="form">
+    
+          <div class="form-row">
 
+            <div class="form-group col-md-12">
+              <label for="inputPassword">Encryption Password</label>
+              <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="emailHelp" placeholder="password">
+              <small id="passwordHelp" class="form-text text-{{formPWHelpMsg.first.color}}">{{formPWHelpMsg.first.text}}</small>
+            </div>
+
+            <div class="form-group col-md-12">
+              <label for="repeatPassword">Repeat Password</label>
+              <input type="password" class="form-control mb-3" name="repeatPassword" id="repeatPassword" aria-describedby="emailHelp" placeholder="password">
+              <small id="repeatPasswordHelp" class="form-text text-{{formPWHelpMsg.second.color}}">{{formPWHelpMsg.second.text}}</small>
+            </div>
+
+            <div class="form-group col-md-12">
+              <input type="submit" class="form-control btn btn-primary" value="Generate" id="inputPassword4">
+            </div>
+          </div>
+
+        </form>
+    
+      </div>
+
+    {{/if}}
+
+
+
+  </div>
 </template>
+
+

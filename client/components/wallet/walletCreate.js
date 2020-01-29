@@ -8,7 +8,9 @@ const sdk = BNB.sdk
     self.wlist = new ReactiveVar(null);
     self.isMnemonic = new ReactiveVar(false);
 		self.isLoading = new ReactiveVar(false)
-		self.loadingMsg = new ReactiveVar("")
+    self.loadingMsg = new ReactiveVar("")
+    self.formPWHelpMsg1 = new ReactiveVar(false)
+    self.formPWHelpMsg2 = new ReactiveVar(false)
 
     self.setWlist = () => {
       const wlist = self.wlist.get();
@@ -31,55 +33,35 @@ const sdk = BNB.sdk
         let account
         if (self.isMnemonic.get()) {
           const words = self.wlist.get();
-          account = await BNB.bnbClient.recoverAccountFromMnemonic(words)
+          try {
+            account = await BNB.bnbClient.recoverAccountFromMnemonic(words)
+          } catch (error) {
+            console.log("here is the error");
+            console.log(error);
+            
+          }
+          
           account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
         } else if (mnemonic) {
           // NOTE: This no longer works...?
-          account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
         } else {
+          try {
+            console.log("we got the password error?");
+            account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
+          } catch (error) {
+            console.log(error);
+            
+          }
           account = await BNB.bnbClient.createAccountWithKeystore(pw)
         }
+
+        console.log(account);
         await self.updateVault(account.keystore)
+        // await WALLET.updateVault(account.keystore);
         await self.updateUserAccount(account)
+        // await WALLET.initializeUserAccount(account);
       }
 
-    }
-
-    self.importMnemonicWallet = async (mnemonic, pw) => {
-      const vault = window.localStorage.getItem("binance");
-      if (vault) {
-        throw new Error("wallet vault already exists")
-      } else {
-        let account
-        if (self.isMnemonic.get()) { // just confirmation...
-          account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
-          account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
-        } // else error
-
-        await self.updateVault(account.keystore)
-        await self.updateUserAccount(account)
-
-      }
-    }
-
-    self.importWalletFile = async (file, pw) => {
-      const reader = new FileReader();
-      reader.onerror = (event) => { throw new Error("File could not be read! Code " + event.target.error.code); };
-      reader.onload = async (event) => {
-        console.log("executing reading file...");
-        var contents = event.target.result;
-        const keystore = JSON.parse(contents)
-        if (keystore && keystore.version) {
-          const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
-          account.keystore = keystore
-          await self.updateVault(keystore)
-          await self.updateUserAccount(account)
-        }
-        FlowRouter.go('home') // TODO: Place in proper async chain
-      };
-      
-      // Execute file read
-      reader.readAsText(file)
     }
 
     self.updateUserAccount = async (account) => {
@@ -129,7 +111,7 @@ const sdk = BNB.sdk
 				const doc = UserAccount.findOne();
 				const select = doc && doc._id ? {_id: doc._id} : {};
 				UserAccount.update(select, {$set: {assets: assets}}, {upsert: true})
-        // Probably we want to update transactions?
+        // TODO: Probably we want to update transactions?
       }
     }
 
@@ -149,7 +131,20 @@ const sdk = BNB.sdk
     wordsList () { return Template.instance().getWlistArray() },
     isMnemonic () { return Template.instance().isMnemonic.get() },
     isLoading () { return Template.instance().isLoading.get() },
-    loadingMsg () { return Template.instance().loadingMsg.get() }
+    loadingMsg () { return Template.instance().loadingMsg.get() },
+    formPWHelpMsg () {
+      const obj = {
+        first: {
+          text: Template.instance().formPWHelpMsg1.get(),
+          color: "warning"
+        },
+        second: {
+          text: Template.instance().formPWHelpMsg2.get(),
+          color: "warning"
+        }
+      }
+      return obj
+    }
   });
 
   Template.walletCreate.events({
@@ -157,69 +152,35 @@ const sdk = BNB.sdk
       event.preventDefault();
       self.isMnemonic.set(!self.isMnemonic.get())
     },
+    "blur #generate-wallet-form input": function (event, self) {
+      self.formPWHelpMsg1.set(false)
+      self.formPWHelpMsg2.set(false)
+    },
     "submit #generate-wallet-form": async function (event, self) {
       event.preventDefault();
-			self.isLoading.set(true)
-			self.loadingMsg.set("generating wallet")
-			setTimeout(async () => {
-				try {
-          if (!event.currentTarget.password.value) throw "no password"
-        await self.generateNewWallet(event.currentTarget.password.value);
-					FlowRouter.go("home")
-				} catch (err) {
-					self.isLoading.set(false)
-					console.log(err)
-				}
-			}, 500);
-    },
-    "change #upload-file-input": function (event, self) {
-      const file = event.currentTarget.files[0]
-      // change button text, and make disabled
-      $('#upload-file-button').attr({value: file.name, disabled: true})
-    },
-    "click #upload-file-button": function (event, self) {
-      event.preventDefault()
-      console.log("Triggering file upload");
-      $('#upload-file-input').click()
-    },
-    "submit #upload-keystore-form": async function (event, self) {
-      event.preventDefault()
-			self.isLoading.set(true)
-			self.loadingMsg.set("generating wallet")
       const t = event.currentTarget
-      const file = t.keystoreFile.files[0];
-      const pw = t.password.value;
-			setTimeout(async () => {
-        console.log("trying to import the wallet");
-        
-				try {
-          if (!event.currentTarget.password.value) throw "no password"
-          await self.importWalletFile(file, pw)
-					// FlowRouter.go("home") // this is done above in file execute cb
-				} catch (err) {
-					self.isLoading.set(false)
-					console.log(err)
-				}
-			}, 500);
-    },
-    "submit #import-mnemonic-form": async function (event, self) {
-      event.preventDefault()
-			self.isLoading.set(true)
-			self.loadingMsg.set("generating wallet")
-      const words = event.currentTarget.mnemonic.value
-      const pw = event.currentTarget.password.value
+      if (!t.password.value) {
+        // no password, set msg1
+        self.formPWHelpMsg1.set("Please enter password")
+      } else if (t.password.value !== t.repeatPassword.value) {
+        // password mismatch, set msg2
+        self.formPWHelpMsg2.set("Passwords do not match")
+      } else {
 
-			setTimeout(async () => {
-				try {
-          if (!event.currentTarget.password.value) throw "no password"
-          await self.importMnemonicWallet(words, pw)
-					FlowRouter.go("home")
-				} catch (err) {
-					self.isLoading.set(false)
-					console.log(err)
-				}
-			}, 500);
-    }
+        self.isLoading.set(true)
+        self.loadingMsg.set("generating wallet")
+        setTimeout(async () => {
+          try {
+            await self.generateNewWallet(event.currentTarget.password.value);
+            FlowRouter.go("home")
+          } catch (err) {
+            self.isLoading.set(false)
+            console.log(err)
+          }
+        }, 500);
+
+      }
+    },
   });
 
 }

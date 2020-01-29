@@ -2,7 +2,10 @@ if (Meteor.isClient) {
   Template.walletAssetDetails.helpers({
     balances () {
       const symbol = FlowRouter.getParam('symbol')
-      return UserAccount.findOne().assets.find(e => e.symbol === symbol)
+      const res = UserAccount.findOne().assets.find(e => e.symbol === symbol)
+      res.full = parseFloat(res.free) + parseFloat(res.locked) + parseFloat(res.frozen)
+      
+      return res
     },
     transactions () {
       return []

@@ -1,18 +1,18 @@
 <template name="walletUnlock">
-  <h3>Unlock wallet</h3>
+  <h5 class="text-center mb-5">Unlock wallet</h5>
 
 
-  {{#unless isLoading}}
-
-    <form id="wallet-unlock-form" class="form">
-      <input type="password" class="form-control mb-4" name="password">
-      <input type="submit" class="form-control btn btn-primary" value="unlock">
-    </form>
-
-  {{else}}
+  {{#if isLoading}}
 
     <div>Loading... {{loadingMsg}}</div>
 
-  {{/unless}}
+  {{else}}
+
+    <form id="wallet-unlock-form" class="form">
+      <input type="password" class="form-control mb-4" name="password" placeholder="password">
+      <input type="submit" class="form-control btn btn-primary" value="unlock">
+    </form>
+
+  {{/if}}
 
 </template>

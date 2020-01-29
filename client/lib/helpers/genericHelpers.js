@@ -161,17 +161,18 @@ Template.registerHelper("toCurrency", function (num) {
 	if (typeof num === "number") {
 
 		num = Math.round(num * 100);
-    var len = num.toString().length;
-
-    if (num !== 0) {
-		  num = (num / 100).toPrecision(len);
-    } else {
-    	num = "0.00";
-    }
-    return num;
 	} else {
-		return "0.00";
+		num = parseFloat(num)
+		num = Math.round(num * 100);
 	}
+	var len = num.toString().length;
+
+	if (num !== 0) {
+		num = (num / 100).toPrecision(len);
+	} else {
+		num = "0.00";
+	}
+	return num;
 });
 
 Template.registerHelper("addCommasNum", function (nStr) {
