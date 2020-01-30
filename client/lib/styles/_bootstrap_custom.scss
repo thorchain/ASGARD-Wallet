@@ -3,6 +3,9 @@
 
 // @import "{}/imports/bootstrap/scss/functions";
 // @import "{}/imports/bootstrap/scss/variables";
+@import "./OpenSans";
+@import "./Montserrat";
+@import "./Exo2";
 
 
 // Notes from examples
@@ -93,6 +96,8 @@ $body-bg: $Darker-Gray;
 //     "gray-dark": $Darker-Gray
 // );
 
+// TODO: Consider swapping "primary" to brand green...
+
 $theme-colors: (
   "primary": $Primary-Gray,
   "secondary": $Light-Gray,
@@ -101,7 +106,8 @@ $theme-colors: (
   "warning": $Caution-Yellow,
   "info": $Accent-Blue,
   "light": $Light-Gray,
-  "dark": $Dark-Gray
+  "dark": $Dark-Gray,
+  "accent": $Accent-Green
 );
 
 
@@ -117,17 +123,27 @@ $input-border-color: $Light-Gray;
 $input-color: $Lighter-Gray;
 
 // Lists
-// $list-group-color: $body-bg;
 $list-group-bg: $body-bg;
 
 // Typography
 // stylelint-disable value-keyword-case
-// $font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-sans-serif:      OpenSans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
 // $font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !default;
 // $font-family-base:            $font-family-sans-serif !default;
 // stylelint-enable value-keyword-case
+$headings-font-family:        OpenSans;
 
+
+// $font-weight-lighter:         lighter !default;
+// $font-weight-light:           200;
+$font-weight-normal:          300;
+$font-weight-bold:            500;
+// $font-weight-bolder:          bolder;
+$font-size-base:              1rem; // Assumes the browser default, typically `16px`
 $link-color: $Accent-Green;
+
+// This includes $btn-font-family
+$input-btn-font-family:       Exo2;
 
 // Cards
 

@@ -52,6 +52,16 @@
 {{else}}
 
   <table class="table table-sm table-dark table-borderless">
+    <colgroup>
+      <col class="col-sm-1">
+      <col class="col-sm-1">
+      <col class="col-sm-4">
+      <col class="col-sm-4">
+      {{!-- <col class="d-sm-none"> --}}
+      {{!-- <col class="d-sm-none"> --}}
+      <col class="col-sm-1">
+      <col class="col-sm-1">
+    </colgroup>
     <thead>
       <tr>
         <th scope="col">Date</th>
@@ -68,13 +78,24 @@
     <tbody>
       {{#each transactions}}
         <tr>
-          <th>{{momentShort timeStamp}}</th>
+          <td class="text-nowrap">{{momentShort timeStamp}}</td>
           <td>{{txType}}</td>
-          <td><div class="text-truncate">{{selfAddr fromAddr}}</div></td>
-          <td><div class="text-truncate">{{selfAddr toAddr}}</div></td>
+          {{!-- <td class="text-truncate"><div class="text-truncate">{{selfAddr fromAddr}}</div></td> --}}
+
+
+          <td class="px-0" colspan="2">
+            <div class="row m-0">
+                <div class="col-sm-6 p-0 px-1 text-truncate">{{selfAddr fromAddr}}</div>
+                <div class="col-sm-6 p-0 px-1 text-truncate">{{selfAddr toAddr}}</div>
+            </div>
+          </td>
+
+
+
           {{!-- <td>{{memo}}</td> --}}
           {{!-- <td>{{txFee}}</td> --}}
           <td>{{toCurrency value}} {{shortSymbol txAsset}}</td>
+          <td class="text-center"><a href="{{link txHash}}"><i class="fa fa-external-link-square-alt"></i></a></td>
         </tr>
       {{/each}}
     </tbody>

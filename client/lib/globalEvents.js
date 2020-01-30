@@ -11,6 +11,9 @@ if (Meteor.isClient) {
       event.preventDefault()
       const route = event.currentTarget.dataset.nav
       FlowRouter.go(route)
+    },
+    "click .navbar-collapse>ul>li>a:not([data-toggle])": function () {
+      $(".navbar-collapse").collapse('hide');
     }
   })
 }

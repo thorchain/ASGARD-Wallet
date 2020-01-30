@@ -4,3 +4,5 @@ UserAccount = new Mongo.Collection(null);
 UserAccount.allow({
   insert: function(){ return true }
 });
+
+var userAccountObserver = new PersistentMinimongo2(UserAccount);

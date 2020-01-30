@@ -1,0 +1,21 @@
+// 400
+@font-face {
+  font-family: 'Exo2';
+  font-style:  normal;
+  font-weight: 400; 
+  src: url("/fonts/Exo2/Exo2-Regular.ttf") format("truetype");
+}
+// 500
+@font-face {
+  font-family: 'Exo2';
+  font-style:  normal;
+  font-weight: 500; // we need 500 for headings
+  src: url("/fonts/Exo2/Exo2-Medium.ttf") format("truetype");
+}
+// 700
+@font-face {
+  font-family: 'Exo2';
+  font-style:  normal;
+  font-weight: 700; // we need 500 for headings
+  src: url("/fonts/Exo2/Exo2-Bold.ttf") format("truetype");
+}

@@ -8,11 +8,15 @@
 
 
 <template name="bareAppFrame">
-
   <div id="app-wrapper" class="container-fluid">
-
     {{> Template.dynamic template=content}}
-
   </div>
+</template>
 
+
+<template name="bareAppNavFrame">
+  {{> navbarClear}}
+  <div id="app-wrapper" class="container-fluid">
+    {{> Template.dynamic template=content}}
+  </div>
 </template>

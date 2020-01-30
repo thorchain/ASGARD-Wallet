@@ -5,11 +5,11 @@
 
       <div class="d-flex justify-content-center mb-2">{{> circleColorIcon shortSymbol=balances.shortSymbol size="lg"}}</div>
             
-      <div class="h4 my-2">{{token.name}} {{balances.shortSymbol}}</div>
+      <div class="h4">{{token.name}} {{balances.shortSymbol}}</div>
 
       <div class="my-4">{{balances.symbol}}</div>
 
-      <h3 class="text-center">{{toCurrency balances.full}} <small>{{balances.shortSymbol}}</small></h3>
+      <div class="font-size-h3 text-center">{{toCurrency balances.full}} <small>{{balances.shortSymbol}}</small></div>
 
     </div>
   </div>
@@ -17,19 +17,19 @@
 
   <div class="col d-flex justify-content-center">
 
-    <div class="p-3">
+    <div class="p-3 mx-2">
       <div>Free:</div>
-      <h5>{{toCurrency balances.free}}</h5>
+      <div class="font-size-h4">{{toCurrency balances.free}}</div>
     </div>
 
-    <div class="p-3">
+    <div class="p-3 mx-2">
       <div>Frozen:</div>
-      <h5>{{toCurrency balances.frozen}}</h5>
+      <div class="font-size-h4">{{toCurrency balances.frozen}}</div>
     </div>
 
-    <div class="p-3">
+    <div class="p-3 mx-2">
       <div>Locked:</div>
-      <h5>{{toCurrency balances.locked}}</h5>
+      <div class="font-size-h4">{{toCurrency balances.locked}}</div>
     </div>
 
   </div>

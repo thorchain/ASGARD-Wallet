@@ -16,6 +16,8 @@ if (Meteor.isClient) {
       TokenData.remove({})
       window.localStorage.removeItem("binance");
       FlowRouter.go('home')
+      localforage.clear();
+
     },
   });
 }

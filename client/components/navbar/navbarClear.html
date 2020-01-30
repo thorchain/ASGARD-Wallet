@@ -1,0 +1,21 @@
+<template name="navbarClear">
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-transparent">
+  <div class="navbar-brand"></div>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto float-right pr-3">
+      <li class="nav-item">
+        <a class="nav-link{{#if isActiveRoute name='settings'}} disabled{{/if}}" href="{{pathFor 'settings'}}"><i class="fa fa-lg fa-cog"></i></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link{{#if isActiveRoute name='walletUnlock'}} disabled{{/if}}" href="{{pathFor 'walletUnlock'}}"><i class="fa fa-lg fa-unlock"></i></a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+</template>

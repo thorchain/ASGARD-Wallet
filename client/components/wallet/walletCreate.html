@@ -38,18 +38,18 @@
 
             <div class="form-group col-md-12">
               <label for="inputPassword">Encryption Password</label>
-              <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="emailHelp" placeholder="password">
-              <small id="passwordHelp" class="form-text text-{{formPWHelpMsg.first.color}}">{{formPWHelpMsg.first.text}}</small>
+              <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
+              <small id="passwordHelp" class="form-text text-warning">{{pwError}}</small>
             </div>
 
             <div class="form-group col-md-12">
               <label for="repeatPassword">Repeat Password</label>
-              <input type="password" class="form-control mb-3" name="repeatPassword" id="repeatPassword" aria-describedby="emailHelp" placeholder="password">
-              <small id="repeatPasswordHelp" class="form-text text-{{formPWHelpMsg.second.color}}">{{formPWHelpMsg.second.text}}</small>
+              <input type="password" class="form-control mb-3" name="repeatPassword" id="repeatPassword" aria-describedby="repeatPasswordHelp" placeholder="password">
+              <small id="repeatPasswordHelp" class="form-text text-warning">{{repeatPwError}}</small>
             </div>
 
             <div class="form-group col-md-12">
-              <input type="submit" class="form-control btn btn-primary" value="Generate" id="inputPassword4">
+              <input type="submit" class="form-control btn btn-primary" value="Create" id="inputPassword4">
             </div>
           </div>
 

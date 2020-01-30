@@ -1,10 +1,13 @@
 <template name="walletReceive">
-  <h3>Receive Funds</h3>
-  <div class="card">
-    <div class="card-body">
-      <pre class="small">{{account.address}}</pre>
+  <h5 class="text-center mb-3">Receive Funds</h5>
+  <div class="card mt-3 border-0">
 
-      <div id="qr-container"></div>
+    <div class="card-body ">
+
+      <div class="rounded d-inline-block mx-auto" id="qr-container"></div>
+
+      <div class=""><span class="font-weight-bold">Address</span> {{account.address}}</div>
+
 
     </div>
   </div>

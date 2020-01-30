@@ -12,8 +12,5 @@ if (Meteor.isClient) {
     }
   });
   Template.navbar.events({
-    "click .navbar-collapse>ul>li>a:not([data-toggle])": function () {
-      $(".navbar-collapse").collapse('hide');
-    }
   });
 }

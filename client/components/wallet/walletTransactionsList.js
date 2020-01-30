@@ -48,7 +48,7 @@ if (Meteor.isClient) {
     decimals (val) {
       val = parseFloat(val)
       return val.toFixed(2)
-    },
+    }
   });
   Template.transactionsTable.helpers({
     selfAddr (addr) {
@@ -57,6 +57,9 @@ if (Meteor.isClient) {
     },
     shortSymbol (symbol) {
       return symbol.split("-")[0].substr(0,4)
+    },
+    link (hash) {
+      return BNB.explorerBaseURL + "/tx/" + hash
     }
   })
 }

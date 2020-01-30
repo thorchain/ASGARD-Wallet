@@ -4,13 +4,12 @@ if (Meteor.isClient) {
 const sdk = BNB.sdk
   
   Template.walletCreate.onCreated(function() {
-    var self = this;
+    const self = this;
     self.wlist = new ReactiveVar(null);
     self.isMnemonic = new ReactiveVar(false);
 		self.isLoading = new ReactiveVar(false)
     self.loadingMsg = new ReactiveVar("")
-    self.formPWHelpMsg1 = new ReactiveVar(false)
-    self.formPWHelpMsg2 = new ReactiveVar(false)
+    self.formErrors = new ReactiveDict()
 
     self.setWlist = () => {
       const wlist = self.wlist.get();
@@ -132,19 +131,8 @@ const sdk = BNB.sdk
     isMnemonic () { return Template.instance().isMnemonic.get() },
     isLoading () { return Template.instance().isLoading.get() },
     loadingMsg () { return Template.instance().loadingMsg.get() },
-    formPWHelpMsg () {
-      const obj = {
-        first: {
-          text: Template.instance().formPWHelpMsg1.get(),
-          color: "warning"
-        },
-        second: {
-          text: Template.instance().formPWHelpMsg2.get(),
-          color: "warning"
-        }
-      }
-      return obj
-    }
+    pwError () { return Template.instance().formErrors.get('password')},
+    repeatPwError () { return Template.instance().formErrors.get('repeatPassword')},
   });
 
   Template.walletCreate.events({
@@ -153,18 +141,23 @@ const sdk = BNB.sdk
       self.isMnemonic.set(!self.isMnemonic.get())
     },
     "blur #generate-wallet-form input": function (event, self) {
-      self.formPWHelpMsg1.set(false)
-      self.formPWHelpMsg2.set(false)
+      self.formErrors.set('password','')
+      self.formErrors.set('repeatPassword','')
     },
     "submit #generate-wallet-form": async function (event, self) {
       event.preventDefault();
       const t = event.currentTarget
-      if (!t.password.value) {
-        // no password, set msg1
-        self.formPWHelpMsg1.set("Please enter password")
-      } else if (t.password.value !== t.repeatPassword.value) {
-        // password mismatch, set msg2
-        self.formPWHelpMsg2.set("Passwords do not match")
+      const validationContext = Schemas.formNewWallet.namedContext('transfer');
+      const obj = validationContext.clean({
+        password: t.password.value,
+        repeatPassword: t.repeatPassword.value
+      })
+
+      validationContext.validate(obj);
+
+      if (!validationContext.isValid()) {
+        self.formErrors.set("password", validationContext.keyErrorMessage('password'))
+        self.formErrors.set("repeatPassword", validationContext.keyErrorMessage('repeatPassword'))
       } else {
 
         self.isLoading.set(true)

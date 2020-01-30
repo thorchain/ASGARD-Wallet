@@ -1,17 +1,25 @@
 <template name="walletUnlock">
-  <h5 class="text-center mb-5">Unlock wallet</h5>
+  <!-- <h5 class="text-center mb-5">Unlock wallet</h5> -->
 
+    <div class="col-md-8 col-lg-6 ml-auto mr-auto">
+      <img class="mx-auto d-block w-50 mb-5" src="/img/Asgard-Wallet-Gradient-512.svg">
+    </div>
 
   {{#if isLoading}}
 
-    <div>Loading... {{loadingMsg}}</div>
+    <div class="text-muted text-center">{{loadingMsg}}...</div>
 
   {{else}}
 
-    <form id="wallet-unlock-form" class="form">
-      <input type="password" class="form-control mb-4" name="password" placeholder="password">
-      <input type="submit" class="form-control btn btn-primary" value="unlock">
-    </form>
+    <div class="col-md-8 col-lg-6 ml-auto mr-auto">
+
+      <form id="wallet-unlock-form" class="form">
+        <input type="password" class="form-control mb-4" name="password" placeholder="password">
+        <input type="submit" class="form-control btn btn-primary" value="unlock">
+      </form>
+
+    </div>
+
 
   {{/if}}
 
