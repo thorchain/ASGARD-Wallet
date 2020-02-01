@@ -45,14 +45,14 @@
     },
     "dependencies": {},
     "packageJsonFields": {
-        "description": "My Meteor App",
+        "description": "Asgard Wallet",
         "author": "Me, Myself And I",
         "private": true
     },
     "builderOptions": {
         "icon": ".desktop/assets/meteor.ico",
         "appId": "meteor.app",
-        "productName": "My Meteor App",
+        "productName": "Asgard Wallet",
         "compression": "maximum",
         "win": {
             "target": "nsis"
@@ -94,10 +94,10 @@
         "appCopyright": "Copyright 2018 My Company - All rights reserved.",
         "win32metadata": {
             "CompanyName": "My Company",
-            "FileDescription": "MyMeteorApp",
-            "OriginalFilename": "MyMeteorApp.exe",
-            "ProductName": "MyMeteorApp",
-            "InternalName": "MyMeteorApp.exe"
+            "FileDescription": "AsgardWallet",
+            "OriginalFilename": "AsgardWallet.exe",
+            "ProductName": "AsgardWallet",
+            "InternalName": "AsgardWallet.exe"
         }
     }
 }

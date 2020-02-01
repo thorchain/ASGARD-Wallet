@@ -20,7 +20,7 @@ if (Meteor.isClient) {
       if (self.isVault.get()) {
         // FlowRouter.go("walletAssets");
       } else {
-        FlowRouter.go("walletGenerate");
+        // FlowRouter.go("walletCreate");
       }
     });
   });

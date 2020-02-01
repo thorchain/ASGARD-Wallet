@@ -8,7 +8,7 @@ if (Meteor.isClient) {
     route: function() {
       FlowRouter.watchPathChange()
       const current = FlowRouter.current()
-      return current.route.options.back && current.route.options.back.route
+      return current.route && current.route.options && current.route.options.back && current.route.options.back.route
     }
   })
 
