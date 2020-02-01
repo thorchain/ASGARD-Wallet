@@ -35,30 +35,26 @@ const sdk = BNB.sdk
           try {
             account = await BNB.bnbClient.recoverAccountFromMnemonic(words)
           } catch (error) {
-            console.log("here is the error");
-            console.log(error);
-            
+            console.log(error)
+            throw new Error(error)
           }
           
           account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
+
         } else if (mnemonic) {
-          // NOTE: This no longer works...?
-        } else {
+          // This is not currently used(?)
           try {
-            console.log("we got the password error?");
+            account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
             account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
           } catch (error) {
             console.log(error);
-            
+            throw new Error(error)
           }
+        } else {
           account = await BNB.bnbClient.createAccountWithKeystore(pw)
         }
-
-        console.log(account);
         await self.updateVault(account.keystore)
-        // await WALLET.updateVault(account.keystore);
         await self.updateUserAccount(account)
-        // await WALLET.initializeUserAccount(account);
       }
 
     }
@@ -121,6 +117,7 @@ const sdk = BNB.sdk
     self.setWlist()
     self.autorun(function() {
       // if there is a user here we need to redirect
+      // This is handled in routes initially.
     });
     
   });
@@ -140,14 +137,14 @@ const sdk = BNB.sdk
       event.preventDefault();
       self.isMnemonic.set(!self.isMnemonic.get())
     },
-    "blur #generate-wallet-form input": function (event, self) {
-      self.formErrors.set('password','')
-      self.formErrors.set('repeatPassword','')
+    "keyup #generate-wallet-form input": function (event, self) {
+      const name = event.currentTarget.name
+      self.formErrors.set(name,'')
     },
     "submit #generate-wallet-form": async function (event, self) {
       event.preventDefault();
       const t = event.currentTarget
-      const validationContext = Schemas.formNewWallet.namedContext('transfer');
+      const validationContext = Schemas.formNewWallet.namedContext('createWallet');
       const obj = validationContext.clean({
         password: t.password.value,
         repeatPassword: t.repeatPassword.value
@@ -164,7 +161,7 @@ const sdk = BNB.sdk
         self.loadingMsg.set("generating wallet")
         setTimeout(async () => {
           try {
-            await self.generateNewWallet(event.currentTarget.password.value);
+            await self.generateNewWallet(obj.password);
             FlowRouter.go("home")
           } catch (err) {
             self.isLoading.set(false)

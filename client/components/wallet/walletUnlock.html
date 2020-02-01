@@ -14,8 +14,16 @@
     <div class="col-md-8 col-lg-6 ml-auto mr-auto">
 
       <form id="wallet-unlock-form" class="form">
-        <input type="password" class="form-control mb-4" name="password" placeholder="password">
-        <input type="submit" class="form-control btn btn-primary" value="unlock">
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            <!-- <label for="inputPassword">New Password</label> -->
+            <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
+            <small id="passwordHelp" class="form-text text-warning">{{pwError}}</small>
+          </div>
+        </div>
+        <!-- <input type="password" class="form-control mb-4" name="password" placeholder="password"> -->
+        <input type="submit" class="form-control btn btn-primary btn-brand" value="unlock">
+
       </form>
 
     </div>

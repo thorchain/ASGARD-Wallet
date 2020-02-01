@@ -41,6 +41,9 @@ li.media[data-nav]:hover {
 // Overrides and custom styles for bootstrap components etc.
 .navbar {
   // background-color: #122A32;
+  > .navbar-brand {
+    font-family: Exo2;
+  }
 }
 
 // Breadcrump
@@ -60,6 +63,9 @@ li.media[data-nav]:hover {
 .btn {
   text-transform: uppercase;
   letter-spacing: $text-letter-spacing;
+  &.disabled, &[disabled], &[disabled="disabled"] {
+    cursor: default;
+  }
 }
 .btn-text {
   color: $Accent-Green;
@@ -162,6 +168,21 @@ li.media[data-nav]:hover {
 
 // Custom Styles
 
+// Custom background
+#app-wrapper.bg-img-brand {
+  background-image: url("/img/Asgard-Swirl.png");
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+// This can be use INSIDE button (.btn) content
+// overlay button needs to be smaller
+.btn > .btn.btn-overlay {
+  position: absolute;
+  margin-top: -3px;
+  margin-right: -8px;
+  right: 18px;
+}
 
 // Icon circle
 .circle {
@@ -202,3 +223,14 @@ li.media[data-nav]:hover {
 }
 
 // @import "{}/imports/bootstrap/scss/variables";
+
+
+.btn.btn-brand {
+  &::before {
+    display: block;
+    position: absolute;
+    width: 30px;
+    height: 40px;
+    background: pink;
+  }
+}

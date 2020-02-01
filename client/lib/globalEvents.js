@@ -7,6 +7,18 @@ if (Meteor.isClient) {
       await UserAccount.remove({})
       FlowRouter.go('home')
     },
+    "click [data-event='deleteVault']": function (event, self) {
+      event.preventDefault();
+      console.log("delete binance vault store");
+      // We need to delete everything
+      UserAccount.remove({})
+      UserTransactions.remove({})
+      TokenData.remove({})
+      window.localStorage.removeItem("binance");
+      FlowRouter.go('home')
+      localforage.clear();
+
+    },
     "click [data-nav]": function (event, self) {
       event.preventDefault()
       const route = event.currentTarget.dataset.nav

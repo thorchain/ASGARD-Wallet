@@ -2,24 +2,22 @@
 if (Meteor.isClient) {
   Template.walletSend.onCreated(function() {
     const self = this
-    // we need to know the fields
-    // 1. recipient (address)
-    // 2. amount
-    // 3. asset
-    // 4. sender
     self.formErrors = new ReactiveDict()
-    // self.formErrors.set('recipient','')
-    // self.formErrors.set('amount','')
-    // self.formErrors.set('asset','')
+    self.getBalances = () => {
+      const symbol = FlowRouter.getParam("asset")
+      const assets = UserAccount.findOne().assets
+      return assets && assets.length > 0 ? assets.find(e => e.symbol === symbol) : null
+    }
   });
   Template.walletSend.helpers({
     userAssets: function () {
       return assets = UserAccount.findOne().assets
     },
     balances () {
-      const symbol = FlowRouter.getParam("asset")
-      const assets = UserAccount.findOne().assets
-      return assets && assets.length > 0 ? assets.find(e => e.symbol === symbol) : null
+      return Template.instance().getBalances()
+      // const symbol = FlowRouter.getParam("asset")
+      // const assets = UserAccount.findOne().assets
+      // return assets && assets.length > 0 ? assets.find(e => e.symbol === symbol) : null
     },
     asset () {
       const symbol = FlowRouter.getParam("asset")
@@ -54,7 +52,11 @@ if (Meteor.isClient) {
 
       // Schema based validation
       const validationContext = Schemas.formTransferTx.namedContext('transfer');
+      // TODO: Add password when vault is closed
+      // TODO: Add max amount to pre-check insufficient funds
+      // const balances = self.getBalances()
       const obj = validationContext.clean({
+        // maxAmount: balances.free
         sender: from,
         recipient: t.recipient.value,
         amount: t.amount.value,
@@ -63,19 +65,47 @@ if (Meteor.isClient) {
       
       validationContext.validate(obj);
       console.log(validationContext.validationErrors());
+      // const url = "http://google.com"
+      // require('electron').shell.openExternal(url);
 
       if (validationContext.isValid()) {
+        try {
+          // TODO: Add decrypt valut here when upgrading useraccount to persistent
+          BNB.transfer(from, obj.recipient, obj.amount, obj.asset).then(async (e) => {
+            // FlowRouter.go("walletAssets")
+            history.back()
+          }).catch((e) => {
+            console.log('there was a tx error.... promis catch');
+            console.log(e.message);
+            
+            // const msg = e.message
+            if (e.message.includes("insufficient fund")) {
+              if (e.message.includes("fee needed")) {
+                // get the amount.
+                const res = e.message.split("but")[1].trim().split(" ")[0]
+                // const res2 = res.split(" ")
+                const amount = res.substring(0, res.length - 3)
+                const num = parseInt(amount)
+                const fee = BNB.calculateFee(num)
+                
+                self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
+              } else {
 
-        BNB.transfer(from, obj.recipient, obj.amount, obj.asset).then(async (e) => {
-          // Update balances
-          // gotten from websockets
-          console.log("send transfer tx success...")
-          console.log(e);
+              }
+
+            } else if (e.message.includes("<")) { // this is how insuficient funds come back
+              const res = e.message.split(",").find(f => { return f.includes("<")} )
+              console.log(res);
+              
+              self.formErrors.set("amount","Insufficient funds");
+            }
+
+          })
           
-          // FlowRouter.go("walletAssets")
-          // actually go back
-          history.back()
-        })
+        } catch (error) {
+          
+        }
+
         
       } else {
         self.formErrors.set('recipient', validationContext.keyErrorMessage('recipient'))

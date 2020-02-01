@@ -3,13 +3,23 @@ if (Meteor.isClient) {
 		const self = this
 		self.isLoading = new ReactiveVar(false)
 		self.loadingMsg = new ReactiveVar("")
+		self.formErrors = new ReactiveDict()
+
 		self.unlockWallet = async (pw) => {
 			self.isLoading.set(true)
 			const vault = localStorage.getItem('binance');
 			const keystore = JSON.parse(vault)
-			const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
-			account.keystore = keystore
-			await self.setUserData(account)
+			try {
+				const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+				account.keystore = keystore
+				await self.setUserData(account)
+			} catch (error) {
+				self.isLoading.set(false)
+				if (error.message.includes("password")) {
+					self.formErrors.set("password","Incorrect password");
+				}
+				throw new Error(error)
+			}
 
 		}
 		self.setUserData = async (account) => {
@@ -66,26 +76,31 @@ if (Meteor.isClient) {
 
 	Template.walletUnlock.helpers({
 		isLoading () { return Template.instance().isLoading.get() },
-		loadingMsg () { return Template.instance().loadingMsg.get() }
+		loadingMsg () { return Template.instance().loadingMsg.get() },
+		pwError () { return Template.instance().formErrors.get('password')}
 	})
 
 	Template.walletUnlock.events({
+		"keyup #wallet-unlock-form input": function (event, self) {
+			self.formErrors.set('password','')
+		},
     "submit #wallet-unlock-form": async function (event, self) {
       event.preventDefault();
 			self.isLoading.set(true)
 			self.loadingMsg.set("attempting to decrypt")
       const tar = event.currentTarget;
 			const pw = tar && tar.password.value;
-			// just add a delay?
+			if (pw.length === 0) { self.formErrors.set('password', 'Password required') }
+			// just add a delay for time being...
 			setTimeout(async () => {
 				try {
 					await self.unlockWallet(pw)
 					FlowRouter.go("home")
 				} catch (err) {
 					self.isLoading.set(false)
-					console.error(err)
+					// console.error(err)
 				}
-			}, 500);
+			}, 200);
 			
     },
 	})

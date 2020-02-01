@@ -5,9 +5,7 @@ if (Meteor.isClient) {
     self.isMnemonic = new ReactiveVar(false);
 		self.isLoading = new ReactiveVar(false)
     self.loadingMsg = new ReactiveVar("")
-    self.formPWHelpMsg = new ReactiveVar(false)
-    self.formMnemonicHelpMsg = new ReactiveVar(false)
-    self.formKeyfileHelpMsg = new ReactiveVar(false)
+    self.formErrors = new ReactiveDict()
     
     self.importMnemonicWallet = async (mnemonic, pw) => {
       const vault = window.localStorage.getItem("binance");
@@ -17,7 +15,7 @@ if (Meteor.isClient) {
         let account
         if (self.isMnemonic.get()) { // just confirmation...
           account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
-          account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
+          account.keystore = await BNB.sdk.crypto.generateKeyStore(account.privateKey, pw)
         } // else error
 
         await self.updateVault(account.keystore)
@@ -26,19 +24,45 @@ if (Meteor.isClient) {
       }
     }
 
-    self.importWalletFile = async (file, pw) => {
+    self.importWalletFile = (file, pw, check) => {
       const reader = new FileReader();
       let keystore
-      reader.onerror = (event) => { throw new Error("File could not be read! Code " + event.target.error.code); };
-      reader.onload = async (event) => {
-        console.log("executing reading file...");
-        var contents = event.target.result;
-        keystore = JSON.parse(contents)
-        self.processKeystore(keystore, pw)
+      reader.onerror = (event) => {
+        self.formErrors.set("keystoreFile", event.target.error.code)
+        throw new Error("File could not be read! Code " + event.target.error.code);
       };
-      
+      reader.onload = async (event) => {
+        const contents = event.target.result;
+        try {
+          keystore = self.validateKeystore(contents)
+          // how do we return a truthy value?
+          // to change the ui...
+        } catch (error) {
+          self.formErrors.set(error.key, error.message)
+        }
+        // include in try... ?
+        if (!check && keystore) { self.processKeystore(keystore, pw) }
+      };
       // Execute file read
-      return reader.readAsText(file)
+      reader.readAsText(file)
+    }
+
+    self.validateKeystore = (keystore) => {
+      try {
+        keystore = JSON.parse(keystore)
+        if (keystore.version && keystore.id) {
+          return keystore
+        } else {
+          throw ({key:"keystoreFile", message: "No valid keystore in file"})
+        }
+      } catch (objError) {
+        if (objError instanceof SyntaxError) {
+          throw ({key:"keystoreFile", message: "Error processing file"})
+        } else {
+          throw ({key:"keystoreFile", message: "Error processing file"})
+        }
+      }
+
     }
 
     self.processKeystore = async (keystore, pw) => {
@@ -53,7 +77,7 @@ if (Meteor.isClient) {
           console.log(error.message);
           self.isLoading.set(false)
           if (error.message.includes("password")) {
-            self.formPWHelpMsg.set("incorrect password");
+            self.formErrors.set("password","Incorrect password");
           }
           throw error
         }
@@ -127,45 +151,57 @@ if (Meteor.isClient) {
     isMnemonic () { return Template.instance().isMnemonic.get() },
     isLoading () { return Template.instance().isLoading.get() },
     loadingMsg () { return Template.instance().loadingMsg.get() },
-    formPWHelpMsg () {
-      const obj = {
-        text: Template.instance().formPWHelpMsg.get(),
-        color: "warning"
-      }
-      return obj
+    pwError () {
+      return Template.instance().formErrors.get('password')
     },
-    formMnemonicHelpMsg () {
-      const obj = {
-        text: Template.instance().formMnemonicHelpMsg.get(),
-        color: "warning"
-      }
-      return obj
+    repeatPwError () {
+      return Template.instance().formErrors.get('repeatPassword')
     },
-    formFileHelpMsg () {
-      const obj = {
-        text: Template.instance().formKeyfileHelpMsg.get(),
-        color: "warning"
-      }
-      return obj
-    }
+    fileError () {
+      return Template.instance().formErrors.get('keystoreFile')
+    },
+    mnemonicError () {
+      return Template.instance().formErrors.get('mnemonic')
+    },
   });
 
   Template.walletImport.events({
+    "click [data-event='fileReset']": function (event, self) {
+      event.stopPropagation()
+      self.formErrors.set('keystoreFile','')
+      // clear the file value
+      $("#upload-file-input").val("")
+      $('#upload-file-button > span').text("Select File")
+      $('#upload-file-button').removeClass("disabled")
+      $("[data-event=fileReset").addClass("d-none")
+    },
     "click [data-event='toggleMnemonic']": function (event, self) {
       event.preventDefault();
-      // self.formMnemonicHelpMsg.set(false)
-      // self.formPWHelpMsg.set(false)
+      self.formErrors.set('password','')
+      self.formErrors.set('repeatPassword','') // not working?
+      self.formErrors.set('keystoreFile','')
+      self.formErrors.set('mnemonic','')
       self.isMnemonic.set(!self.isMnemonic.get())
     },
-    "blur #import-mnemonic-form input": function (event, self) {
-      self.formPWHelpMsg.set(false)
-      self.formMnemonicHelpMsg.set(false)
+    "keyup #upload-keystore-form input, keyup #import-mnemonic-form input": function (event, self) {
+      const name = event.currentTarget.name
+      self.formErrors.set(name,'')
     },
-    "change #upload-file-input": function (event, self) {
+    "change #upload-file-input": async function (event, self) {
       const file = event.currentTarget.files[0]
-      self.formKeyfileHelpMsg.set(false)
-      // change button text, and make disabled
-      $('#upload-file-button').attr({value: file.name, disabled: true})
+      self.formErrors.set('keystoreFile','')
+      self.importWalletFile(file, null, true)
+
+      // above happens too late...
+      // if (self.formErrors.get('keystoreFile').length === 0) {
+        $('#upload-file-button > span').text(file.name)
+        $('#upload-file-button').addClass("disabled")
+        $("[data-event=fileReset]").removeClass("d-none")
+      // } else {
+        // clear it
+        // $("#upload-file-input").val("")
+      // }
+
     },
     "click #upload-file-button": function (event, self) {
       event.preventDefault()
@@ -175,64 +211,66 @@ if (Meteor.isClient) {
       event.preventDefault()
       const t = event.currentTarget
       
-      console.log(t.keystoreFile.files);
-      
-      if (t.keystoreFile.files.length === 0) {
-        console.log("wtf");
-        // no password, set msg1
-        self.formKeyfileHelpMsg.set("Please select a file")
-      } else if (!t.password.value) {
-        // password mismatch, set msg2
-        self.formPWHelpMsg.set("Please enter password")
-      } else {
+      // NOTE on no schema validation: The problem is passing type "File" to schema. Is not possible at the moment
+      // NOTE: Based on async filereader, we validate inside the method using asyc addvalidationerror()
+      if (t.keystoreFile.files.length === 0) { self.formErrors.set("keystoreFile", "Please select a file") }
+      if (t.password.value.length === 0) { self.formErrors.set("password", "Password required") }
 
-        self.isLoading.set(true)
-        self.loadingMsg.set("generating wallet")
+      if (
+        t.password.value &&
+        t.keystoreFile.files.length > 0 &&
+        self.formErrors.get('keystoreFile').length === 0
+        ) {
         const file = t.keystoreFile.files[0];
         const pw = t.password.value;
+        self.isLoading.set(true)
+        self.loadingMsg.set("processing file")
+        // Delay to allow for UI render DOM update before CPU takes over keystore processing
+        // TODO: refactor this
         setTimeout(async () => {
-          console.log("trying to import the wallet");
-          
           try {
-            if (!event.currentTarget.password.value) throw "no password"
             await self.importWalletFile(file, pw)
-            // FlowRouter.go("home") // this is done above in file execute cb
           } catch (err) {
             self.isLoading.set(false)
-            console.log("got the error in the event handlers now");
-            
             console.log(err)
           }
-        }, 500);
-      }
+        }, 100);
+
+      } 
     },
     "submit #import-mnemonic-form": async function (event, self) {
       event.preventDefault()
-      // do the basic checks!
       const t = event.currentTarget
-      if (!t.mnemonic.value) {
-        // no password, set msg1
-        self.formMnemonicHelpMsg.set("Please enter phrase")
-      } else if (!t.password.value) {
-        // password mismatch, set msg2
-        self.formPWHelpMsg.set("Please enter password")
+      const validationContext = Schemas.formImportWalletMnemonic.namedContext('importMnemonic');
+      const obj = validationContext.clean({
+        mnemonic: t.mnemonic.value,
+        password: t.password.value,
+        repeatPassword: t.repeatPassword.value
+      })
+
+      validationContext.validate(obj);
+
+      if (!validationContext.isValid()) {
+        self.formErrors.set("mnemonic", validationContext.keyErrorMessage('mnemonic'))
+        self.formErrors.set("password", validationContext.keyErrorMessage('password'))
+        self.formErrors.set("repeatPassword", validationContext.keyErrorMessage('repeatPassword'))
       } else {
-        // check the mnemonic is valid
+
         self.isLoading.set(true)
         self.loadingMsg.set("generating wallet")
-        const words = event.currentTarget.mnemonic.value
-        const pw = event.currentTarget.password.value
+        // const words = obj.mnemonic
+        // const pw = obj.password
 
         setTimeout(async () => {
           try {
-            if (!event.currentTarget.password.value) throw "no password"
-            await self.importMnemonicWallet(words, pw)
+            await self.importMnemonicWallet(obj.mnemonic, obj.password)
             FlowRouter.go("home")
           } catch (err) {
             self.isLoading.set(false)
             console.log(err)
           }
-        }, 500);
+        }, 100);
+
       }
     }
   });

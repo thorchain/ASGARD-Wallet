@@ -1,14 +1,17 @@
 <template name="navbar">
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="{{pathFor 'home'}}">Asgard</a>
+  <a class="navbar-brand text-uppercase font-size-h5" href="{{pathFor 'home'}}">
+    <img src="/img/Asgard-Logo-White-128.png" class="mr-1" width="30" height="30" alt="">
+    <span class="font-weight-bold">Asgard</span><span>&nbsp;Wallet</span>
+  </a>
+  {{#if isUnlocked}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto float-right">
-      {{#if isUnlocked}}
+  <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+    <ul class="navbar-nav text-right">
         <li class="nav-item">
           <a class="nav-link {{#if (isActive 'walletAssets')}}active{{/if}}" href="{{pathFor 'walletAssets'}}">Assets</a>
         </li>
@@ -24,12 +27,12 @@
         <li class="nav-item">
           <a class="nav-link {{#if (isActive 'walletAccounts')}}active{{/if}}" href="{{pathFor 'walletAccounts'}}">Account</a>
         </li>
-      {{/if}}
-      <li class="nav-item">
-        <a class="nav-link" href="#" tabindex="-1" data-event="lockWallet">Lock</a>
-      </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" tabindex="-1" data-event="lockWallet">Lock</a>
+        </li>
     </ul>
   </div>
+  {{/if}}
 </nav>
 
 </template>
