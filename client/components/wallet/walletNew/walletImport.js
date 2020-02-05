@@ -8,20 +8,10 @@ if (Meteor.isClient) {
     self.formErrors = new ReactiveDict()
     
     self.importMnemonicWallet = async (mnemonic, pw) => {
-      const vault = window.localStorage.getItem("binance");
-      if (vault) {
-        throw new Error("wallet vault already exists")
-      } else {
-        let account
-        if (self.isMnemonic.get()) { // just confirmation...
-          account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
-          account.keystore = await BNB.sdk.crypto.generateKeyStore(account.privateKey, pw)
-        } // else error
-
-        await self.updateVault(account.keystore)
-        await self.updateUserAccount(account)
-
-      }
+      WALLET.generateNewWallet(pw, mnemonic).then(async (e) => {
+        await WALLET.unlock(pw)
+        FlowRouter.go("home")
+      })
     }
 
     self.importWalletFile = (file, pw, check) => {
@@ -33,18 +23,10 @@ if (Meteor.isClient) {
       };
       reader.onload = async (event) => {
         const contents = event.target.result;
-        try {
-          keystore = self.validateKeystore(contents)
-          // how do we return a truthy value?
-          // to change the ui...
-        } catch (error) {
-          self.formErrors.set(error.key, error.message)
-        }
-
-        // include in try... ?
+        keystore = self.validateKeystore(contents)
         if (!check && keystore) { 
-
-            WALLET.generateNewWallet(pw, null, keystore).then(e => {
+            WALLET.generateNewWallet(pw, null, keystore).then(async (e) => {
+              await WALLET.unlock(pw)
               FlowRouter.go("home")
             })
         }
@@ -61,101 +43,17 @@ if (Meteor.isClient) {
         if (keystore.version && keystore.id) {
           return keystore
         } else {
-          throw ({key:"keystoreFile", message: "No valid keystore in file"})
+          self.formErrors.set('keystoreFile','No valid keystore in file')
         }
       } catch (objError) {
         if (objError instanceof SyntaxError) {
-          throw ({key:"keystoreFile", message: "Error processing file"})
+          self.formErrors.set('keystoreFile','Syntax error in file')
         } else {
-          throw ({key:"keystoreFile", message: "Error processing file"})
+          self.formErrors.set('keystoreFile','Error processing file')
         }
       }
 
     }
-
-    self.initializeWallet = async (keystore, pw) => {
-      try {
-        WALLET.generateNewWallet(pw, null, keystore)
-      } catch (error) {
-        
-      }
-    }
-    self.processKeystore = async (keystore, pw) => {
-      console.log(keystore)
-      if (keystore && keystore.version) {
-        let account
-        try {
-          account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
-          account.keystore = keystore
-        } catch (error) {
-          console.log("lookin gor  the password error");
-          console.log(error.message);
-          self.isLoading.set(false)
-          if (error.message.includes("password")) {
-            self.formErrors.set("password","Incorrect password");
-          }
-          throw error
-        }
-        await self.updateVault(keystore)
-        await self.updateUserAccount(account)
-        FlowRouter.go('home') // TODO: Place in proper async chain
-      }
-    }
-
-    self.updateUserAccount = async (account) => {
-			self.loadingMsg.set("getting data")
-      await BNB.initializeClient(account.privateKey)
-			const doc = UserAccount.findOne();
-			const select = doc && doc._id ? {_id: doc._id} : {};
-      await BNB.getBalances().then(e => {
-        account.assets = e.map(function(elem) {
-          elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
-          return elem
-        })
-				UserAccount.remove({})
-        UserAccount.update(select, account, {upsert: true})
-      })
-			await BNB.bnbClient.getTransactions(account.address).then(e => {
-        UserTransactions.remove({})
-				UserTransactions.batchInsert(e.result.tx)
-      })
-
-			// Setup events subscription
-			const conn = new WebSocket("wss://testnet-dex.binance.org/api/ws");
-			conn.onopen = function (evt) {
-				conn.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: account.address}));
-			}
-			conn.onmessage = function (msg) {
-        console.log("got websocket msg")
-				const data = JSON.parse(msg.data)
-				const balances = data.data.B
-        assets = balances.map(function(elem) {
-					// These mappings for account are different than http api...
-					// free = f
-					// frozen = r
-					// locked = l
-					// symbol = a
-					// shortSymbol = nothing....
-					//
-					const asset = {
-						free: elem.f,
-						frozen: elem.r,
-						locked: elem.l,
-						symbol: elem.a
-					}
-          asset.shortSymbol = asset.symbol.split("-")[0].substr(0,4)
-          return asset
-        })
-				const doc = UserAccount.findOne();
-				const select = doc && doc._id ? {_id: doc._id} : {};
-				UserAccount.update(select, {$set: {assets: assets}}, {upsert: true})
-        // Probably we want to update transactions?
-      }
-    }
-    self.updateVault = (keystore) => {
-      window.localStorage.setItem("binance", JSON.stringify(keystore));
-    }
-
 
     self.autorun(function (params) {
       
@@ -206,17 +104,9 @@ if (Meteor.isClient) {
       const file = event.currentTarget.files[0]
       self.formErrors.set('keystoreFile','')
       self.importWalletFile(file, null, true)
-
-      // above happens too late...
-      // if (self.formErrors.get('keystoreFile').length === 0) {
-        $('#upload-file-button > span').text(file.name)
-        $('#upload-file-button').addClass("disabled")
-        $("[data-event=fileReset]").removeClass("d-none")
-      // } else {
-        // clear it
-        // $("#upload-file-input").val("")
-      // }
-
+      $('#upload-file-button > span').text(file.name)
+      $('#upload-file-button').addClass("disabled")
+      $("[data-event=fileReset]").removeClass("d-none")
     },
     "click #upload-file-button": function (event, self) {
       event.preventDefault()
@@ -227,7 +117,7 @@ if (Meteor.isClient) {
       const t = event.currentTarget
       
       // NOTE on no schema validation: The problem is passing type "File" to schema. Is not possible at the moment
-      // NOTE: Based on async filereader, we validate inside the method using asyc addvalidationerror()
+      // NOTE: we can validate inside the schema method using asyc addvalidationerror()
       if (t.keystoreFile.files.length === 0) { self.formErrors.set("keystoreFile", "Please select a file") }
       if (t.password.value.length === 0) { self.formErrors.set("password", "Password required") }
 
@@ -241,7 +131,6 @@ if (Meteor.isClient) {
         self.isLoading.set(true)
         self.loadingMsg.set("processing file")
         // Delay to allow for UI render DOM update before CPU takes over keystore processing
-        // TODO: refactor this
         setTimeout(async () => {
           try {
             await self.importWalletFile(file, pw)
@@ -273,18 +162,14 @@ if (Meteor.isClient) {
 
         self.isLoading.set(true)
         self.loadingMsg.set("generating wallet")
-        // const words = obj.mnemonic
-        // const pw = obj.password
-
         setTimeout(async () => {
           try {
             await self.importMnemonicWallet(obj.mnemonic, obj.password)
-            FlowRouter.go("home")
           } catch (err) {
             self.isLoading.set(false)
             console.log(err)
           }
-        }, 100);
+        }, 200);
 
       }
     }

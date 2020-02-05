@@ -5,4 +5,4 @@ UserAccount.allow({
   insert: function(){ return true }
 });
 
-var userAccountObserver = new PersistentMinimongo2(UserAccount);
+const userAccountObserver = new PersistentMinimongo2(UserAccount);

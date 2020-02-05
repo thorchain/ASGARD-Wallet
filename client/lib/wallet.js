@@ -6,8 +6,8 @@ export default class WalletController extends EventEmitter{
   constructor () {
     super()
     let isUnlocked = false
-    this.getIsUnlocked = function() { return this.isUnlocked}
-    this.setIsUnlocked = function (v) { this.isUnlocked = v }
+    this.getIsUnlocked = function () { return this.isUnlocked}
+    this.setIsUnlocked = function (v) { this.isUnlocked = v === true ? true : false }
   }
 
   generateUserAuth = async (pw) => {
@@ -25,29 +25,8 @@ export default class WalletController extends EventEmitter{
 
   checkUserAuth = async (pw) => {
     const user = UserAccount.findOne()
-    console.log("wtf");
-    console.log(user);
-    
-    
-    const res = bcrypt.compareSync(pw, user.pwHash)
-    console.log(res);
-    
-    return res
+    return bcrypt.compareSync(pw, user.pwHash)
   }
-
-  // async setUserData (account) {
-  //   // This inits the binance client as well
-  //   // Needs the vault
-  //   BNB.initializeClient(account.privateKey)
-  //   const doc = UserAccount.findOne()
-  //   const select = doc && doc._id ? {_id: doc._id} : {}
-  //   UserAccount.update(select, account, {upsert: true})
-  //   await BNB.binanceTokens().then(e => {
-  //     TokenData.batchInsert(e.data)
-  //   })
-  //   this.updateAccountTransactionsData()
-  //   this.updateTokenData()
-  // }
 
   async initializeAccountTransactionsData () {
     // OLD: this will update the transactions
@@ -58,6 +37,8 @@ export default class WalletController extends EventEmitter{
   }
 
   initializeTokenData = async() => {
+    console.log("initializing token data");
+    
     const usr = UserAccount.findOne()
     const assets = usr.assets || null
     if (assets && assets.length > 0) {
@@ -107,7 +88,7 @@ export default class WalletController extends EventEmitter{
   }
 
   initializeUserData = async (account) => {
-    console.log("initializeUserData");
+    console.log("initializing user account data");
     
     await BNB.initializeClient(account.privateKey)
     const doc = UserAccount.findOne();
@@ -197,6 +178,7 @@ export default class WalletController extends EventEmitter{
       const vault = window.localStorage.getItem("binance");
       let account
       
+      // SECURITY: Prevent overwrite of existing vault
       if (vault) {
         throw new Error("Wallet vault already exists")
       } else {
@@ -205,20 +187,16 @@ export default class WalletController extends EventEmitter{
         try {
           // TODO: Replace with promiseAll()?
           // TODO: remove dependency on params by referencing elements instead
-          // TODO: to remove redundent calls to apis
           if (keystore) {
             account = await this.generateAccountFromKeystore(pw, keystore)
             account.keystore = keystore
           } else {
             account = await this.generateAccount(pw, mnemonic)
-            // error?
-            // throw Error('missing params for source: mnemonic, or keystore')
           }
 
           await this.initializeVault(account.keystore)
           await this.initializeUserData(account)
           await this.generateUserAuth(pw)
-          // Get data
           await this.initializeTokenData(account)
           // await this.initializeTransactionData
           //
@@ -236,13 +214,30 @@ export default class WalletController extends EventEmitter{
 
   }
 
+  updateUserBalances = async () => {
+    let balances = {}
+    await BNB.getBalances().then(e => {
+      balances = e.map(function(elem) {
+        elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
+        return elem
+      })
+      const doc = UserAccount.findOne();
+      const select = doc && doc._id ? {_id: doc._id} : {};
+      UserAccount.update(select, {$set: {assets: balances}})
+    })
+  }
+
   unlock = async (pw) => {
-    // TODO: Call this from the create/import after finished?
     console.log("unlocking...");
+    // TODO: make try?
     const check = await this.checkUserAuth(pw)
-    console.log(check);
     if (check) {
       this.setIsUnlocked(true)
+      // syncing stuff
+      // await this.updateUserBalances()
+      // await this.initializeTokenData() // for now until syncing
+      // this.updateTransactions()
+      // this.updateTokenData()
     } else {
       
       throw Error("Incorrect password")
@@ -252,6 +247,9 @@ export default class WalletController extends EventEmitter{
   lock = () => {
     this.setIsUnlocked(false)
     return true
+  }
+  isUnlocked = () => {
+    return this.getIsUnlocked()
   }
   
 }

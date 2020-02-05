@@ -25,7 +25,8 @@ const sdk = BNB.sdk
     }
 
     self.generateNewWallet = (pw, mnemonic) => {
-      WALLET.generateNewWallet(pw, mnemonic).then(e => {
+      WALLET.generateNewWallet(pw, mnemonic).then(async (e) => {
+        await WALLET.unlock(pw)
         FlowRouter.go('home')
       })
     }
@@ -93,7 +94,7 @@ const sdk = BNB.sdk
             self.isLoading.set(false)
             console.log(err)
           }
-        }, 500);
+        }, 200);
 
       }
     },

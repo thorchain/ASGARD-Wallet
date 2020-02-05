@@ -5,14 +5,14 @@ import '@fortawesome/fontawesome-free/js/all.min.js';
 BlazeLayout.setRoot('body');
 import Binance from "/imports/api/binance.js"; // Binance
 import WalletController from './wallet';
-BNB = new Binance();
 
-// NOTE: Below becomes more and more like KeyringController
-// when starting to support mulitple key types
+BNB = new Binance();
 WALLET = new WalletController();
 
+FlowRouter.wait();
 
 Meteor.startup(function() {
+  FlowRouter.initialize();
   // console.log("Meteor starting...")
   // SECURITY: We always need on startup to get auth
   // this is in conjunction with routing/component security

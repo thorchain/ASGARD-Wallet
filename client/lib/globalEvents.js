@@ -1,29 +1,19 @@
 if (Meteor.isClient) {
   Template.body.events({
     "click [data-event='lockWallet']": async function(event, self) {
-      console.log("locking wallet");
-      // just delete the user account
-      // TODO: Update to just remove security critical (private key)
-      // This be wrong.
-
-      // we should add a flag? only? This is keytring controller style
-      const acc = UserAccount.findOne()
-      console.log(acc);
-      WALLET.lock()
-      // await UserAccount.update({_id:acc._id},{$set: {isUnlocked: false}})
-      // await UserAccount.remove({})
-      // FlowRouter.go('home')
+      await WALLET.lock()
+      FlowRouter.go('home')
     },
-    "click [data-event='deleteVault']": function (event, self) {
+    "click [data-event='deleteVault']": async function (event, self) {
       event.preventDefault();
       console.log("delete binance vault store");
       // We need to delete everything
-      UserAccount.remove({})
-      UserTransactions.remove({})
-      TokenData.remove({})
-      window.localStorage.removeItem("binance");
+      await UserAccount.remove({})
+      await UserTransactions.remove({})
+      await TokenData.remove({})
+      await window.localStorage.removeItem("binance");
+      await localforage.clear(); // persistant store
       FlowRouter.go('home')
-      localforage.clear();
 
     },
     "click [data-nav]": function (event, self) {
