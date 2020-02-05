@@ -40,14 +40,22 @@ if (Meteor.isClient) {
         } catch (error) {
           self.formErrors.set(error.key, error.message)
         }
+
         // include in try... ?
-        if (!check && keystore) { self.processKeystore(keystore, pw) }
+        if (!check && keystore) { 
+
+            WALLET.generateNewWallet(pw, null, keystore).then(e => {
+              FlowRouter.go("home")
+            })
+        }
       };
       // Execute file read
       reader.readAsText(file)
     }
 
+    // Form validation
     self.validateKeystore = (keystore) => {
+      // NOTE: This can be moved to Schema if type: File is created
       try {
         keystore = JSON.parse(keystore)
         if (keystore.version && keystore.id) {
@@ -65,6 +73,13 @@ if (Meteor.isClient) {
 
     }
 
+    self.initializeWallet = async (keystore, pw) => {
+      try {
+        WALLET.generateNewWallet(pw, null, keystore)
+      } catch (error) {
+        
+      }
+    }
     self.processKeystore = async (keystore, pw) => {
       console.log(keystore)
       if (keystore && keystore.version) {

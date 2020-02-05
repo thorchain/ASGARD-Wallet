@@ -4,8 +4,15 @@ if (Meteor.isClient) {
       console.log("locking wallet");
       // just delete the user account
       // TODO: Update to just remove security critical (private key)
-      await UserAccount.remove({})
-      FlowRouter.go('home')
+      // This be wrong.
+
+      // we should add a flag? only? This is keytring controller style
+      const acc = UserAccount.findOne()
+      console.log(acc);
+      WALLET.lock()
+      // await UserAccount.update({_id:acc._id},{$set: {isUnlocked: false}})
+      // await UserAccount.remove({})
+      // FlowRouter.go('home')
     },
     "click [data-event='deleteVault']": function (event, self) {
       event.preventDefault();
