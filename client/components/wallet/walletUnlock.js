@@ -7,7 +7,9 @@ if (Meteor.isClient) {
 
 		self.unlockWallet = async (pw) => {
 			try {
+				// shoud should loading msgs here
 				await WALLET.unlock(pw)
+				await WALLET.syncUserData()
 			} catch (error) {
 				self.formErrors.set('password','Incorrect password')
 				throw new Error(error)

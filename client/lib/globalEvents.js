@@ -11,7 +11,8 @@ if (Meteor.isClient) {
       await UserAccount.remove({})
       await UserTransactions.remove({})
       await TokenData.remove({})
-      await window.localStorage.removeItem("binance");
+      await MarketData.remove({})
+      await window.localStorage.removeItem("binance"); // vault
       await localforage.clear(); // persistant store
       FlowRouter.go('home')
 

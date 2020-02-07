@@ -41,7 +41,9 @@ class Binance {
   initializeClient = async privateKey => {
     // TODO: Add switch for types of networks (test/main)
     try {
-      await this.bnbClient.setPrivateKey(privateKey);
+      if (privateKey) {
+        await this.bnbClient.setPrivateKey(privateKey);
+      }
       this.bnbClient.chooseNetwork(this.net);
       await this.bnbClient.initChain();
     } catch (error) {
