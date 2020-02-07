@@ -24,99 +24,22 @@ const sdk = BNB.sdk
       return mnemonic.length ? mnemonic.split(" ") : [] ;
     }
 
-    self.generateNewWallet = async (pw, mnemonic) => {
-      const vault = window.localStorage.getItem("binance");
-      if (vault) {
-        throw new Error("Wallet vault already exists")
-      } else {
-        let account
-        if (self.isMnemonic.get()) {
-          const words = self.wlist.get();
-          try {
-            account = await BNB.bnbClient.recoverAccountFromMnemonic(words)
-          } catch (error) {
-            console.log(error)
-            throw new Error(error)
-          }
-          
-          account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
-
-        } else if (mnemonic) {
-          // This is not currently used(?)
-          try {
-            account.keystore = await sdk.crypto.generateKeyStore(account.privateKey, pw)
-            account = await BNB.bnbClient.recoverAccountFromMnemonic(mnemonic)
-          } catch (error) {
-            console.log(error);
-            throw new Error(error)
-          }
-        } else {
-          account = await BNB.bnbClient.createAccountWithKeystore(pw)
-        }
-        await self.updateVault(account.keystore)
-        await self.updateUserAccount(account)
-      }
-
-    }
-
-    self.updateUserAccount = async (account) => {
-			self.loadingMsg.set("getting data")
-      await BNB.initializeClient(account.privateKey)
-			const doc = UserAccount.findOne();
-			const select = doc && doc._id ? {_id: doc._id} : {};
-      await BNB.getBalances().then(e => {
-        account.assets = e.map(function(elem) {
-          elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
-          return elem
-        })
-				UserAccount.remove({})
-        UserAccount.update(select, account, {upsert: true})
+    self.generateNewWallet = (pw, mnemonic) => {
+      WALLET.generateNewWallet(pw, mnemonic).then(async (e) => {
+        await WALLET.unlock(pw)
+        FlowRouter.go('home')
       })
-			await BNB.bnbClient.getTransactions(account.address).then(e => {
-        UserTransactions.remove({})
-				UserTransactions.batchInsert(e.result.tx)
-      })
-
-			// Setup events subscription
-			const conn = new WebSocket("wss://testnet-dex.binance.org/api/ws");
-			conn.onopen = function (evt) {
-				conn.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: account.address}));
-			}
-			conn.onmessage = function (msg) {
-        console.log("got websocket msg")
-				const data = JSON.parse(msg.data)
-				const balances = data.data.B
-        assets = balances.map(function(elem) {
-					// These mappings for account are different than http api...
-					// free = f
-					// frozen = r
-					// locked = l
-					// symbol = a
-					// shortSymbol = nothing....
-					//
-					const asset = {
-						free: elem.f,
-						frozen: elem.r,
-						locked: elem.l,
-						symbol: elem.a
-					}
-          asset.shortSymbol = asset.symbol.split("-")[0].substr(0,4)
-          return asset
-        })
-				const doc = UserAccount.findOne();
-				const select = doc && doc._id ? {_id: doc._id} : {};
-				UserAccount.update(select, {$set: {assets: assets}}, {upsert: true})
-        // TODO: Probably we want to update transactions?
-      }
     }
 
-    self.updateVault = (keystore) => {
-      window.localStorage.setItem("binance", JSON.stringify(keystore));
-    }
+    // Listen to trigger UI updates
+    WALLET.on('walletGenerated', function () {
+      self.loadingMsg.set("Setting up account")
+    })
 
     self.setWlist()
     self.autorun(function() {
-      // if there is a user here we need to redirect
+      // Added(necessary security?) if there is an existing
+      // user here we need to redirect
       // This is handled in routes initially.
     });
     
@@ -161,13 +84,17 @@ const sdk = BNB.sdk
         self.loadingMsg.set("generating wallet")
         setTimeout(async () => {
           try {
-            await self.generateNewWallet(obj.password);
-            FlowRouter.go("home")
+            // TODO: Refactor if necessary after proper promise handling in method
+            // we need to send words if necessary here...
+            const words = self.isMnemonic.get() ? self.wlist.get() : null;
+            await self.generateNewWallet(obj.password, words);
+            // console.log("go to home route");
+            // FlowRouter.go("home")
           } catch (err) {
             self.isLoading.set(false)
             console.log(err)
           }
-        }, 500);
+        }, 200);
 
       }
     },

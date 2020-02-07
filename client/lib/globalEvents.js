@@ -1,22 +1,20 @@
 if (Meteor.isClient) {
   Template.body.events({
     "click [data-event='lockWallet']": async function(event, self) {
-      console.log("locking wallet");
-      // just delete the user account
-      // TODO: Update to just remove security critical (private key)
-      await UserAccount.remove({})
+      await WALLET.lock()
       FlowRouter.go('home')
     },
-    "click [data-event='deleteVault']": function (event, self) {
+    "click [data-event='deleteVault']": async function (event, self) {
       event.preventDefault();
       console.log("delete binance vault store");
       // We need to delete everything
-      UserAccount.remove({})
-      UserTransactions.remove({})
-      TokenData.remove({})
-      window.localStorage.removeItem("binance");
+      await UserAccount.remove({})
+      await UserTransactions.remove({})
+      await TokenData.remove({})
+      await MarketData.remove({})
+      await window.localStorage.removeItem("binance"); // vault
+      await localforage.clear(); // persistant store
       FlowRouter.go('home')
-      localforage.clear();
 
     },
     "click [data-nav]": function (event, self) {
