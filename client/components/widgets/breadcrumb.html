@@ -7,7 +7,9 @@
 
       {{!-- javascript:history.back() --}}
 
-      {{#if route}}
+      <li class="breadcrumb-item"><a href="javascript:history.back()"><i class="fa fa-chevron-left"></i> Back</a></li>
+
+      {{#if routeX}}
         <li class="breadcrumb-item"><a href="{{pathFor route}}"><i class="fa fa-chevron-left"></i> Back</a></li>
       {{/if}}
     </ol>

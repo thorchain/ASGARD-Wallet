@@ -1,13 +1,16 @@
 <template name="walletCreate">
   <div class="row">
 
+    <div class="col-md-8 mr-auto ml-auto">
+      <h5 class="mb-4 text-center">Create New Wallet</h5>
+    </div>
+
+
     {{#if isLoading}}
       <div class="col-sm-12">Loading... {{loadingMsg}}</div>
     {{else}}
 
       <div class="col-md-8 mr-auto ml-auto">
-        <h5 class="mb-4 text-center">Create New Wallet</h5>
-
         {{!-- Nav Tabs --}}
         <ul class="nav nav-tabs d-flex justify-content-center mb-4">
           <li class="nav-item">

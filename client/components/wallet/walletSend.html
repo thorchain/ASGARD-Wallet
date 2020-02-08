@@ -50,15 +50,20 @@
         <small class="form-text text-{{#if amountError}}warning{{else}}accent{{/if}}">{{#if amountError}}{{amountError}}{{else}}{{#if (param 'asset')}}Available balance: {{balances.free}}{{/if}}{{/if}}</small>
       </div>
 
+      <div class="form-group col-md-12 mb-2">
+        <label for="inputAmount">Password</label>
+        <input type="password" class="form-control mb-3" name="password" id="inputAmount" aria-describedby="passwordHelp" placeholder="password">
+        <small class="form-text text-warning">{{passwordError}}</small>
+      </div>
 
-      <div class="form-group col-md-12 mt-2">
-        <input type="submit" class="form-control btn btn-primary" value="Send" id="inputPassword4">
+
+      <div class="form-group col-md-12 my-2">
+        <input type="submit" class="form-control btn btn-primary{{#if loadingMsg}} disabled{{/if}}" value="Send" id="inputPassword4">
+        <div class="text-center text-muted mt-2">{{loadingMsg}}</div>
       </div>
 
 
     </div>
-    {{!-- <input class="form-control mb-2" type="text" name="recipient" placeholder="recipient"> --}}
-    {{!-- <input class="form-control mb-2" type="text" name="amount" placeholder="amount"> --}}
 
   </form>
   {{!-- {{> transferTransactionForm}} --}}

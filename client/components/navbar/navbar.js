@@ -5,12 +5,8 @@ if (Meteor.isClient) {
       const curr = FlowRouter.current()
       return curr.route.name == routeName;
     },
-    isUnlocked: function () {
-      // Temporary logic: Change to match
-      const usr = UserAccount.findOne()
-      return usr && usr.privateKey ? true : false
+    isUnlocked: async function () {
+      return WALLET.getIsUnlocked() === true ? true : false;
     }
-  });
-  Template.navbar.events({
   });
 }

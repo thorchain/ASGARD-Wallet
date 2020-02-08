@@ -1,5 +1,8 @@
 <template name="walletImport">
   <div class="row">
+    <div class="col-md-8 mr-auto ml-auto">
+      <h4 class="mb-4 text-center">Import existing wallet</h4>
+    </div>
 
     {{#if isLoading}}
       <div class="col-sm-12">Loading... {{loadingMsg}}</div>
@@ -7,7 +10,6 @@
 
       <div class="col-md-8 mr-auto ml-auto">
 
-        <h4 class="mb-4 text-center">Import existing wallet</h4>
         {{!-- Nav Tabs --}}
         <ul class="nav nav-tabs d-flex justify-content-center mb-4">
           <li class="nav-item">

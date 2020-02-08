@@ -1,3 +1,4 @@
+const cosmosjs = require("@cosmostation/cosmosjs");
 import axios from 'axios';
 import bnbClient from '@binance-chain/javascript-sdk';
 // import { NET, isTestnet } from '../env';
@@ -229,6 +230,37 @@ class Binance {
 
     return result;
   };
+
+  // SECURITY: Private keys are here
+  sendRawTransaction = (sender, recipient, amount, asset, key) => {
+    // let stdSignMsg = cosmosjs.newStdMsg({
+    //   msgs: [
+    //     {
+    //       type: "cosmos-sdk/MsgSend",
+    //       value: {
+    //         amount: [
+    //           {
+    //             amount: String(amount),
+    //             denom: asset
+    //             // denom: "uatom"
+    //           }
+    //         ],
+    //         from_address: sender,
+    //         to_address: recipient
+    //       }
+    //     }
+    //   ],
+    //   chain_id: CHAIN_ID,
+    //   fee: { amount: [ { amount: String(5000), denom: "bnb" } ], gas: String(200000) },
+    //   memo: "",
+    //   account_number: String(data.result.value.account_number),
+    //   sequence: String(data.result.value.sequence)
+    // });
+
+    // const signedTx = cosmosjs.sign(stdSignMsg, ecpairPriv);
+
+  }
+
 }
 
 // NOTE: cypress expects this here
