@@ -31,8 +31,8 @@ if (Meteor.isClient) {
             }).catch(err => {
               if (err.message.includes('wrong password')) {
                 self.formErrors.set('password', 'Incorrect password')
-                self.isLoading.set(false)
               }
+              self.isLoading.set(false)
             })
         }
       };

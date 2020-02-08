@@ -133,7 +133,7 @@ export default class WalletController extends EventEmitter{
   initializeTokenData = async() => {
       const usr = await UserAccount.findOne()
       if (usr && usr.assets && usr.assets.length > 0) {
-        const tokens = await this.getTokenData(assets)
+        const tokens = await this.getTokenData(usr.assets)
         TokenData.remove({})
         TokenData.batchInsert(tokens)
       }
@@ -154,8 +154,8 @@ export default class WalletController extends EventEmitter{
   initializeConn = async (address) => {
     let connAccount, connTransfer
     try {
-      connTransfer = new WebSocket("wss://testnet-dex.binance.org/api/ws");
-      connAccount = new WebSocket("wss://testnet-dex.binance.org/api/ws");
+      this.connTransfer = new WebSocket("wss://testnet-dex.binance.org/api/ws");
+      this.connAccount = new WebSocket("wss://testnet-dex.binance.org/api/ws");
     } catch (error) {
       throw Error(error)
     }
@@ -163,10 +163,10 @@ export default class WalletController extends EventEmitter{
     // subscribe transactions
     console.log("initializing sockets");
     
-    connTransfer.onopen = function (evt) {
-      connTransfer.send(JSON.stringify({ method: "subscribe", topic: "transfers", address: address }))
+    this.connTransfer.onopen = (evt) => {
+      this.connTransfer.send(JSON.stringify({ method: "subscribe", topic: "transfers", address: address }))
     }
-    connTransfer.onmessage = (msg) => {
+    this.connTransfer.onmessage = (msg) => {
       console.log("got transfer websocket message");
       
       // const data = JSON.parse(msg.data)
@@ -203,10 +203,10 @@ export default class WalletController extends EventEmitter{
     }
 
     // subscribe account
-    connAccount.onopen = function (evt) {
-      connAccount.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
+    this.connAccount.onopen = (evt) => {
+      this.connAccount.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
     }
-    connAccount.onmessage = async (msg) => {
+    this.connAccount.onmessage = async (msg) => {
       console.log("got websocket account msg")
       const data = JSON.parse(msg.data)
       
@@ -355,6 +355,8 @@ export default class WalletController extends EventEmitter{
 
   isUnlocked = () => { return this.getIsUnlocked() }
   lock = () => {
+    this.connAccount.close()
+    this.connTransfer.close()
     this.setIsUnlocked(false)
     return true
   }

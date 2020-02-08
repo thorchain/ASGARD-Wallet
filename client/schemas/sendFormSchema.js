@@ -21,7 +21,16 @@ Schemas.formTransferTx = new SimpleSchema({
 	},
 	amount: {
 		type: Number,
-		label: "Amount"
+    label: "Amount",
+    custom() {
+      if (this.value > this.field('maxAmount').value) {
+        return "insufficientFunds";
+      }
+    },
+  },
+  maxAmount: {
+    type: Number,
+    label: "Max Amount"
   },
   asset: {
     type: String,

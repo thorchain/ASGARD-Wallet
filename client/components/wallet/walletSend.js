@@ -4,8 +4,10 @@ if (Meteor.isClient) {
     const self = this
     self.formErrors = new ReactiveDict()
     self.loadingMsg = new ReactiveVar()
-    self.getBalances = () => {
-      const symbol = FlowRouter.getParam("asset")
+    self.getBalances = (asset) => {
+      // console.log(asset);
+      
+      const symbol = asset || FlowRouter.getParam("asset")
       const assets = UserAccount.findOne().assets
       return assets && assets.length > 0 ? assets.find(e => e.symbol === symbol) : null
     }
@@ -50,9 +52,10 @@ if (Meteor.isClient) {
       // Schema based validation
       const validationContext = Schemas.formTransferTx.namedContext('transfer');
       // TODO: Add max amount to pre-check insufficient funds
-      // const balances = self.getBalances()
+      const balances = self.getBalances(asset)
+      
       const obj = validationContext.clean({
-        // maxAmount: balances.free
+        maxAmount: balances.free,
         sender: from,
         recipient: t.recipient.value,
         amount: t.amount.value,
@@ -60,20 +63,34 @@ if (Meteor.isClient) {
         password: t.password.value
       });
       
-      self.loadingMsg.set("loading...")
       validationContext.validate(obj);
+      const sleep = m => new Promise(r => setTimeout(r, m))
 
       if (validationContext.isValid()) {
+        self.loadingMsg.set("preparing tx...")
+        await sleep(200)
+        let account
         try {
           let keystore = window.localStorage.getItem("binance")
           // NOTE: This will throw password errors
-          const account = await WALLET.generateAccountFromKeystore(obj.password, keystore)
-          BNB.bnbClient.setPrivateKey(account.privateKey, true)
+          // we have to delay this...
+          
+          account = await WALLET.generateAccountFromKeystore(obj.password, keystore)
+          
+          
+          // TODO: replace with custom raw tx build/sign/send
+          await BNB.bnbClient.setPrivateKey(account.privateKey, true)
+          
           delete obj.password
           keystore = null // SECURITY: unsetting
-
+          self.loadingMsg.set("sending tx...")
+          
           BNB.transfer(from, obj.recipient, obj.amount, obj.asset).then((e) => {
+            console.log("tx success!!!");
+            
             BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
+            // go to view of the asset
+            // FlowRouter.go('walletAssetDetails',{symbol: obj.asset})
             history.back()
           }).catch((e) => {
             BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
@@ -105,8 +122,11 @@ if (Meteor.isClient) {
           })
           
         } catch (error) {
-          console.log(error)
-          self.loadingMsg.set(null)
+            self.loadingMsg.set(null)
+          // only thing here is basicallly a pw/keystore error
+            if (error.message.includes('wrong password')) {
+              self.formErrors.set('password', 'Incorrect password')
+            }
         }
 
         
