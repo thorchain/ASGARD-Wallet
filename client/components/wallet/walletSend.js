@@ -3,6 +3,7 @@ if (Meteor.isClient) {
   Template.walletSend.onCreated(function() {
     const self = this
     self.formErrors = new ReactiveDict()
+    self.loadingMsg = new ReactiveVar()
     self.getBalances = () => {
       const symbol = FlowRouter.getParam("asset")
       const assets = UserAccount.findOne().assets
@@ -28,22 +29,18 @@ if (Meteor.isClient) {
         return symbol.split("-")[0].substr(0,4)
       }
     },
-    recipientError () {
-      return Template.instance().formErrors.get('recipient')
-    },
-    amountError () {
-      return Template.instance().formErrors.get('amount')
-    },
-    assetError () {
-      return Template.instance().formErrors.get('asset')
-    }
+    loadingMsg () { return Template.instance().loadingMsg.get() },
+    recipientError () { return Template.instance().formErrors.get('recipient') },
+    amountError () { return Template.instance().formErrors.get('amount') },
+    assetError () { return Template.instance().formErrors.get('asset') },
+    passwordError () { return Template.instance().formErrors.get('password') },
   });
   Template.walletSend.events({
     "keyup #send-transaction-form input": function (event, self) {
       const name = event.currentTarget.name
       self.formErrors.set(name,'')
     },
-    "submit #send-transaction-form": function (event, self) {
+    "submit #send-transaction-form": async function (event, self) {
       event.preventDefault();
       const t = event.currentTarget
       const from = UserAccount.findOne().address
@@ -52,7 +49,6 @@ if (Meteor.isClient) {
 
       // Schema based validation
       const validationContext = Schemas.formTransferTx.namedContext('transfer');
-      // TODO: Add password when vault is closed
       // TODO: Add max amount to pre-check insufficient funds
       // const balances = self.getBalances()
       const obj = validationContext.clean({
@@ -60,23 +56,29 @@ if (Meteor.isClient) {
         sender: from,
         recipient: t.recipient.value,
         amount: t.amount.value,
-        asset: asset
+        asset: asset,
+        password: t.password.value
       });
       
+      self.loadingMsg.set("loading...")
       validationContext.validate(obj);
-      console.log(validationContext.validationErrors());
-      // const url = "http://google.com"
-      // require('electron').shell.openExternal(url);
 
       if (validationContext.isValid()) {
         try {
-          // TODO: Add decrypt valut here when upgrading useraccount to persistent
-          BNB.transfer(from, obj.recipient, obj.amount, obj.asset).then(async (e) => {
-            // FlowRouter.go("walletAssets")
+          let keystore = window.localStorage.getItem("binance")
+          // NOTE: This will throw password errors
+          const account = await WALLET.generateAccountFromKeystore(obj.password, keystore)
+          BNB.bnbClient.setPrivateKey(account.privateKey, true)
+          delete obj.password
+          keystore = null // SECURITY: unsetting
+
+          BNB.transfer(from, obj.recipient, obj.amount, obj.asset).then((e) => {
+            BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
             history.back()
           }).catch((e) => {
-            console.log('there was a tx error.... promis catch');
+            BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
             console.log(e.message);
+            self.loadingMsg.set(null)
             
             // const msg = e.message
             if (e.message.includes("insufficient fund")) {
@@ -103,14 +105,18 @@ if (Meteor.isClient) {
           })
           
         } catch (error) {
-          
+          console.log(error)
+          self.loadingMsg.set(null)
         }
 
         
       } else {
+        // Handle the form validation errors 
+        self.loadingMsg.set(null)
         self.formErrors.set('recipient', validationContext.keyErrorMessage('recipient'))
         self.formErrors.set('amount', validationContext.keyErrorMessage('amount'))
         self.formErrors.set('asset', validationContext.keyErrorMessage('asset'))
+        self.formErrors.set('password', validationContext.keyErrorMessage('password'))
       }
       
     }

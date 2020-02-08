@@ -28,6 +28,11 @@ if (Meteor.isClient) {
             WALLET.generateNewWallet(pw, null, keystore).then(async (e) => {
               await WALLET.unlock(pw)
               FlowRouter.go("home")
+            }).catch(err => {
+              if (err.message.includes('wrong password')) {
+                self.formErrors.set('password', 'Incorrect password')
+                self.isLoading.set(false)
+              }
             })
         }
       };
@@ -55,27 +60,16 @@ if (Meteor.isClient) {
 
     }
 
-    self.autorun(function (params) {
-      
-    })
   })
 
   Template.walletImport.helpers({
     isMnemonic () { return Template.instance().isMnemonic.get() },
     isLoading () { return Template.instance().isLoading.get() },
     loadingMsg () { return Template.instance().loadingMsg.get() },
-    pwError () {
-      return Template.instance().formErrors.get('password')
-    },
-    repeatPwError () {
-      return Template.instance().formErrors.get('repeatPassword')
-    },
-    fileError () {
-      return Template.instance().formErrors.get('keystoreFile')
-    },
-    mnemonicError () {
-      return Template.instance().formErrors.get('mnemonic')
-    },
+    pwError () { return Template.instance().formErrors.get('password') },
+    repeatPwError () { return Template.instance().formErrors.get('repeatPassword') },
+    fileError () { return Template.instance().formErrors.get('keystoreFile') },
+    mnemonicError () { return Template.instance().formErrors.get('mnemonic') },
   });
 
   Template.walletImport.events({
