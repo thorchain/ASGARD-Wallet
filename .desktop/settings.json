@@ -46,11 +46,11 @@
     "dependencies": {},
     "packageJsonFields": {
         "description": "Asgard Wallet",
-        "author": "Me, Myself And I",
+        "author": "Thorchain",
         "private": true
     },
     "builderOptions": {
-        "icon": ".desktop/assets/meteor.ico",
+        "icon": ".desktop/assets/asgard-wallet.ico",
         "appId": "meteor.app",
         "productName": "Asgard Wallet",
         "compression": "maximum",
@@ -68,10 +68,10 @@
             }
         ],
         "mac": {
-            "icon": ".desktop/assets/meteor.icns"
+            "icon": ".desktop/assets/asgard-wallet.icns"
         },
         "dmg": {
-            "icon": ".desktop/assets/meteor.icns",
+            "icon": ".desktop/assets/asgard-wallet.icns",
             "background": ".desktop/assets/dmgBackground.png",
             "iconSize": 54,
             "contents": [
@@ -85,13 +85,13 @@
         }
     },
     "packagerOptions": {
-        "icon": ".desktop/assets/meteor.ico",
+        "icon": ".desktop/assets/asgard-wallet.ico",
         "_osx": {
-            "icon": ".desktop/assets/meteor.icns"
+            "icon": ".desktop/assets/asgard-wallet.icns"
         },
         "appVersion": "@version",
         "buildVersion": "@version",
-        "appCopyright": "Copyright 2018 My Company - All rights reserved.",
+        "appCopyright": "Copyright 2020 Thorchains - All rights reserved.",
         "win32metadata": {
             "CompanyName": "My Company",
             "FileDescription": "AsgardWallet",
