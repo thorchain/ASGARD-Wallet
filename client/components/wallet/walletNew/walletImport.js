@@ -4,14 +4,14 @@ if (Meteor.isClient) {
     const self = this;
     self.isMnemonic = new ReactiveVar(false);
 		self.isLoading = new ReactiveVar(false)
-    self.loadingMsg = new ReactiveVar("")
+    self.loadingMsg = new ReactiveVar(null)
     self.formErrors = new ReactiveDict()
     
     self.importMnemonicWallet = async (mnemonic, pw) => {
       WALLET.generateNewWallet(pw, mnemonic).then(async (e) => {
         await WALLET.unlock(pw)
         FlowRouter.go("home")
-      })
+      }).catch(e => { throw Error(e)})
     }
 
     self.importWalletFile = (file, pw, check) => {
@@ -32,6 +32,7 @@ if (Meteor.isClient) {
               if (err.message.includes('wrong password')) {
                 self.formErrors.set('password', 'Incorrect password')
               }
+              self.loadingMsg.set(null)
               self.isLoading.set(false)
             })
         }
@@ -73,15 +74,6 @@ if (Meteor.isClient) {
   });
 
   Template.walletImport.events({
-    "click [data-event='fileReset']": function (event, self) {
-      event.stopPropagation()
-      self.formErrors.set('keystoreFile','')
-      // clear the file value
-      $("#upload-file-input").val("")
-      $('#upload-file-button > span').text("Select File")
-      $('#upload-file-button').removeClass("disabled")
-      $("[data-event=fileReset").addClass("d-none")
-    },
     "click [data-event='toggleMnemonic']": function (event, self) {
       event.preventDefault();
       self.formErrors.set('password','')
@@ -98,9 +90,7 @@ if (Meteor.isClient) {
       const file = event.currentTarget.files[0]
       self.formErrors.set('keystoreFile','')
       self.importWalletFile(file, null, true)
-      $('#upload-file-button > span').text(file.name)
-      $('#upload-file-button').addClass("disabled")
-      $("[data-event=fileReset]").removeClass("d-none")
+      $('#upload-file-button > .button-content').text(file.name)
     },
     "click #upload-file-button": function (event, self) {
       event.preventDefault()
@@ -123,16 +113,15 @@ if (Meteor.isClient) {
         const file = t.keystoreFile.files[0];
         const pw = t.password.value;
         self.isLoading.set(true)
-        self.loadingMsg.set("processing file")
+        self.loadingMsg.set("processing file...")
         // Delay to allow for UI render DOM update before CPU takes over keystore processing
         setTimeout(async () => {
           try {
             await self.importWalletFile(file, pw)
           } catch (err) {
-            self.isLoading.set(false)
             console.log(err)
           }
-        }, 100);
+        }, 200);
 
       } 
     },

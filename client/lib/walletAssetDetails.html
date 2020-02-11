@@ -42,14 +42,18 @@
 
     <div class="col-6 my-4 text-center">
       <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletSend' asset=(param 'symbol')}}" value="send">
+      {{#if freezable}}
       <input type="button" class="btn btn-text mt-3" value="Freeze">
       <div class="small">Freeze assets on address</div>
+      {{/if}}
     </div>
 
     <div class="col-6 my-4 text-center">
       <input type="button" class="btn btn-primary w-100" data-nav="{{pathFor 'walletReceive'}}" value="recieve">
+      {{#if freezable}}
       <input type="button" class="btn btn-text mt-3" value="Unfreeze">
       <div class="small">Unfreeze assets on address</div>
+      {{/if}}
     </div>
 
   </div>

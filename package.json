@@ -23,6 +23,7 @@
     "bn.js": "^5.1.1",
     "bootstrap": "^4.4.1",
     "bufferutil": "^4.0.1",
+    "clipboard": "^2.0.4",
     "cosmos-lib": "^1.1.0",
     "electron-builder": "^21.2.0",
     "electron-packager": "^14.1.1",

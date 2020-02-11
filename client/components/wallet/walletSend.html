@@ -21,7 +21,7 @@
   {{/if}}
 
   <form id="send-transaction-form" class="form" autocomplete="off">
-
+    <fieldset disabled="{{#if loadingMsg}}disabled{{/if}}">
     <div class="form-row">
 
       <div class="form-group col-md-12 mb-2">
@@ -64,6 +64,8 @@
 
 
     </div>
+
+  </fieldset>
 
   </form>
   {{!-- {{> transferTransactionForm}} --}}
