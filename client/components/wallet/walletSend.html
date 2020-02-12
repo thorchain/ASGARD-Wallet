@@ -58,13 +58,15 @@
 
 
       <div class="form-group col-md-12 my-2">
-        <button type="submit" class="form-control btn btn-primary{{#if loadingMsg}} disabled{{/if}}">
-          {{#if loadingMsg}}
-          <div class="spinner-border spinner-border-sm" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-          {{loadingMsg}}
-          {{else}}Send{{/if}}
+        <button type="submit" class="form-control btn btn-dark btn-brand-border">
+          <span>
+            {{#if loadingMsg}}
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            {{loadingMsg}}
+            {{else}}Send{{/if}}
+          </span>
         </button>
       </div>
 
@@ -74,10 +76,5 @@
   </fieldset>
 
   </form>
-  {{!-- {{> transferTransactionForm}} --}}
 </template>
 
-
-<template name="transferTransactionForm">
-
-</template>

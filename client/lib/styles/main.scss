@@ -8,22 +8,43 @@ $letter-spacing-base: .1rem;
 $headings-letter-spacing: $letter-spacing-base * 1.3;
 $text-letter-spacing: $letter-spacing-base * .7;
 
-body, html, #app-wrapper {
-  min-height: 100%;
-  min-height: 100vh;
+ html, body {
+  height: 100%;
   letter-spacing: $text-letter-spacing;
+  overflow: hidden;
+}
+
+#app-wrapper {
+  height: 100%;
+  padding-top: 72px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4 ,h5 {
-  // pointer-events: none;
   text-transform: uppercase;
   letter-spacing: $headings-letter-spacing;
 }
-
-
-#app-wrapper {
-  padding-top: 72px;
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
 }
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: $gray-900;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $gray-600;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: $gray-400;
+}
+
 
 
 [data-nav] {
@@ -31,8 +52,6 @@ h1, h2, h3, h4 ,h5 {
 }
 
 li.media[data-nav]:hover {
-  // background-color: #e5fafb;
-  // background-color: #848E9B;
   background-color: $Light-Gray;
 }
 
@@ -128,22 +147,6 @@ li.media[data-nav]:hover {
   font-size: $font-size-base * .8;
   letter-spacing: $text-letter-spacing * .8;
 }
-// for custom responsive table content
-.table td {
-  // position: relative;
-  // :before {
-  //   content: '';
-  //   display: inline-block;
-  // }
-}
-
-// .table td span.text-truncate {
-//   // overflow: hidden;
-//   // white-space: nowrap;
-//   // text-overflow: ellipsis;
-//   position: absolute;
-//   width: 100%;
-// }
 
 
 // Typography, Fonts, & Text
@@ -167,15 +170,15 @@ li.media[data-nav]:hover {
 
 
 
-
-
-// Custom Bootstrap Styles
+// Custom Styles
 
 // Custom background
 #app-wrapper.bg-img-brand {
   background-image: url("/img/Asgard-Swirl.png");
   background-attachment: fixed;
-  background-size: cover;
+	background-size: auto;
+	background-position: right;
+	background-repeat: no-repeat;
 }
 
 // This can be use INSIDE button (.btn) content
@@ -186,6 +189,11 @@ li.media[data-nav]:hover {
   margin-right: -8px;
   right: 18px;
 }
+
+
+
+// Custom component styles
+
 
 // Icon circle
 .circle {
@@ -198,10 +206,7 @@ li.media[data-nav]:hover {
   height: 52px;
   font-size: 14px;
   font-weight: bold;
-  // box-shadow: rgb(47, 74, 87) 0px 0px 4px 1px;
   border-color: rgb(44, 50, 54);
-  
-  // box-shadow: $Black-Gray 0px 0px 4px 1px;
 }
 
 .circle-icon-md {
@@ -210,10 +215,7 @@ li.media[data-nav]:hover {
   height: 46px;
   font-size: 11px;
   font-weight: bold;
-  // box-shadow: rgb(47, 74, 87) 0px 0px 4px 1px;
   border-color: rgb(44, 50, 54);
-  
-  // box-shadow: $Black-Gray 0px 0px 4px 1px;
 }
 .circle-icon-sm {
   @extend .circle;
@@ -221,33 +223,48 @@ li.media[data-nav]:hover {
   height: 36px;
   font-size: 9px;
   font-weight: bold;
-  // box-shadow: rgb(7, 17, 20) 0px 0px 4px 1px;
   border-color: rgb(44, 50, 54);
 }
 
+$swirl-width: 2020px;
 .bg-brand-swirl {
-  width: 302.7%;
+  width: $swirl-width;
   position: fixed;
-  right: -192.7%;
-  top: -130.3%;
+  top: $swirl-width * -0.57;
+  right: $swirl-width * -0.60;
   &[class^='spin-'] {
     position: absolute;
   }
 }
 
-.spin-cw { animation: spin 10s linear infinite; }
-.spin-acw { animation: spin-anti 10s linear infinite; }
+.spin-cw { animation: spin 18s linear infinite; }
+.spin-acw { animation: spin-anti 24s linear infinite; }
 @keyframes spin { from {transform:rotate(0deg);} to {transform:rotate(360deg);} }
 @keyframes spin-anti { from {transform:rotate(360deg);} to {transform:rotate(0deg);} }
 
-
-
-.btn.btn-brand {
-  &::before {
+// When using this, place button text inside inner <span>
+.btn-brand-border {
+  padding: $btn-border-width; // this creates the pseudo border
+  background-image: linear-gradient(to right, $Asgard-Green, $Accent-Blue);
+  &:hover {
+    // border: 2px solid transparent;
+  }
+  &::after {
     display: block;
+    position: relative;
+    background-color: inherit;
+    width: 100%;
+    height: 100%;
+    border-radius: $btn-border-radius; // needs different sizes
+    content: ""
+  }
+  >span {
+    // required: assummed content
     position: absolute;
-    width: 30px;
-    height: 40px;
-    background: pink;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: $btn-padding-y $btn-padding-x;
   }
 }
