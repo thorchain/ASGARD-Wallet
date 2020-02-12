@@ -225,7 +225,21 @@ li.media[data-nav]:hover {
   border-color: rgb(44, 50, 54);
 }
 
-// @import "{}/imports/bootstrap/scss/variables";
+.bg-brand-swirl {
+  width: 302.7%;
+  position: fixed;
+  right: -192.7%;
+  top: -130.3%;
+  &[class^='spin-'] {
+    position: absolute;
+  }
+}
+
+.spin-cw { animation: spin 10s linear infinite; }
+.spin-acw { animation: spin-anti 10s linear infinite; }
+@keyframes spin { from {transform:rotate(0deg);} to {transform:rotate(360deg);} }
+@keyframes spin-anti { from {transform:rotate(360deg);} to {transform:rotate(0deg);} }
+
 
 
 .btn.btn-brand {
