@@ -161,12 +161,15 @@ li.media[data-nav]:hover {
   height: 0;
   margin: 0 -15px 0 -15px; // account for container margin
 }
+.col-m-correct {
+  margin-left: $grid-gutter-width / 2 * -1;
+}
 
 
 
 
 
-// Custom Styles
+// Custom Bootstrap Styles
 
 // Custom background
 #app-wrapper.bg-img-brand {

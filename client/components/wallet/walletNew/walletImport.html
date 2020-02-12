@@ -1,12 +1,9 @@
 <template name="walletImport">
   <div class="row">
     <div class="col-md-8 mr-auto ml-auto">
-      <h4 class="mb-4 text-center">Import existing wallet</h4>
+      <h4 class="mb-4 text-center">Import existing</h4>
     </div>
 
-    {{#if isLoading}}
-      <div class="col-sm-12">Loading... {{loadingMsg}}</div>
-    {{else}}
 
       <div class="col-md-8 mr-auto ml-auto">
 
@@ -22,12 +19,13 @@
 
       {{#unless isMnemonic}}
 
-        <form id="upload-keystore-form" class="form" autocomplete="off">
+        <form id="upload-keystore-form" class="form" autocomplete="off" disabled="disabled">
+          <fieldset disabled="{{#if isLoading}}disabled{{/if}}">
+
           <div class="form-row">
             <div class="form-group col-md-12">
               <button id="upload-file-button" type="button" class="form-control btn btn-primary mb-3" data-event="triggerFileInput">
-                <span>Select File</span>
-                <button type="button" class="btn btn-sm btn-dark btn-overlay d-none" data-event="fileReset"><i class="fa fa-times"></i></button>
+                <div class="button-content text-truncate">Select File</div>
               </button>
               <small id="fileHelp" class="form-text text-warning">{{fileError}}</small>
             </div>
@@ -42,45 +40,50 @@
 
             <div class="form-group col-md-12">
               <input type="submit" class="form-control form-control-lg btn btn-primary" value="Import">
+              <div class="text-center text-muted mt-2">{{loadingMsg}}</div>
             </div>
 
           </div> 
+          </fieldset>
         </form>
 
       {{else}}
 
         <form id="import-mnemonic-form" class="form" autocomplete="off">
-          <div class="form-row">
-            <div class="form-group col-md-12">
-              <label for="inputMnemonic">Phrase</label>
-              <input type="text" id="inputMnemonic" class="form-control mb-3" placeholder="enter phrase" name="mnemonic">
-              <small id="mnemonicHelp" class="form-text text-warning">{{mnemonicError}}</small>
+          <fieldset disabled="{{#if isLoading}}disabled{{/if}}">
+
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="inputMnemonic">Phrase</label>
+                <input type="text" id="inputMnemonic" class="form-control mb-3" placeholder="enter phrase" name="mnemonic">
+                <small id="mnemonicHelp" class="form-text text-warning">{{mnemonicError}}</small>
+              </div>
+
+              <div class="form-group col-md-12">
+                <label for="inputPassword">New Password</label>
+                <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
+                <small id="passwordHelp" class="form-text text-warning">{{pwError}}</small>
+              </div>
+
+              <div class="form-group col-md-12">
+                <label for="repeatPassword">Repeat Password</label>
+                <input type="password" class="form-control mb-3" name="repeatPassword" id="repeatPassword" aria-describedby="repeatPasswordHelp" placeholder="password">
+                <small id="repeatPasswordHelp" class="form-text text-warning">{{repeatPwError}}</small>
+              </div>
+
+              <div class="form-group col-md-12">
+                <input type="submit" class="form-control form-control-lg btn btn-primary{{#unless isLoading}} disabled{{/unless}}" value="Import">
+                <div class="text-center text-muted mt-2">{{loadingMsg}}</div>
+              </div>
             </div>
 
-            <div class="form-group col-md-12">
-              <label for="inputPassword">New Password</label>
-              <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
-              <small id="passwordHelp" class="form-text text-warning">{{pwError}}</small>
-            </div>
+          </fieldset>
 
-            <div class="form-group col-md-12">
-              <label for="repeatPassword">Repeat Password</label>
-              <input type="password" class="form-control mb-3" name="repeatPassword" id="repeatPassword" aria-describedby="repeatPasswordHelp" placeholder="password">
-              <small id="repeatPasswordHelp" class="form-text text-warning">{{repeatPwError}}</small>
-            </div>
-
-            <div class="form-group col-md-12">
-              <input type="submit" class="form-control form-control-lg btn btn-primary" value="Import">
-            </div>
-          </div>
         </form>
 
       {{/unless}}
 
-
       </div>
-
-    {{/if}}
 
   </div>
 </template>

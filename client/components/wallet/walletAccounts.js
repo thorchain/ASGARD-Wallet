@@ -12,6 +12,10 @@ if (Meteor.isClient) {
     },
     shortSymbol (symbol) {
       return symbol.split("-")[0].substr(0,4)
-    }
+    },
+    downloadLink () {
+      const keystore = localStorage.getItem('binance')
+      return 'data:text/plain;charset=utf-8,' + encodeURIComponent(keystore)
+    },
   })
 }

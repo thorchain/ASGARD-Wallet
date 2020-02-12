@@ -35,7 +35,7 @@ fetch@0.1.1
 fourseven:scss@4.12.0
 frozeman:persistent-minimongo2@0.4.0
 geojson-utils@1.0.10
-gwendall:body-events@0.1.7
+gwendall:body-events@0.1.6
 hot-code-push@1.0.4
 html-tools@1.0.11
 htmljs@1.0.11

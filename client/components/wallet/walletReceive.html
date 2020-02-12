@@ -1,12 +1,35 @@
 <template name="walletReceive">
-  <h5 class="text-center mb-4">Receive Funds</h5>
-  <div class="card mt-3 border-0">
+<h5 class="text-center mb-4">Receive Funds</h5>
+<div class="row">
 
-    <div class="card-body text-center">
+  <div class="col-md-8 mx-auto">
 
-      <div class="rounded d-inline-block mx-auto mb-3" id="qr-container"></div>
-      <div class=""><span class="font-weight-bold">Address</span> {{account.address}}</div>
+    <div class="card mt-3 border-0">
+      <div class="card-body text-center">
 
+        <div class="rounded d-inline-block mx-auto mb-3" id="qr-container"></div>
+
+      </div>
     </div>
+
+
   </div>
+
+  <div class="form-group col-md-8 mx-auto text-center">
+
+    <label for="clipboard-btn" class="d-block">
+      <div class="text-truncate text-monospace text-lowercase">{{account.address}}</div>
+    </label>
+    <div id="clipboard-btn" class="btn btn-primary my-4 px-5" data-clipboard-text="{{account.address}}" aria-describedby="copyBtnHelp">
+      Copy&nbsp;<fa class="fa fa-copy"></fa>
+    </div>
+    <small id="copyBtnHelp" class="form-text text-muted text-centered w-100 col-m-correct">{{copyMsg}}</small>
+
+  </div>
+
+</div>
+
+
+
+
 </template>

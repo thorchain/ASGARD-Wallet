@@ -55,7 +55,7 @@ if (Meteor.isClient) {
       const balances = self.getBalances(asset)
       
       const obj = validationContext.clean({
-        maxAmount: balances.free,
+        maxAmount: balances && balances.free || 0,
         sender: from,
         recipient: t.recipient.value,
         amount: t.amount.value,
@@ -124,6 +124,7 @@ if (Meteor.isClient) {
         } catch (error) {
             self.loadingMsg.set(null)
           // only thing here is basicallly a pw/keystore error
+          // when generating the keystore for the privatekey to sign tx
             if (error.message.includes('wrong password')) {
               self.formErrors.set('password', 'Incorrect password')
             }
