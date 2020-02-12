@@ -355,10 +355,7 @@ export default class WalletController extends EventEmitter{
 
   isUnlocked = () => { return this.getIsUnlocked() }
   lock = () => {
-    // check if is locked before?
-    if (this.isUnlocked() === true) {
-      console.log("why are you here?");
-      
+    if (this.getIsUnlocked() === true) {
       // TODO: Check this logic is comprehensive
       this.connAccount.close()
       this.connTransfer.close()
