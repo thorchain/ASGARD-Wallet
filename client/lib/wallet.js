@@ -360,17 +360,20 @@ export default class WalletController extends EventEmitter{
       this.connAccount.close()
       this.connTransfer.close()
     }
+    const account = UserAccount.findOne()
+    UserAccount.update({_id:account._id},{$set: {locked: true}})
     this.setIsUnlocked(false)
     return true
   }
   unlock = async (pw) => {
     // intended only for just created wallets, no sync, no init conn
     const check = await this.checkUserAuth(pw)
-    // OMFG, ofc, the BNB client is not inited... on startup...
     // const account = UserAccount.findOne()
     if (check) {
       await BNB.initializeClient() // pubkey only?
-      await this.setIsUnlocked(true) // SECURITY: leave last
+      this.setIsUnlocked(true) // SECURITY: leave last
+      const account = UserAccount.findOne()
+      UserAccount.update({_id:account._id},{$set: {locked: false}})
     } else {
       
       throw Error("Incorrect password")
@@ -384,7 +387,8 @@ export default class WalletController extends EventEmitter{
         await BNB.initializeClient() // pubkey only?
         await this.initializeConn(account.address) // this should fail gracefully for offline use
         await this.syncUserData()
-        await this.setIsUnlocked(true) // SECURITY: leave last
+        this.setIsUnlocked(true) // SECURITY: leave last
+        UserAccount.update({_id:account._id},{$set: {locked: false}})
         
       } catch (error) {
         throw Error(error)

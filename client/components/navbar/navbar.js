@@ -6,7 +6,9 @@ if (Meteor.isClient) {
       return curr.route.name == routeName;
     },
     isUnlocked: function () {
-      return WALLET.isUnlocked() === true ? true : false;
-    }
+      const acc = UserAccount.findOne()
+      return acc && acc.locked === false ? true : false
+    },
+
   });
 }
