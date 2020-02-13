@@ -5,10 +5,11 @@ var bcrypt = require('bcryptjs');
 export default class WalletController extends EventEmitter{
   constructor () {
     super()
-    let isUnlocked = false
-    this.getIsUnlocked = function () { return this.isUnlocked}
-    this.setIsUnlocked = function (v) { this.isUnlocked = v === true ? true : false }
+    let locked = true
+    this.getIsUnlocked = function () { return !locked }
+    this.setIsUnlocked = function (v) { locked = v === true ? false : true }
   }
+  isUnlocked () { return this.getIsUnlocked() }
 
   generateUserAuth = async (pw) => {
     const user = UserAccount.findOne()
@@ -353,7 +354,6 @@ export default class WalletController extends EventEmitter{
   }
 
 
-  isUnlocked = () => { return this.getIsUnlocked() }
   lock = () => {
     if (this.getIsUnlocked() === true) {
       // TODO: Check this logic is comprehensive

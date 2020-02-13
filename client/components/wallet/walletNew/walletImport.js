@@ -76,11 +76,13 @@ if (Meteor.isClient) {
   Template.walletImport.events({
     "click [data-event='toggleMnemonic']": function (event, self) {
       event.preventDefault();
-      self.formErrors.set('password','')
-      self.formErrors.set('repeatPassword','') // not working?
-      self.formErrors.set('keystoreFile','')
-      self.formErrors.set('mnemonic','')
-      self.isMnemonic.set(!self.isMnemonic.get())
+      if (!$(event.currentTarget).hasClass('active')) {
+        self.formErrors.set('password','')
+        self.formErrors.set('repeatPassword','') // not working?
+        self.formErrors.set('keystoreFile','')
+        self.formErrors.set('mnemonic','')
+        self.isMnemonic.set(!self.isMnemonic.get())
+      }
     },
     "keyup #upload-keystore-form input, keyup #import-mnemonic-form input": function (event, self) {
       const name = event.currentTarget.name

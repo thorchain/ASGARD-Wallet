@@ -76,22 +76,22 @@ if (Meteor.isClient) {
           // we have to delay this...
           
           account = await WALLET.generateAccountFromKeystore(obj.password, keystore)
+          delete obj.password
+          keystore = null // SECURITY: unsetting
           
           
           // TODO: replace with custom raw tx build/sign/send
           await BNB.bnbClient.setPrivateKey(account.privateKey, true)
+          delete account.privateKey
           
-          delete obj.password
-          keystore = null // SECURITY: unsetting
           self.loadingMsg.set("sending tx...")
           
           BNB.transfer(from, obj.recipient, obj.amount, obj.asset).then((e) => {
-            console.log("tx success!!!");
-            
+            // SECURITY: Unset with useless key... remove when replaced with raw tx
             BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
             // go to view of the asset
-            // FlowRouter.go('walletAssetDetails',{symbol: obj.asset})
-            history.back()
+            FlowRouter.go('walletAssetDetails',{symbol: obj.asset})
+            // history.back()
           }).catch((e) => {
             BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
             console.log(e.message);

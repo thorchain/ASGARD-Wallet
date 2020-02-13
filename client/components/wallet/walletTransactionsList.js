@@ -1,3 +1,4 @@
+// const shell = require('electron').shell;
 // UserTransactions collection
 if (Meteor.isClient) {
   Template.walletTransactionsList.onCreated(function() {
@@ -25,11 +26,25 @@ if (Meteor.isClient) {
       const acc = UserAccount.findOne()
       return acc.address === addr ? "self" : addr
     },
+    isWith (from, to) {
+      const usr = UserAccount.findOne()
+      if (from === usr.address) {
+        return {msg:"From:", address:from}
+      } else if (to === usr.address) {
+        return {msg:"To:", address:to}
+      }
+    },
     shortSymbol (symbol) {
       return symbol.split("-")[0].substr(0,4)
     },
     link (hash) {
       return BNB.explorerBaseURL + "/tx/" + hash
+    }
+  })
+  Template.transactionsTable.events({
+    "click [data-event='externalLink']": function () {
+      event.preventDefault();
+      // shell.openExternal(event.currenTarget.href);
     }
   })
 }

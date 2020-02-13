@@ -51,7 +51,7 @@
     },
     "builderOptions": {
         "icon": ".desktop/assets/asgard-wallet.ico",
-        "appId": "meteor.app",
+        "appId": "asgard-wallet.app",
         "productName": "Asgard Wallet",
         "compression": "maximum",
         "win": {
@@ -75,12 +75,12 @@
             "background": ".desktop/assets/dmgBackground.png",
             "iconSize": 54,
             "contents": [
-                { "x": 377, "y": 190, "type": "link", "path": "/Applications" },
-                { "x": 63, "y": 190, "type": "file" }
+                { "x": 460, "y": 150, "type": "link", "path": "/Applications" },
+                { "x": 100, "y": 150, "type": "file" }
             ],
             "window": {
-                "width": 480,
-                "height": 300
+                "width": 624,
+                "height": 360
             }
         }
     },

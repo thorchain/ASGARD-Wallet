@@ -58,7 +58,11 @@ const sdk = BNB.sdk
   Template.walletCreate.events({
     "click [data-event='toggleMnemonic']": function (event, self) {
       event.preventDefault();
-      self.isMnemonic.set(!self.isMnemonic.get())
+      if (!$(event.currentTarget).hasClass('active')) {
+        self.formErrors.set('password','')
+        self.formErrors.set('repeatPassword','') // not working?
+        self.isMnemonic.set(!self.isMnemonic.get())
+      }
     },
     "keyup #generate-wallet-form input": function (event, self) {
       const name = event.currentTarget.name

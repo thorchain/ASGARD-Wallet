@@ -1,8 +1,8 @@
 if (Meteor.isClient) {
 	Template.walletUnlock.onCreated(function() {
 		const self = this
-		self.isLoading = new ReactiveVar(false)
-		self.loadingMsg = new ReactiveVar("")
+		// self.isLoading = new ReactiveVar(false)
+		self.loadingMsg = new ReactiveVar(null)
 		self.formErrors = new ReactiveDict()
 
 		self.unlockWallet = async (pw) => {
@@ -18,7 +18,7 @@ if (Meteor.isClient) {
 	})
 
 	Template.walletUnlock.helpers({
-		isLoading () { return Template.instance().isLoading.get() },
+		// isLoading () { return Template.instance().isLoading.get() },
 		loadingMsg () { return Template.instance().loadingMsg.get() },
 		pwError () { return Template.instance().formErrors.get('password')}
 	})
@@ -35,13 +35,14 @@ if (Meteor.isClient) {
 			if (pw.length === 0) { 
 				self.formErrors.set('password', 'Password required')
 			} else {
-				self.isLoading.set(true)
-				self.loadingMsg.set("attempting to unlock")
+				// self.isLoading.set(true)
+				self.loadingMsg.set("unlocking...")
 				try {
 					await self.unlockWallet(pw)
 					FlowRouter.go("home")
 				} catch (err) {
-					self.isLoading.set(false)
+					// self.isLoading.set(false)
+					self.loadingMsg.set(null)
 					console.error(err.message)
 				}
 			}
