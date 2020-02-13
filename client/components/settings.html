@@ -1,8 +1,14 @@
 <template name="settings">
   <h5 class="text-center mb-5">Options</h5>
 
-  <input type="button" class="btn btn-primary w-100 my-2" value="Lock Wallet" data-event="lockWallet">
-  <a href="{{downloadLink}}" download="keystore.txt" class="btn btn-primary w-100 mb-2">Export Keystore</a>
-  <input type="button" class="btn btn-danger w-100 my-3" value="Remove Wallet" data-event="deleteVault" />
+  <div class="row">
+    <div class="col-md-8 col-lg-6 ml-auto mr-auto">
+
+      <input type="button" class="btn btn-primary w-100 my-2" value="Lock Wallet" data-event="lockWallet">
+      <a href="{{downloadLink}}" download="keystore.txt" class="btn btn-primary w-100 mb-2">Export Keystore</a>
+      <input type="button" class="btn btn-danger w-100 my-3" value="Remove Wallet" data-event="deleteVault" />
+
+    </div>
+  </div>
 
 </template>

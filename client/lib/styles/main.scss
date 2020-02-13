@@ -59,7 +59,7 @@ li.media[data-nav]:hover {
 // Bootstrap & Theme Customization:
 // Overrides and custom styles for bootstrap components etc.
 .navbar {
-  // background-color: #122A32;
+  background-color: $Dark-Gray;
   > .navbar-brand {
     font-family: Exo2;
   }
@@ -177,7 +177,7 @@ li.media[data-nav]:hover {
   background-image: url("/img/Asgard-Swirl.png");
   background-attachment: fixed;
 	background-size: auto;
-	background-position: right;
+	background-position: right top;
 	background-repeat: no-repeat;
 }
 
@@ -244,11 +244,9 @@ $swirl-width: 2020px;
 
 // When using this, place button text inside inner <span>
 .btn-brand-border {
+  position: relative;
   padding: $btn-border-width; // this creates the pseudo border
   background-image: linear-gradient(to right, $Asgard-Green, $Accent-Blue);
-  &:hover {
-    // border: 2px solid transparent;
-  }
   &::after {
     display: block;
     position: relative;
