@@ -14,7 +14,15 @@ if (Meteor.isClient) {
   });
   Template.walletSend.helpers({
     userAssets: function () {
-      return assets = UserAccount.findOne().assets
+      // add the token name here instead
+      assets = UserAccount.findOne().assets
+      return assets
+
+    },
+    tokenName (symbol) {
+      // todo: combine with above
+      const token = TokenData.findOne({symbol:symbol})
+      return token && token.name
     },
     balances () {
       return Template.instance().getBalances()
@@ -38,6 +46,10 @@ if (Meteor.isClient) {
     passwordError () { return Template.instance().formErrors.get('password') },
   });
   Template.walletSend.events({
+    "click [data-event='setAsset']": function (event, self) {
+      event.preventDefault()
+      FlowRouter.setParams({asset: event.currentTarget.dataset.param})
+    },
     "keyup #send-transaction-form input": function (event, self) {
       const name = event.currentTarget.name
       self.formErrors.set(name,'')

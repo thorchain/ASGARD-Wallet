@@ -14,7 +14,21 @@
 
       <div class="media-body">
         <div class="mt-0">{{asset.name}} ({{balances.shortSymbol}})</div>
-        <a href="#" class="small">Change</a>
+        <div class="dropdown">
+          <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            Change
+          </a>
+        
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            {{#each userAssets}}
+              {{#if ne symbol (param 'asset')}}
+                <a class="dropdown-item d-flex align-items-baseline" href="#" data-event="setAsset" data-param="{{symbol}}"><div class="mr-2">{{this.shortSymbol}}</div> <div class="small">{{tokenName symbol}}</div><div class="d-inline-block ml-auto small">({{toCurrency free}})</div></a>
+              {{/if}}
+            {{/each}}
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -85,6 +99,8 @@
     </div>
 
   </div>
+
+  </form>
 
 </template>
 
