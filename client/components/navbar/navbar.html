@@ -2,12 +2,13 @@
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark">
   <a class="navbar-brand text-uppercase font-size-h5" href="{{pathFor 'home'}}">
-    <img src="/img/Asgard-Logo-White-128.png" class="mr-1" width="30" height="30" alt="">
+    <!-- <img src="/img/Asgard-Logo-White-128.png" class="mr-1" width="30" height="30" alt=""> -->
     <span class="font-weight-bold">Asgard</span><span>&nbsp;Wallet</span>
   </a>
   {{#if isUnlocked}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+    <!-- <span class="navbar-toggler-icon text-info"></span> -->
+    <i class="fa fa-lg fa-bars text-info"></i>
   </button>
 
   <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
@@ -33,6 +34,7 @@
     </ul>
   </div>
   {{/if}}
+  <div class="navbar-border position-absolute bg-brand-gradient">&nbsp;</div>
 </nav>
 
 </template>
