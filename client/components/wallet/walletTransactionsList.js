@@ -20,6 +20,19 @@ if (Meteor.isClient) {
       return parseFloat(val).toFixed(2)
     }
   });
+  Template.transactionsList.helpers({
+    txKind (from, to) {
+      const usr = UserAccount.findOne()
+      if (from === usr.address) {
+        return {msg:"send", label: "to", address:to, color:"danger", op:"-"}
+      } else if (to === usr.address) {
+        return {msg:"receive", label: "from", address:from, color:"success", op:"+"}
+      }
+    },
+    shortSym (symbol) {
+      return symbol.split("-")[0].substr(0,4)
+    }
+  })
   Template.transactionsTable.helpers({
     selfAddr (addr) {
       // TODO: return to above eventually
