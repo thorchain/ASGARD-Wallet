@@ -5,8 +5,8 @@ if (Meteor.isClient) {
       const curr = FlowRouter.current()
       return curr.route.name == routeName;
     },
-    isUnlocked: async function () {
-      return WALLET.getIsUnlocked() === true ? true : false;
+    isUnlocked: function () {
+      return WALLET.isUnlocked() === true ? true : false;
     }
   });
 }

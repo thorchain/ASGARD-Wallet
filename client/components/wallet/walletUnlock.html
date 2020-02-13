@@ -2,33 +2,34 @@
   <!-- <h5 class="text-center mb-5">Unlock wallet</h5> -->
 
     <div class="col-md-8 col-lg-6 ml-auto mr-auto">
-      <img class="mx-auto d-block w-50 mb-5" src="/img/Asgard-Wallet-Gradient-512.svg">
+      <img class="mx-auto d-block w-25 mb-5" src="/img/Asgard-Wallet-Gradient-512.svg">
     </div>
 
-  {{#if isLoading}}
-
-    <div class="text-muted text-center">{{loadingMsg}}...</div>
-
-  {{else}}
 
     <div class="col-md-8 col-lg-6 ml-auto mr-auto">
 
       <form id="wallet-unlock-form" class="form">
-        <div class="form-row">
-          <div class="form-group col-md-12">
-            <!-- <label for="inputPassword">New Password</label> -->
-            <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
-            <small id="passwordHelp" class="form-text text-warning">{{pwError}}</small>
-          </div>
-        </div>
-        <!-- <input type="password" class="form-control mb-4" name="password" placeholder="password"> -->
-        <input type="submit" class="form-control btn btn-primary btn-brand" value="unlock">
+        <fieldset disabled="{{#if loadingMsg}}disabled{{/if}}">
 
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <!-- <label for="inputPassword">New Password</label> -->
+              <input type="password" class="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password">
+              <small id="passwordHelp" class="form-text text-warning">{{pwError}}</small>
+            </div>
+          </div>
+          <button type="submit" class="form-control btn btn-primary">
+            {{#if loadingMsg}}
+            <div class="spinner-border spinner-border-sm" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            {{loadingMsg}}
+            {{else}}Unlock{{/if}}
+          </button>
+
+        </fieldset>
       </form>
 
     </div>
-
-
-  {{/if}}
 
 </template>

@@ -52,22 +52,13 @@
 {{else}}
 
   <table class="table table-sm table-dark table-borderless">
-    <colgroup>
-      <col class="col-sm-1">
-      <col class="col-sm-1">
-      <col class="col-sm-4">
-      <col class="col-sm-4">
-      {{!-- <col class="d-sm-none"> --}}
-      {{!-- <col class="d-sm-none"> --}}
-      <col class="col-sm-1">
-      <col class="col-sm-1">
-    </colgroup>
+
     <thead>
       <tr>
         <th scope="col">Date</th>
         <th scope="col">Type</th>
-        <th scope="col">From</th>
-        <th scope="col">To</th>
+        <th scope="col">With</th>
+        <th scope="col"></th>
         {{!-- <th scope="col">Memo</th> --}}
         {{!-- <th scope="col">Fee</th> --}}
         <th scope="col">Amount</th>
@@ -79,14 +70,18 @@
       {{#each transactions}}
         <tr>
           <td class="text-nowrap">{{momentShort timeStamp}}</td>
-          <td>{{txType}}</td>
+          <td class="text-capitals">{{txType}}</td>
           {{!-- <td class="text-truncate"><div class="text-truncate">{{selfAddr fromAddr}}</div></td> --}}
 
 
           <td class="px-0" colspan="2">
             <div class="row m-0">
-                <div class="col-sm-6 p-0 px-1 text-truncate">{{selfAddr fromAddr}}</div>
-                <div class="col-sm-6 p-0 px-1 text-truncate">{{selfAddr toAddr}}</div>
+              {{#let party=(isWith fromAddr toAddr)}}
+                <div class="col-sm-2 col-md-2 p-0 px-1 text-truncate font-weight-bold">{{party.msg}}</div>
+                <div class="col-sm-10 col-md-10 p-0 px-1 text-truncate">{{party.address}}</div>
+
+                {{!-- <div class="col-sm-12 text-truncate py-0 px-1">{{party.text}} {{party.address}}</div> --}}
+              {{/let}}
             </div>
           </td>
 
@@ -95,7 +90,7 @@
           {{!-- <td>{{memo}}</td> --}}
           {{!-- <td>{{txFee}}</td> --}}
           <td>{{toCurrency value}} {{shortSymbol txAsset}}</td>
-          <td class="text-center"><a href="{{link txHash}}" target="_blank"><i class="fa fa-external-link-square-alt"></i></a></td>
+          <td class="text-center"><a href="{{link txHash}}" data-event='externalLink'><i class="fa fa-external-link-square-alt"></i></a></td>
         </tr>
       {{/each}}
     </tbody>

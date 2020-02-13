@@ -12,14 +12,21 @@ if (Meteor.isClient) {
   });
 
   Template.circleColorIcon.helpers({
+    imgSize (size) {
+      switch (size) {
+        case 'sm':
+          return "36px"
+        case 'md':
+          return "46px"
+        case 'lg':
+          return "52px"
+        default:
+          break;
+      }
+    },
     circleStyle (symbol) {
       const c = Template.instance().generateColors(symbol)
       return "background-image: linear-gradient(45deg,"+ c.start +", " + c.stop +")"
-      // const size = "md"
-      // return {
-      //   style,
-      //   class: "circle-icon-" + size + " d-flex align-items-center text-white"
-      // }
     }
   });
 }

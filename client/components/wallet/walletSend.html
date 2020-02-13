@@ -34,52 +34,71 @@
 
   {{/if}}
 
-  <form id="send-transaction-form" class="form" autocomplete="off">
-    <fieldset disabled="{{#if loadingMsg}}disabled{{/if}}">
-    <div class="form-row">
+  <div class="row">
 
-      <div class="form-group col-md-12 mb-2">
-        <label for="inputRecipient">Recipient</label>
-        <input type="text" class="form-control mb-3" name="recipient" id="inputRecipient" aria-describedby="amountHelp" placeholder="recipient">
-        <small id="amountHelp" class="form-text text-warning">{{recipientError}}</small>
-      </div>
+    <div class="col-md-8 col-lg-6 ml-auto mr-auto">
+      
+      <form id="send-transaction-form" class="form" autocomplete="off">
+        <fieldset disabled="{{#if loadingMsg}}disabled{{/if}}">
+        <div class="form-row">
 
-      {{#unless (param 'asset')}}
-        <div class="form-group col-md-12 mb-2">
-          <label for="inputAsset">Asset</label>
-          <select class="form-control custom-select" id="inputAsset" name="asset">
+          <div class="form-group col-md-12 mb-2">
+            <label for="inputRecipient">Recipient</label>
+            <input type="text" class="form-control mb-3" name="recipient" id="inputRecipient" aria-describedby="amountHelp" placeholder="recipient">
+            <small id="amountHelp" class="form-text text-warning">{{recipientError}}</small>
+          </div>
 
-            {{#each userAssets}}
-              <option value="{{symbol}}">{{symbol}} ({{free}})</option>
-            {{/each}}
+          {{#unless (param 'asset')}}
+            <div class="form-group col-md-12 mb-2">
+              <label for="inputAsset">Asset</label>
+              <select class="form-control custom-select mb-3" id="inputAsset" name="asset">
 
-          </select>
-          <small class="form-text text-warning">{{assetError}}</small>
+                {{#each userAssets}}
+                  <option value="{{symbol}}">{{symbol}} ({{free}})</option>
+                {{/each}}
+
+              </select>
+              <small class="form-text text-warning">{{assetError}}</small>
+            </div>
+          {{/unless}}
+
+          <div class="form-group col-md-12 mb-2">
+            <label for="inputAmount">Amount</label>
+            <input type="text" class="form-control mb-3" name="amount" id="inputAmount" aria-describedby="amountHelp" placeholder="0.00">
+            <small class="form-text text-{{#if amountError}}warning{{else}}accent{{/if}}">{{#if amountError}}{{amountError}}{{else}}{{#if (param 'asset')}}Available balance: {{balances.free}}{{/if}}{{/if}}</small>
+          </div>
+
+          <div class="form-group col-md-12 mb-2">
+            <label for="inputAmount">Password</label>
+            <input type="password" class="form-control mb-3" name="password" id="inputAmount" aria-describedby="passwordHelp" placeholder="password">
+            <small class="form-text text-warning">{{passwordError}}</small>
+          </div>
+
+
+          <div class="form-group col-md-12 my-2">
+            <button type="submit" class="form-control btn btn-dark btn-brand-border">
+              <span>
+                {{#if loadingMsg}}
+                <div class="spinner-border spinner-border-sm" role="status">
+                  <span class="sr-only">Loading...</span>
+                </div>
+                {{loadingMsg}}
+                {{else}}Send{{/if}}
+              </span>
+            </button>
+          </div>
+
+
         </div>
-      {{/unless}}
 
-      <div class="form-group col-md-12 mb-2">
-        <label for="inputAmount">Amount</label>
-        <input type="text" class="form-control mb-3" name="amount" id="inputAmount" aria-describedby="amountHelp" placeholder="0.00">
-        <small class="form-text text-{{#if amountError}}warning{{else}}accent{{/if}}">{{#if amountError}}{{amountError}}{{else}}{{#if (param 'asset')}}Available balance: {{balances.free}}{{/if}}{{/if}}</small>
-      </div>
+      </fieldset>
 
-      <div class="form-group col-md-12 mb-2">
-        <label for="inputAmount">Password</label>
-        <input type="password" class="form-control mb-3" name="password" id="inputAmount" aria-describedby="passwordHelp" placeholder="password">
-        <small class="form-text text-warning">{{passwordError}}</small>
-      </div>
-
-
-      <div class="form-group col-md-12 my-2">
-        <input type="submit" class="form-control btn btn-primary{{#if loadingMsg}} disabled{{/if}}" value="Send" id="inputPassword4">
-        <div class="text-center text-muted mt-2">{{loadingMsg}}</div>
-      </div>
+      </form>
 
 
     </div>
 
-  </fieldset>
+  </div>
 
   </form>
 
