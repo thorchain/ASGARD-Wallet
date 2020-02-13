@@ -249,6 +249,7 @@ $swirl-width: 2020px;
   position: relative;
   padding: $btn-border-width; // this creates the pseudo border
   background-image: linear-gradient(to right, $Asgard-Green, $Accent-Blue);
+  border: none;
   &::after {
     display: block;
     position: relative;
