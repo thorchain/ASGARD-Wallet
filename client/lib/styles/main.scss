@@ -69,9 +69,11 @@ li.media[data-nav]:hover {
 
 .breadcrumb {
   z-index: 900;
+  position: relative;
   background: none;
   padding: 0;
   margin: 0;
+  margin-bottom: -20px;
   >.breadcrumb-item {
     color: $Accent-Green;
     font-family: Exo2;
