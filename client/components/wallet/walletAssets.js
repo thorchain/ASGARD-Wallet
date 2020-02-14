@@ -3,8 +3,7 @@ if (Meteor.isClient) {
   Template.walletAssets.onCreated(function() {
     const self = this;
     self.getAssets = () => {
-      const usr = UserAccount.findOne()
-      return usr && usr.assets 
+      return UserAssets.find({},{sort: {symbol: 1}}).fetch()
     }
     self.initMarkets = async () => {
       // get the prices
@@ -16,62 +15,6 @@ if (Meteor.isClient) {
       }
     }
 
-    // TODO: Remove from this component, and place in controller class
-    self.initTokens = async() => {
-      const usr = UserAccount.findOne()
-      const assets = usr.assets
-      if (assets && assets.length > 0) {
-        
-        const symbols = assets.map(asset => {
-          return asset.symbol
-        })
-
-        let page = 1;
-        let tokensFound = []
-        const initialOffset = 0
-        const limit = 2000
-        while (tokensFound.length < symbols.length) {
-          let request, options = {}
-          options.offset = ((page -1) * limit) + initialOffset
-          options.limit = limit
-
-          try {
-            request = await BNB.getTokens(options)
-          } catch (error) {
-            break
-          }
-
-          if (request && request.data && request.data.length > 0) {
-            // Go through the tokens
-            for (let i = 0; i < request.data.length; i++) {
-              const e = request.data[i];
-              // Check for a match to account assets
-              const match = symbols.find(s => { return s === e.symbol })
-              if (match) { tokensFound.push(e) }
-              if (tokensFound.length === symbols.length) { break }
-              
-            }
-            // Safeguard
-            if (request.data.length < limit) {
-              break
-            }
-            
-          }
-          page+=1
-        } // end while()
-
-        TokenData.remove({})
-        TokenData.batchInsert(tokensFound)
-
-      }
-    }
-
-    // Only initTokens if there is no token data
-    // TODO: Add ability to sync for new tokens in wallet
-    if (!TokenData.find().fetch().length) {
-      self.initTokens()
-      self.initMarkets()
-    }
     self.autorun(function() {
     });
   });

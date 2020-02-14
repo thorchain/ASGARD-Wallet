@@ -153,11 +153,14 @@ export default class WalletController extends EventEmitter{
   }
 
   initializeConn = async (address) => {
-    let connAccount, connTransfer
     try {
       this.connTransfer = new WebSocket("wss://testnet-dex.binance.org/api/ws");
       this.connAccount = new WebSocket("wss://testnet-dex.binance.org/api/ws");
     } catch (error) {
+      // For debugging
+      console.log("socket error");
+      console.log(error);
+      
       throw Error(error)
     }
 
@@ -231,9 +234,8 @@ export default class WalletController extends EventEmitter{
         return asset
       })
       // IF this is a new asset, then we need to get the token data
-      // TODO: Update token data if necessary
-      const doc = UserAccount.findOne();
-      if (assets.length !== doc.assets.length) {
+      const account = UserAccount.findOne();
+      if (assets.length !== account.assets.length) {
         console.log("need to track new token(s)");
         const newTokens = await this.getTokenData(assets)
         const oldTokens = await TokenData.find().fetch()
@@ -242,10 +244,31 @@ export default class WalletController extends EventEmitter{
         })
         TokenData.batchInsert(addTokens)
       }
-      const select = doc && doc._id ? {_id: doc._id} : {};
+      const select = account && account._id ? {_id: account._id} : {};
       UserAccount.update(select, {$set: {assets: assets}})
+      this.updateUserAssetsStore(assets)
     }
 
+  }
+  updateUserAssetsStore = (assets) => {
+    // we need to find the assets that changed
+    const oldAssets = UserAssets.find().fetch()
+    const changed = assets.filter((asset) => {
+      // get current balances
+      const existingAsset = oldAssets.find(e => {return asset.symbol === e.symbol})
+      // return if any difference
+      return asset.free !== existingAsset.free ||
+             asset.locked !== existingAsset.locked ||
+             asset.frozen !== existingAsset.frozen
+    })
+    
+    // Account for swaps etc. with potentially 2 or more changes
+    for (let index = 0; index < changed.length; index++) {
+      const element = changed[index];
+      UserAssets.update({symbol:element.symbol},{$set: element},{upsert: true})
+      
+    }
+    
   }
 
   initializeUserAccount = async (account) => {
@@ -268,6 +291,8 @@ export default class WalletController extends EventEmitter{
       
       UserAccount.remove({})
       UserAccount.insert(account)
+      UserAssets.remove({})
+      UserAssets.batchInsert(account.assets)
     })
 
   }
@@ -428,6 +453,7 @@ export default class WalletController extends EventEmitter{
         const doc = UserAccount.findOne();
         UserAccount.update({_id:doc._id}, {$set: {assets: balances}})
       }
+      this.updateUserAssetsStore(balances)
     })
   }
   
