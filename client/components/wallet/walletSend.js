@@ -5,18 +5,15 @@ if (Meteor.isClient) {
     self.formErrors = new ReactiveDict()
     self.loadingMsg = new ReactiveVar()
     self.getBalances = (asset) => {
-      // console.log(asset);
       
       const symbol = asset || FlowRouter.getParam("asset")
-      const assets = UserAccount.findOne().assets
-      return assets && assets.length > 0 ? assets.find(e => e.symbol === symbol) : null
+      return UserAssets.findOne({symbol:symbol})
     }
   });
   Template.walletSend.helpers({
     userAssets: function () {
       // add the token name here instead
-      assets = UserAccount.findOne().assets
-      return assets
+      return UserAssets.find({},{sort:{symbol:1}}).fetch()
 
     },
     tokenName (symbol) {
@@ -26,9 +23,6 @@ if (Meteor.isClient) {
     },
     balances () {
       return Template.instance().getBalances()
-      // const symbol = FlowRouter.getParam("asset")
-      // const assets = UserAccount.findOne().assets
-      // return assets && assets.length > 0 ? assets.find(e => e.symbol === symbol) : null
     },
     asset () {
       const symbol = FlowRouter.getParam("asset")

@@ -12,6 +12,13 @@ if (Meteor.isClient) {
   });
   var userAccountObserver = new PersistentMinimongo2(UserAccount, 'userAccount');
 
+  // User assets & balances
+  UserAssets = new Mongo.Collection(null);
+  UserAssets.allow({
+    insert: function(){ return true }
+  });
+  var userAssetsObserver = new PersistentMinimongo2(UserAssets, 'userAssets');
+
   // User Transaction Data
   UserTransactions = new Mongo.Collection(null)
   UserTransactions.allow({

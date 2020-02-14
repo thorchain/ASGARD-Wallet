@@ -63,6 +63,17 @@ li.media[data-nav]:hover {
   > .navbar-brand {
     font-family: Exo2;
   }
+  > .navbar-border {
+    display: block;
+    width: 100%;
+    margin-left: -15px; // correction for padding
+    height: 1px;
+    bottom: -1px;
+  }
+  > .navbar-toggler {
+    border: 1px solid transparent !important;
+    opacity: .8;
+  }
 }
 
 // Breadcrump
@@ -92,6 +103,9 @@ li.media[data-nav]:hover {
   color: $Accent-Green;
   font-family: $font-family-sans-serif;
   font-weight: 400;
+}
+.btn-dark {
+  background-color: darken($gray-800, 3%);
 }
 
 .btn-primary {
@@ -245,10 +259,16 @@ $swirl-width: 2020px;
 @keyframes spin-anti { from {transform:rotate(360deg);} to {transform:rotate(0deg);} }
 
 // When using this, place button text inside inner <span>
+$brand-gradient: linear-gradient(to right, $Asgard-Green, $Accent-Blue);
+.bg-brand-gradient {
+  background-image: $brand-gradient;
+}
 .btn-brand-border {
   position: relative;
   padding: $btn-border-width; // this creates the pseudo border
-  background-image: linear-gradient(to right, $Asgard-Green, $Accent-Blue);
+  // background-image: linear-gradient(to right, $Asgard-Green, $Accent-Blue);
+  // background-image: $brand-gradient;
+  @extend .bg-brand-gradient;
   border: none;
   &::after {
     display: block;
