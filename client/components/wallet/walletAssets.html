@@ -1,7 +1,7 @@
 <template name="walletAssets">
   <h5 class="text-center mb-4">Assets</h5>
 
-  <ul class="list-unstyled">
+  <ul class="list-unstyled list-links">
     {{#unless assetsList}}<div class="text-italic text-muted">No assets yet...</div>{{/unless}}
     {{#each assetsList}}
     <li class="d-flex justify-content-between align-items-center mb-1 p-2" data-nav="{{pathFor "walletAssetDetails" symbol=symbol}}">

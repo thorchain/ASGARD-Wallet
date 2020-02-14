@@ -73,7 +73,7 @@ if (Meteor.isClient) {
       const sleep = m => new Promise(r => setTimeout(r, m))
 
       if (validationContext.isValid()) {
-        self.loadingMsg.set("preparing tx...")
+        self.loadingMsg.set("preparing tx")
         await sleep(200)
         let account
         try {
@@ -90,7 +90,7 @@ if (Meteor.isClient) {
           await BNB.bnbClient.setPrivateKey(account.privateKey, true)
           delete account.privateKey
           
-          self.loadingMsg.set("sending tx...")
+          self.loadingMsg.set("sending tx")
           
           BNB.transfer(from, obj.recipient, obj.amount, obj.asset).then((e) => {
             // SECURITY: Unset with useless key... remove when replaced with raw tx
