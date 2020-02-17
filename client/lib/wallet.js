@@ -248,8 +248,8 @@ export default class WalletController extends EventEmitter{
       // IF this is a new asset, then we need to get the token data
       const account = UserAccount.findOne();
       if (assets.length !== account.assets.length) {
-        console.log("need to track new token(s)");
-        const newTokens = await this.getTokenData(assets)
+        // Check to only add new tokens
+        const newTokens = await this.getTokenData(assets) // is this potentially bug?
         const oldTokens = await TokenData.find().fetch()
         const addTokens = newTokens.filter(e => {
           return !(oldTokens.find(f => {return e.symbol === f.symbol}))
@@ -257,18 +257,23 @@ export default class WalletController extends EventEmitter{
         TokenData.batchInsert(addTokens)
       }
       const select = account && account._id ? {_id: account._id} : {};
+      // TODO: Remove UserAccount.update when fully deprecated
       UserAccount.update(select, {$set: {assets: assets}})
       this.updateUserAssetsStore(assets)
     }
 
   }
   updateUserAssetsStore = (assets) => {
+    console.log("updating new userassets context/collection");
     // we need to find the assets that changed
     const oldAssets = UserAssets.find().fetch()
     const changed = assets.filter((asset) => {
       // get current balances
       const existingAsset = oldAssets.find(e => {return asset.symbol === e.symbol})
-      // return if any difference
+      if (!existingAsset) {
+        return true // new asset/token
+      }
+      // New balance then there is update needed
       return asset.free !== existingAsset.free ||
              asset.locked !== existingAsset.locked ||
              asset.frozen !== existingAsset.frozen
@@ -464,8 +469,8 @@ export default class WalletController extends EventEmitter{
       if (balances.length > 0) {
         const doc = UserAccount.findOne();
         UserAccount.update({_id:doc._id}, {$set: {assets: balances}})
+        this.updateUserAssetsStore(balances)
       }
-      this.updateUserAssetsStore(balances)
     })
   }
   

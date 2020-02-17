@@ -61,6 +61,7 @@ if (Meteor.isClient) {
       const balances = self.getBalances(asset)
       
       const obj = validationContext.clean({
+        pwHash: UserAccount.findOne().pwHash,
         maxAmount: balances && balances.free || 0,
         sender: from,
         recipient: t.recipient.value,
@@ -69,7 +70,7 @@ if (Meteor.isClient) {
         password: t.password.value
       });
       
-      validationContext.validate(obj);
+      await validationContext.validate(obj);
       const sleep = m => new Promise(r => setTimeout(r, m))
 
       if (validationContext.isValid()) {

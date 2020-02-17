@@ -1,5 +1,7 @@
 Schemas = (typeof Schemas === "undefined") ? {} : Schemas;
 
+var bcrypt = require('bcryptjs');
+
 validateAddress = function() {
   const checkKey = this.key === 'sender' ? 'recipient' : 'sender';
       if (this.value === this.field(checkKey).value) {
@@ -38,6 +40,16 @@ Schemas.formTransferTx = new SimpleSchema({
   },
   password: {
     type: String,
-    label: "Password"
+    label: "Password",
+    custom () {
+      if (!bcrypt.compareSync(this.value, this.field('pwHash').value)) {
+        return "passwordMismatch";
+      }
+    }
+  },
+  pwHash: {
+    // Passed in manually, do not send from html form (exposed)
+    type: String,
+    label: "pwHash"
   }
 },{ tracker: Tracker });
