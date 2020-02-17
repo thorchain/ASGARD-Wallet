@@ -66,7 +66,7 @@ export default class WalletController extends EventEmitter{
     console.log("updating transactions");
     const address = UserAccount.findOne().address
     const lastTx = UserTransactions.find({},{sort: {timeStamp: -1}, limit: 1}).fetch()
-    let epoch, d
+    let epoch, d, transactions
 
     if (lastTx[0]) {
       
@@ -75,8 +75,20 @@ export default class WalletController extends EventEmitter{
     } else {
       epoch = 1555545600000 // genesis
     }
-    const transactions = await this.getTxsFrom(epoch, address)
+    const txs = await this.getTxsFrom(epoch, address)
+    const txHashes = txs.map(e => {
+      return e.txHash
+    })
+
+    const duplicates = UserTransactions.find({txHash:{$in:txHashes}}).fetch()
+    if (duplicates.length > 0) {
+      console.log("we found duplicate transactions!");
+      transactions = txs.filter(e => {
+        return duplicates.find(f => { return e.txHash !== f.txHash})
+      })
+    } else {transactions = txs}
     
+    // TODO: Filter for existing txs
     if (transactions.length > 0) {
       return UserTransactions.batchInsert(transactions)
     } else {
@@ -211,7 +223,7 @@ export default class WalletController extends EventEmitter{
       this.connAccount.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
     }
     this.connAccount.onmessage = async (msg) => {
-      console.log("got websocket account msg")
+      console.log("got websocket account message")
       const data = JSON.parse(msg.data)
       
       const balances = data.data.B

@@ -115,7 +115,7 @@ if (Meteor.isClient) {
         const file = t.keystoreFile.files[0];
         const pw = t.password.value;
         self.isLoading.set(true)
-        self.loadingMsg.set("processing file...")
+        self.loadingMsg.set("processing file")
         // Delay to allow for UI render DOM update before CPU takes over keystore processing
         setTimeout(async () => {
           try {

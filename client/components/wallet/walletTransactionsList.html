@@ -30,13 +30,17 @@
           <div class="d-none d-md-block col-2 col-lg-1 px-1 font-weight-bold text-uppercase ">{{party.msg}}</div>
 
           <div class="text-truncate mr-auto p-1">
-            <div class="text-truncate"><span>{{party.label}}:</span> <span class="small text-monospace">{{party.address}}</span></div>
+            <div class="text-truncate"><span class="small text-monospace">{{party.address}}</span></div>
             {{!-- <div class="small text-truncate"><strong>From:</strong> {{fromAddr}}</div> --}}
           </div>
 
           <div class="pl-1">
-            <div class="text-right"><span class="text-{{party.color}}">{{party.op}}{{toCurrency value}}</span> <span class="d-none d-md-inline">[{{shortSym txAsset}}]</span></div>
-            <div class="small text-right text-muted text-nowrap">{{txAsset}}</div>
+            <div class="text-right">
+              <span class="text-{{party.color}}">{{party.op}}{{toCurrency value}}</span>
+              <span class="d-none d-md-inline-block text-muted" style="width: 62px;">[{{shortSym txAsset}}]</span>
+              <span class="d-block d-md-none small text-muted">[{{shortSym txAsset}}]</span>
+            </div>
+            {{!-- <div class="small text-right text-muted text-nowrap">{{txAsset}}</div> --}}
           </div>
           {{/let}}
 

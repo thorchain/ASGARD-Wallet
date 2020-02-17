@@ -36,7 +36,7 @@ if (Meteor.isClient) {
 				self.formErrors.set('password', 'Password required')
 			} else {
 				// self.isLoading.set(true)
-				self.loadingMsg.set("unlocking...")
+				self.loadingMsg.set("unlocking")
 				try {
 					await self.unlockWallet(pw)
 					FlowRouter.go("home")

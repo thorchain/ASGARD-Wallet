@@ -42,9 +42,9 @@ if (Meteor.isClient) {
     isWith (from, to) {
       const usr = UserAccount.findOne()
       if (from === usr.address) {
-        return {msg:"From:", address:from}
-      } else if (to === usr.address) {
         return {msg:"To:", address:to}
+      } else if (to === usr.address) {
+        return {msg:"From:", address:from}
       }
     },
     shortSymbol (symbol) {

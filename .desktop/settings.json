@@ -75,8 +75,8 @@
             "background": ".desktop/assets/dmgBackground.png",
             "iconSize": 54,
             "contents": [
-                { "x": 460, "y": 150, "type": "link", "path": "/Applications" },
-                { "x": 100, "y": 150, "type": "file" }
+                { "x": 480, "y": 242, "type": "link", "path": "/Applications" },
+                { "x": 134, "y": 242, "type": "file" }
             ],
             "window": {
                 "width": 624,
