@@ -11,16 +11,16 @@
         {{!-- Nav Tabs --}}
         <ul class="nav nav-tabs d-flex justify-content-center mb-4">
           <li class="nav-item">
-            <a class="nav-link{{#unless isMnemonic}} active{{/unless}}" href="#" data-event="toggleMnemonic">Keystore</a>
+            <a class="nav-link{{#unless isMnemonic}} active{{/unless}}" href="{{pathFor 'walletCreate' type='keystore'}}">Keystore</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link{{#if isMnemonic}} active{{/if}}" href="#" data-event="toggleMnemonic">Mnemonic</a>
+            <a class="nav-link{{#if isMnemonic}} active{{/if}}" href="{{pathFor 'walletCreate' type='mnemonic'}}">Mnemonic</a>
           </li>
         </ul>
 
     
         {{#if isMnemonic}}
-          <label>Mnemonic HD wallet seed</label>
+          <label>Mnemonic HD wallet seed phrase</label>
           <div class="card mb-3 border">
             <div class="card-body">
               <div class="h3 text-justify">
@@ -30,7 +30,11 @@
               </div>
             </div>
           </div>
-        {{/if}}
+          <p class="text-warning my-4 font-weight-bold">This is the phrase used to seed your wallet accounts. Record and keep this in a safe place. If you loose access to your wallet and backups, your account can <strong class="text-underline">only</strong> be recovered using this phrase.</p>
+          <button type="button" class="form-control btn btn-dark btn-brand-border" data-nav="{{pathFor 'walletMnemonicConfirm'}}">
+            <span>Next</span>
+          </button>
+        {{else}}
     
         <form name="generate-wallet-form" id="generate-wallet-form" class="form">
           <fieldset disabled="{{#if loadingMsg}}disabled{{/if}}">
@@ -66,6 +70,8 @@
             </div>
           </fieldset>
         </form>
+
+        {{/if}}
     
       </div>
 

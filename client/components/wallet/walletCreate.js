@@ -16,6 +16,7 @@ const sdk = BNB.sdk
       if (!wlist) {
         mnemonic = bip39.generateMnemonic();
         self.wlist.set(mnemonic);
+        Session.set('seedphrase', mnemonic);
       }
     }
 
@@ -38,6 +39,12 @@ const sdk = BNB.sdk
 
     self.setWlist()
     self.autorun(function() {
+      const type = FlowRouter.getParam('type')
+      if (type && type === 'mnemonic') {
+        self.isMnemonic.set(true)
+      } else {
+        self.isMnemonic.set(false)
+      }
       // Added(necessary security?) if there is an existing
       // user here we need to redirect
       // This is handled in routes initially.
