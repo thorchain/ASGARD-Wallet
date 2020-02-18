@@ -9,6 +9,10 @@ if (Meteor.isClient) {
       const acc = UserAccount.findOne()
       return acc && acc.locked === false ? true : false
     },
-
+    hasFunds: function () {
+      // simple check for new account
+      // NOTE: Do we need to consider for 0 balances of existing accouont?
+      return UserAssets.find().count() > 0
+    }
   });
 }
