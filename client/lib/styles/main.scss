@@ -206,6 +206,12 @@ ul.list-links > li:hover {
   // right: 18px;
 }
 
+.badge.disabled {
+  opacity: $btn-disabled-opacity;
+  cursor: pointer;
+  pointer-events: none;
+}
+
 
 
 // Custom component styles
