@@ -12,12 +12,29 @@ const sdk = BNB.sdk
     self.formErrors = new ReactiveDict()
 
     self.setWlist = () => {
-      const wlist = self.wlist.get();
+      // const wlist = self.wlist.get();
       let mnemonic
       if (!Session.get('seedphrase')) {
         mnemonic = bip39.generateMnemonic();
-        self.wlist.set(mnemonic);
-        Session.set('seedphrase', mnemonic);
+        // check for duplicates
+        let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+        let duplicates = true
+        while (duplicates) {
+          
+          if (findDuplicates(mnemonic.split(" ")).length > 0) {
+            console.log("we got a duplicate in new mnemonic");
+            mnemonic = bip39.generateMnemonic()
+          } else {
+            duplicates = false
+          }
+        }
+
+        // let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+        // if (findDuplicates(mnemonic.split(" ")).length === 0) {
+          self.wlist.set(mnemonic);
+          Session.set('seedphrase', mnemonic);
+
+        // }
       } else {
         mnemonic = Session.get('seedphrase')
         self.wlist.set(mnemonic);

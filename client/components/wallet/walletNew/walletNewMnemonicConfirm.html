@@ -12,11 +12,11 @@
       <form name="generate-wallet-form" id="generate-wallet-form" class="form">
 
       <!-- <label>Mnemonic HD wallet seed</label> -->
-      <div class="card border mb-3">
+      <div id="confirm-words" class="card border mb-3">
         <div class="card-body p-2" style="min-height: 122px;">
           <div class="h3 mb-0 text-justify">
             {{#each word in confirmWordsList}}
-              <span class="badge badge-lg badge-light position-relative pr-1 text-{{#if word.error}}danger{{else}}white{{/if}}" data-event="removeConfirmWord" data-param="{{word.text}}">{{word.text}}
+              <span class="badge badge-lg badge-light position-relative pr-1 text-{{#if word.error}}danger{{else}}white{{/if}}{{#if loadingMsg}} disabled{{/if}}" data-event="removeConfirmWord" data-param="{{word._id}}">{{word.text}}
                 <span class="mr-1"><i class="fa fa-sm fa-times"></i></span>
               </span>
             {{/each}}
@@ -26,10 +26,8 @@
       <div class="d-flex">
         <div id="phraseHelp" class="form-text text-warning small">{{phraseError}}</div>
       </div>
-
-
             
-            <div class="row mt-4">
+            <div id="words" class="row mt-4">
 
               <div class="col-12">
                 <label class="display-block">Select in correct order
@@ -39,7 +37,7 @@
 
               {{#each word in wordslist}}
                 <div class="col-6 col-md-3 h4">
-                  <span class="btn btn-sm btn-primary {{word.style}} w-100" data-event="addConfirmWord" data-param="{{word.text}}">{{word.text}}</span>
+                  <span class="btn btn-sm btn-primary {{#if word.confirmed}}disabled{{/if}} w-100" data-event="addConfirmWord" data-param="{{word._id}}">{{word.text}}</span>
                 </div>
               {{/each}}
 
