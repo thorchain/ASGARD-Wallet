@@ -199,11 +199,11 @@ ul.list-links > li:hover {
 
 // This can be use INSIDE button (.btn) content
 // overlay button needs to be smaller
-.btn > .btn.btn-overlay {
-  position: absolute;
+.btn-overlay {
+  // position: absolute;
   margin-top: -3px;
   margin-right: -8px;
-  right: 18px;
+  // right: 18px;
 }
 
 

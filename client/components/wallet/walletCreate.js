@@ -13,10 +13,14 @@ const sdk = BNB.sdk
 
     self.setWlist = () => {
       const wlist = self.wlist.get();
-      if (!wlist) {
+      let mnemonic
+      if (!Session.get('seedphrase')) {
         mnemonic = bip39.generateMnemonic();
         self.wlist.set(mnemonic);
         Session.set('seedphrase', mnemonic);
+      } else {
+        mnemonic = Session.get('seedphrase')
+        self.wlist.set(mnemonic);
       }
     }
 
@@ -28,7 +32,9 @@ const sdk = BNB.sdk
     self.generateNewWallet = (pw, mnemonic) => {
       WALLET.generateNewWallet(pw, mnemonic).then(async (e) => {
         await WALLET.unlock(pw)
-        FlowRouter.go('home')
+        // This compponent only handles keystore now
+        // redirect to account
+        FlowRouter.go('walletAccounts')
       })
     }
 
