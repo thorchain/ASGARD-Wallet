@@ -47,7 +47,7 @@ h1, h2, h3, h4 ,h5 {
 
 
 
-[data-nav] {
+[data-nav], [data-event] {
   cursor: pointer;
 }
 
@@ -199,11 +199,17 @@ ul.list-links > li:hover {
 
 // This can be use INSIDE button (.btn) content
 // overlay button needs to be smaller
-.btn > .btn.btn-overlay {
-  position: absolute;
+.btn-overlay {
+  // position: absolute;
   margin-top: -3px;
   margin-right: -8px;
-  right: 18px;
+  // right: 18px;
+}
+
+.badge.disabled {
+  opacity: $btn-disabled-opacity;
+  cursor: pointer;
+  pointer-events: none;
 }
 
 

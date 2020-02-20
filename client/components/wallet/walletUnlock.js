@@ -39,7 +39,7 @@ if (Meteor.isClient) {
 				self.loadingMsg.set("unlocking")
 				try {
 					await self.unlockWallet(pw)
-					FlowRouter.go("home")
+					FlowRouter.go("walletAssets")
 				} catch (err) {
 					// self.isLoading.set(false)
 					self.loadingMsg.set(null)

@@ -12,9 +12,31 @@ const sdk = BNB.sdk
     self.formErrors = new ReactiveDict()
 
     self.setWlist = () => {
-      const wlist = self.wlist.get();
-      if (!wlist) {
+      // const wlist = self.wlist.get();
+      let mnemonic
+      if (!Session.get('seedphrase')) {
         mnemonic = bip39.generateMnemonic();
+        // check for duplicates
+        let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+        let duplicates = true
+        while (duplicates) {
+          
+          if (findDuplicates(mnemonic.split(" ")).length > 0) {
+            console.log("we got a duplicate in new mnemonic");
+            mnemonic = bip39.generateMnemonic()
+          } else {
+            duplicates = false
+          }
+        }
+
+        // let findDuplicates = arr => arr.filter((item, index) => arr.indexOf(item) != index)
+        // if (findDuplicates(mnemonic.split(" ")).length === 0) {
+          self.wlist.set(mnemonic);
+          Session.set('seedphrase', mnemonic);
+
+        // }
+      } else {
+        mnemonic = Session.get('seedphrase')
         self.wlist.set(mnemonic);
       }
     }
@@ -27,7 +49,9 @@ const sdk = BNB.sdk
     self.generateNewWallet = (pw, mnemonic) => {
       WALLET.generateNewWallet(pw, mnemonic).then(async (e) => {
         await WALLET.unlock(pw)
-        FlowRouter.go('home')
+        // This compponent only handles keystore now
+        // redirect to account
+        FlowRouter.go('walletAccounts')
       })
     }
 
@@ -38,6 +62,12 @@ const sdk = BNB.sdk
 
     self.setWlist()
     self.autorun(function() {
+      const type = FlowRouter.getParam('type')
+      if (type && type === 'mnemonic') {
+        self.isMnemonic.set(true)
+      } else {
+        self.isMnemonic.set(false)
+      }
       // Added(necessary security?) if there is an existing
       // user here we need to redirect
       // This is handled in routes initially.

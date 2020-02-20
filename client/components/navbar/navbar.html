@@ -3,7 +3,7 @@
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark">
   <a class="navbar-brand text-uppercase font-size-h5" href="{{pathFor 'home'}}">
     <img src="/img/Asgard-Tri-White.png" class="float-left mr-2" with="28" height="28" alt="">
-    <span class="font-weight-bold">Asgard</span><span>&nbsp;Wallet</span>
+    <span class="font-weight-bold">Asgard</span><span>&nbsp;Wallet</span><span class='small text-muted pl-2'>BETA</span>
   </a>
   {{#if isUnlocked}}
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,9 +19,11 @@
         <li class="nav-item">
           <a class="nav-link {{#if (isActive 'walletTransactionsList')}}active{{/if}}" href="{{pathFor 'walletTransactionsList'}}">Transactions</a>
         </li>
+        {{#if hasFunds}}
         <li class="nav-item">
           <a class="nav-link {{#if (isActive 'walletSend')}}active{{/if}}" href="{{pathFor 'walletSend'}}">Send</a>
         </li>
+        {{/if}}
         <li class="nav-item">
           <a class="nav-link {{#if (isActive 'walletReceive')}}active{{/if}}" href="{{pathFor 'walletReceive'}}">Receive</a>
         </li>

@@ -42,3 +42,4 @@ mikowals:batch-insert
 aldeed:autoform
 frozeman:persistent-minimongo2
 zimme:active-route
+session

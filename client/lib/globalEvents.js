@@ -8,6 +8,7 @@ if (Meteor.isClient) {
       event.preventDefault();
       console.log("delete binance vault store");
       // We need to delete everything
+      await WALLET.lock() // this is to flag for app security
       await UserAccount.remove({})
       await UserTransactions.remove({})
       await TokenData.remove({})
