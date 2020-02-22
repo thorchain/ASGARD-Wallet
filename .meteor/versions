@@ -34,6 +34,7 @@ es5-shim@4.8.0
 fetch@0.1.1
 fourseven:scss@4.12.0
 frozeman:persistent-minimongo2@0.4.0
+gadicc:blaze-react-component@1.4.2
 geojson-utils@1.0.10
 gwendall:body-events@0.1.6
 hot-code-push@1.0.4
