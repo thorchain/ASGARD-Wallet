@@ -1,5 +1,5 @@
 {
-  "name": "meteor-test-3",
+  "name": "asgard-wallet",
   "private": true,
   "scripts": {
     "start": "meteor run",
