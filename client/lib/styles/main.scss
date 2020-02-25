@@ -13,6 +13,9 @@ $text-letter-spacing: $letter-spacing-base * .7;
   letter-spacing: $text-letter-spacing;
   overflow: hidden;
 }
+body > #app {
+  height: 100%;
+}
 
 #app-wrapper {
   height: 100%;

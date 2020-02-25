@@ -1,29 +1,7 @@
 import React from 'react';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-// import { MainLayout, WelcomeComponent} from '../client/containers/reactFrame.jsx';
-const WelcomeComponent = ({name}) => (<p>Hello, {name}</p>);
-console.log(React);
-
-class MainLayout extends React.Component{
-  render() {
-    return <div>
-      <header>
-        This is our header
-      </header>
-      <main>
-        {this.props.content}
-      </main>
-      <footer>
-        This is our footer
-      </footer>
-    </div>
-  }
-};
-
-// import { mount } from 'react-mounter';
-
-// import AppContainer from '../../ui/containers/AppContainer.js';
-// import ListPageContainer from '../../ui/containers/ListPageContainer.js';
+// import { FlowRouter } from 'meteor/kadira:flow-router';
+import { MainLayout, BareLayout, BareLayoutBranded} from '../imports/ui/reactTest/reactFrame';
+import StartScreen from '../imports/ui/components/main_modules/walletStart'
 
 import {mount, withOptions} from 'react-mounter';
 const mounter = withOptions({
@@ -31,18 +9,6 @@ const mounter = withOptions({
     rootProps: {'className': 'some-class-name'}
 }, mount);
 
-// FlowRouter.route('/lists/:_id', {
-//   name: 'Lists.show',
-//   action() {
-//     mount(AppContainer, {
-//       main: <ListPageContainer/>,
-//     });
-//   },
-// });
-
-// NOTE: We will transaction this to React when needed
-// Replace BlazeLayout.render, with React.render
-// All handlebars templates can be transpiled to valid react components
 const mainFrame = 'mainAppFrame';
 const bareFrame = 'bareAppFrame';
 const bareNavFrame = 'bareAppNavFrame';
@@ -76,8 +42,8 @@ appRoutes.route('/reactTest', {
     // ReactLayout.render(MainLayout, {
     //   content: "test content"
 		// });
-		mounter(MainLayout, {
-      content: <WelcomeComponent name="Arunda"/>,
+		mounter(BareLayout, {
+      content: <StartScreen/>,
     });
   }
 })

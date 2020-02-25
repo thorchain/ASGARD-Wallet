@@ -44,6 +44,8 @@
     "web3": "^1.2.5-rc.0"
   },
   "devDependencies": {
+    "@types/react": "^16.9.22",
+    "@types/react-dom": "^16.9.5",
     "electron": "6.1.2"
   }
 }
