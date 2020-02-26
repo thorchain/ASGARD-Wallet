@@ -11,10 +11,10 @@
         {{!-- Nav Tabs --}}
         <ul class="nav nav-tabs d-flex justify-content-center mb-4">
           <li class="nav-item">
-            <a class="nav-link{{#unless isMnemonic}} active{{/unless}}" href="{{pathFor 'walletCreate' type='keystore'}}">Keystore</a>
+            <a class="nav-link{{#unless isMnemonic}} active{{/unless}}" data-event="toggleMnemonic">Keystore</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link{{#if isMnemonic}} active{{/if}}" href="{{pathFor 'walletCreate' type='mnemonic'}}">Mnemonic</a>
+            <a class="nav-link{{#if isMnemonic}} active{{/if}}" data-event="toggleMnemonic">Mnemonic</a>
           </li>
         </ul>
 

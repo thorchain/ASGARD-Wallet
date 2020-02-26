@@ -1,5 +1,7 @@
 import React from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
+// Above error is wrong:
+// https://stackoverflow.com/questions/59313069/wrong-import-error-with-ts-js-mixing-and-visual-studio-code
 
 export default class StartScreen extends React.Component <{}> {
   goWalletCreateRoute() { FlowRouter.go('walletCreate') }

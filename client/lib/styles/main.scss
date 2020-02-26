@@ -16,6 +16,9 @@ $text-letter-spacing: $letter-spacing-base * .7;
 body > #app {
   height: 100%;
 }
+body > #__blaze-root, body > #__react-root {
+  height: 100%;
+}
 
 #app-wrapper {
   height: 100%;
