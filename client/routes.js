@@ -2,8 +2,11 @@ import React from 'react';
 import ReactDOM from "react-dom";
 // import { Blaze } from 'meteor/blaze'
 // import { FlowRouter } from 'meteor/kadira:flow-router';
-import { MainLayout, BareLayout, BareLayoutBranded} from '../imports/ui/components/containers/appFrames'
+import { MainLayout, BareLayoutBranded} from '../imports/ui/components/containers/appFrames'
+import NavbarSimple from '../imports/ui/components/elements/navbarSimple'
 import StartScreen from '../imports/ui/components/screens/walletStart'
+import UnlockScreen from '../imports/ui/components/screens/walletUnlock'
+import UnlockOptionsScreen from '../imports/ui/components/screens/walletUnlockOptions'
 
 import {mount, withOptions} from 'react-mounter';
 const mounter = withOptions({
@@ -24,13 +27,13 @@ const isUnlocked = () => {
 const swapRenderer = (newType) => {
 	if (newType === 'react') {
 		console.info("swapping view layer to react");
-		$("#__blaze-root").hide() // reset for React to Blaze routes
+		$("#__blaze-root").hide()
 		try {
 			BlazeLayout.reset()
 		} catch (error) {
 			// fail silently
 		}
-		$("#__react-root").show() // reset for React to Blaze routes
+		$("#__react-root").show()
 	} else if (newType === 'blaze') {
 		console.info("swapping view layer to blaze");
 		$("#__react-root").hide()
@@ -55,9 +58,8 @@ const appRoutes = FlowRouter.group({
 		if (newType !== oldType && typeof oldType !== 'undefined') {
 			swapRenderer(newType)
 		}
-
 		
-		if (context.route.name !== "settings") {
+		if (context.route.name !== "settings" && context.route.name !== "options") {
 			if (isVault() && !isUnlocked()) {
 				FlowRouter.go('walletUnlock')
 			} else if (isVault() && isUnlocked()) {
@@ -69,29 +71,17 @@ const appRoutes = FlowRouter.group({
 			}
 		}
 	}],
-	triggersExit: [function (context, redirect) {
-		console.log("exiting route...");
-		console.log(context);
-	}]
 });
 
 appRoutes.route('/', {
 	name: 'walletStart',
 	action() {
-		mounter(BareLayout, {
-      content: () => (<StartScreen/>),
+		mounter(BareLayoutBranded, {
+      content: () => (<StartScreen/>)
     });
   },
 	renderType: 'react'
 })
-
-appRoutes.route('/start-blaze', {
-	name: 'walletStartBlaze',
-	action: function (params, queryParams) {
-		BlazeLayout.render(bareFrame, {content:'walletStart'});
-	},
-	renderType: 'blaze'
-});
 
 appRoutes.route('/create', {
 	name: 'walletCreate',
@@ -125,11 +115,35 @@ appRoutes.route('/import', {
 
 appRoutes.route('/unlock', {
 	name: 'walletUnlock',
-	action: function (params, queryParams) {
-		BlazeLayout.render(bareNavFrame, {content:'walletUnlock'});
+	action() {
+		mounter(MainLayout, {
+			header: () => (<NavbarSimple/>),
+      content: () => (<UnlockScreen/>),
+    });
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 })
+// appRoutes.route('/unlock-blaze', {
+// 	name: 'walletUnlockBlaze',
+// 	action: function (params, queryParams) {
+// 		BlazeLayout.render(bareNavFrame, {content:'walletUnlock'});
+// 	},
+// 	renderType: 'blaze'
+// })
+
+appRoutes.route('/options', {
+	name: 'options',
+	action: function (params, queryParams) {
+		mounter(MainLayout, {
+			header: () => (<NavbarSimple/>),
+      content: () => (<UnlockOptionsScreen/>),
+    });
+	},
+	// back: {
+	// 	route: 'home',
+	// },
+	renderType: 'react'
+});
 
 appRoutes.route('/settings', {
 	name: 'settings',
@@ -146,6 +160,11 @@ const walletRoutes = FlowRouter.group({
 	name: 'walletRoutes',
 	prefix: '/wallet',
 	triggersEnter: [function (context, redirect){
+		const newType = context.route.options.renderType
+		const oldType = context.oldRoute && context.oldRoute.options && context.oldRoute.options.renderType
+		if (newType !== oldType && typeof oldType !== 'undefined') {
+			swapRenderer(newType)
+		}
 		if (!isVault() && !isUnlocked()) {
 			FlowRouter.go('walletStart')
 		} else if (isVault() && !isUnlocked()) {
@@ -155,8 +174,8 @@ const walletRoutes = FlowRouter.group({
 	triggersExit: [function (context, redirect) {
 		console.log("exiting route");
 		// TODO: Remove when fully transitioned to React routes
-		$("#app").remove() // reset for React to Blaze routes
-		$("#app-wrapper").remove() // reset for Blaze to React routes
+		// $("#app").remove() // reset for React to Blaze routes
+		// $("#app-wrapper").remove() // reset for Blaze to React routes
 	}]
 });
 
