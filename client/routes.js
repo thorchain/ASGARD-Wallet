@@ -15,8 +15,8 @@ const mounter = withOptions({
 }, mount);
 
 const mainFrame = 'mainAppFrame';
-const bareFrame = 'bareAppFrame';
-const bareNavFrame = 'bareAppNavFrame';
+// const bareFrame = 'bareAppFrame';
+// const bareNavFrame = 'bareAppNavFrame';
 
 const isVault = () => {
 	return window.localStorage.getItem('binance') ? true : false;
@@ -123,13 +123,6 @@ appRoutes.route('/unlock', {
 	},
 	renderType: 'react'
 })
-// appRoutes.route('/unlock-blaze', {
-// 	name: 'walletUnlockBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(bareNavFrame, {content:'walletUnlock'});
-// 	},
-// 	renderType: 'blaze'
-// })
 
 appRoutes.route('/options', {
 	name: 'options',
@@ -139,21 +132,10 @@ appRoutes.route('/options', {
       content: () => (<UnlockOptionsScreen/>),
     });
 	},
-	// back: {
-	// 	route: 'home',
-	// },
-	renderType: 'react'
-});
-
-appRoutes.route('/settings', {
-	name: 'settings',
-	action: function (params, queryParams) {
-		BlazeLayout.render(bareNavFrame, {content:'settings'});
-	},
 	back: {
 		route: 'home',
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 });
 
 const walletRoutes = FlowRouter.group({
@@ -171,12 +153,6 @@ const walletRoutes = FlowRouter.group({
 			FlowRouter.go('walletUnlock')
 		}
 	}],
-	triggersExit: [function (context, redirect) {
-		console.log("exiting route");
-		// TODO: Remove when fully transitioned to React routes
-		// $("#app").remove() // reset for React to Blaze routes
-		// $("#app-wrapper").remove() // reset for Blaze to React routes
-	}]
 });
 
 walletRoutes.route('/home', {

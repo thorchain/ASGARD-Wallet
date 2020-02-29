@@ -1,12 +1,7 @@
 import React from 'react';
 
-interface MainLayoutTypes { header() : React.Component, content() : React.Component }
-export const MainLayout: React.SFC<MainLayoutTypes> = ({header, content}) => {
-// export class MainLayout extends React.Component<{
-//   header: React.Component,
-//   content: React.Component
-// }> {
-  // render() {
+type MainLayoutTypes = { header() : React.Component, content() : React.Component }
+export const MainLayout: React.SFC<MainLayoutTypes> = ({header, content}): JSX.Element => {
     return (
     <div>
       {header()}
@@ -18,26 +13,10 @@ export const MainLayout: React.SFC<MainLayoutTypes> = ({header, content}) => {
       </footer>
     </div>
   )
-// }
 };
 
-interface BareLayoutTypes { header() : React.Component, content() : React.Component }
-export const BareLayout: React.SFC<BareLayoutTypes> = ({header, content}) => {
-  return (
-  <div>
-    {header()}
-    <main id="app-wrapper" className="container-fluid">
-      {content()}
-    </main>
-    <footer>
-    {/* This is where modal will go */}
-    </footer>
-  </div>
-  )
-}
-
-interface BareLayoutBrandedTypes {content() : React.Component }
-export const BareLayoutBranded: React.SFC<BareLayoutBrandedTypes> = ({content}) => {
+type BareLayoutBrandedTypes = {content() : React.Component }
+export const BareLayoutBranded: React.SFC<BareLayoutBrandedTypes> = ({content}): JSX.Element => {
   return (
   <div>
     <main id="app-wrapper" className="container-fluid bg-img-brand">
@@ -49,23 +28,3 @@ export const BareLayoutBranded: React.SFC<BareLayoutBrandedTypes> = ({content}) 
   </div>
   )
 }
-
-// export class BareLayoutBrandedX extends React.Component<{
-//   header: React.Component,
-//   content: React.Component
-// }> {
-//   render() {
-//     return (
-//     <div>
-//       {this.props.header}
-//       <main id="app-wrapper" className="container-fluid bg-img-brand">
-//         {this.props.content}
-//       </main>
-//       <footer>
-//       {/* This is where modal will go */}
-//       </footer>
-//     </div>
-//     )
-//   }
-
-// }

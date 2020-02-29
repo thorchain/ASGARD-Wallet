@@ -1,11 +1,11 @@
 import React from 'react'
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-export default function NavbarSimple () {
+const NavbarSimple: React.FC = (): JSX.Element => {
+  // TODO: memoize?
   const linkClasses = (routeName: string) => {
     return FlowRouter.current().route.name === routeName ? 'nav-link disabled' : 'nav-link'
   }
-
   return (
 
     <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-transparent">
@@ -31,5 +31,5 @@ export default function NavbarSimple () {
     </nav>
 
   )
-  
 }
+export default NavbarSimple

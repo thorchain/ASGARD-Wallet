@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-export default function StartScreen () {
+const StartScreen: React.FC = (): JSX.Element => {
   return (
 
     <div className="row">
@@ -25,3 +25,4 @@ export default function StartScreen () {
     </div>
   )
 }
+export default StartScreen
