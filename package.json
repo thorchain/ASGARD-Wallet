@@ -1,5 +1,5 @@
 {
-  "name": "meteor-test-3",
+  "name": "asgard-wallet",
   "private": true,
   "scripts": {
     "start": "meteor run",
@@ -35,12 +35,21 @@
     "moment-shortformat": "^2.1.0",
     "popper.js": "^1.16.0",
     "qrcode": "^1.4.4",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-mounter": "^1.2.0",
     "simpl-schema": "^1.5.6",
+    "uniforms": "^2.6.6",
+    "uniforms-bootstrap4": "^2.6.6",
+    "uniforms-bridge-simple-schema-2": "^2.6.6",
     "utf-8-validate": "^5.0.2",
     "uuid": "^3.4.0",
     "web3": "^1.2.5-rc.0"
   },
   "devDependencies": {
+    "@types/meteor": "^1.4.40",
+    "@types/react": "^16.9.22",
+    "@types/react-dom": "^16.9.5",
     "electron": "6.1.2"
   }
 }

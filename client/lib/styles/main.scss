@@ -13,6 +13,12 @@ $text-letter-spacing: $letter-spacing-base * .7;
   letter-spacing: $text-letter-spacing;
   overflow: hidden;
 }
+body > #app {
+  height: 100%;
+}
+body > #__blaze-root, body > #__react-root {
+  height: 100%;
+}
 
 #app-wrapper {
   height: 100%;
@@ -90,6 +96,7 @@ ul.list-links > li:hover {
     font-family: Exo2;
   }
 }
+
 
 // Buttons
 .btn {
