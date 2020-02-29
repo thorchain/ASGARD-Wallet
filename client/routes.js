@@ -59,7 +59,7 @@ const appRoutes = FlowRouter.group({
 			swapRenderer(newType)
 		}
 		
-		if (context.route.name !== "settings" && context.route.name !== "options") {
+		if (context.route.name !== "options") {
 			if (isVault() && !isUnlocked()) {
 				FlowRouter.go('walletUnlock')
 			} else if (isVault() && isUnlocked()) {
