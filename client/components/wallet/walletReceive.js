@@ -1,3 +1,4 @@
+import './walletReceive.html'
 
 if (Meteor.isClient) {
   import Clipboard from 'clipboard'

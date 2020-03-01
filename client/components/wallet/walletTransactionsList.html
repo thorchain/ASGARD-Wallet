@@ -5,13 +5,10 @@
 
     {{#unless transactions}}<div class="text-italic text-muted">No transactions yet...</div>{{/unless}}
 
-    {{> transactionsList 
-      transactions=transactions
-    }}
+    {{> transactionsList transactions=transactions}}
 
   {{else}}
 
-{{!-- Table stuff goes here --}}
     {{> transactionsTable transactions=transactions sender=(sender fromAddr) amount=(decimals value) }}
 
   {{/unless}}

@@ -11,6 +11,7 @@ if (Meteor.isClient) {
     insert: function(){ return true }
   });
   var userAccountObserver = new PersistentMinimongo2(UserAccount, 'userAccount');
+  module.exports.UserAccount = UserAccount
 
   // User assets & balances
   UserAssets = new Mongo.Collection(null);

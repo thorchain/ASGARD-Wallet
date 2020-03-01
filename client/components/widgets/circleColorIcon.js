@@ -1,4 +1,5 @@
 import { rainbowStop, getIntFromName } from '../../lib/colorHelper';
+import './circleColorIcon.html'
 
 if (Meteor.isClient) {
   Template.circleColorIcon.onCreated(function() {
@@ -12,6 +13,9 @@ if (Meteor.isClient) {
   });
 
   Template.circleColorIcon.helpers({
+    eq (v1, v2) {
+      return (v1 === v2) ? true : false; 
+    },
     imgSize (size) {
       switch (size) {
         case 'sm':

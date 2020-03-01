@@ -1,3 +1,4 @@
+import './breadcrumb.html'
 if (Meteor.isClient) {
   Template.breadcrumb.onCreated(function (params) {
     const self = this

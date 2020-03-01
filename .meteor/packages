@@ -44,3 +44,4 @@ frozeman:persistent-minimongo2
 zimme:active-route
 session@1.2.0
 gadicc:blaze-react-component
+react-meteor-data

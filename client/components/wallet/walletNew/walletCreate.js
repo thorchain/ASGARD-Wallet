@@ -1,7 +1,7 @@
+import './walletCreate.html'
 const bip39 = require('bip39')
 
 if (Meteor.isClient) {
-const sdk = BNB.sdk
   
   Template.walletCreate.onCreated(function() {
     const self = this;

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-import { Wallet } from "../../../../client/lib/init";
+import { WALLET } from "/imports/startup/client/init";
 
-type UnlockScreenStateTypes = { pwError: string; loadingMsg: string;}
-const UnlockScreen: React.FC<UnlockScreenStateTypes> = () => {
+const UnlockScreen: React.FC = () => {
   const [pwError, setPwError] = useState("");
   const [loadingMsg, setLoadingMsg] = useState("");
   const handlePwChange = () => { setPwError('') }
@@ -17,7 +16,7 @@ const UnlockScreen: React.FC<UnlockScreenStateTypes> = () => {
     } else {
       setLoadingMsg('unlocking')
       try {
-        await Wallet.unlockAndSync(tar.password.value)
+        await WALLET.unlockAndSync(tar.password.value)
         FlowRouter.go('walletAssets')
       } catch (err) {
         setPwError(err.message)

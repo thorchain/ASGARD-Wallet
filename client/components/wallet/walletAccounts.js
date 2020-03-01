@@ -1,6 +1,7 @@
+import './walletAccounts.html'
+import { WALLET } from '/imports/startup/client/init'
 if (Meteor.isClient) {
   Template.walletAccounts.onCreated(function() {
-
   });
 
   Template.walletAccounts.helpers({
@@ -8,7 +9,7 @@ if (Meteor.isClient) {
       return UserAccount.findOne()
     },
     client: function() {
-      return BNB.bnbClient
+      return WALLET.getClient()
     },
     shortSymbol (symbol) {
       return symbol.split("-")[0].substr(0,4)

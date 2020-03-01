@@ -1,3 +1,6 @@
+import './walletAssets.html'
+import '../widgets/circleColorIcon'
+import { BNB } from '/imports/api/wallet'
 
 if (Meteor.isClient) {
   Template.walletAssets.onCreated(function() {

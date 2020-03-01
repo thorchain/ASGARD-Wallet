@@ -1,17 +1,36 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 // import { Blaze } from 'meteor/blaze'
-// import { FlowRouter } from 'meteor/kadira:flow-router';
-import { MainLayout, BareLayoutBranded} from '../imports/ui/components/containers/appFrames'
-import NavbarSimple from '../imports/ui/components/elements/navbarSimple'
-import StartScreen from '../imports/ui/components/screens/walletStart'
-import UnlockScreen from '../imports/ui/components/screens/walletUnlock'
-import UnlockOptionsScreen from '../imports/ui/components/screens/walletUnlockOptions'
+import { BlazeLayout } from 'meteor/kadira:blaze-layout';
+import { FlowRouter } from 'meteor/kadira:flow-router';
+
+import('/client/containers/appFrames.js')
+import('/client/components/wallet/walletNew/walletCreate.js')
+import('/client/components/wallet/walletNew/walletImport.js')
+import('/client/components/wallet/walletNew/walletNewMnemonicConfirm.js')
+
+import('/client/components/wallet/walletAccounts.js')
+import('/client/components/wallet/walletAssetDetails.js')
+import('/client/components/wallet/walletAssets.js')
+import('/client/components/wallet/walletAssetDetails.js')
+import('/client/components/wallet/walletReceive.js')
+import('/client/components/wallet/walletSend.js')
+import('/client/components/wallet/walletTransactionsList.js')
+
+import { WALLET } from '/imports/startup/client/init'
+import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
+import NavbarMain from '/imports/ui/components/elements/navbarMain'
+import NavbarSimple from '/imports/ui/components/elements/navbarSimple'
+
+import StartScreen from '/imports/ui/components/screens/walletStart'
+import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
+import UnlockOptionsScreen from '/imports/ui/components/screens/walletUnlockOptions'
+import UserAccountScreen from '/imports/ui/components/screens/walletAccountDetails'
 
 import {mount, withOptions} from 'react-mounter';
 const mounter = withOptions({
     rootId: '__react-root',
-    rootProps: {'className': 'some-class-name'}
+    rootProps: {'className': 'app-root'}
 }, mount);
 
 const mainFrame = 'mainAppFrame';
@@ -116,7 +135,7 @@ appRoutes.route('/import', {
 appRoutes.route('/unlock', {
 	name: 'walletUnlock',
 	action() {
-		mounter(MainLayout, {
+		mounter(BareLayout, {
 			header: () => (<NavbarSimple/>),
       content: () => (<UnlockScreen/>),
     });
@@ -162,6 +181,17 @@ walletRoutes.route('/home', {
 	},
 	renderType: 'blaze'
 });
+
+walletRoutes.route('/accounts-react', {
+	name: 'walletAccountsReact',
+	action: function (params, queryParams) {
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<UserAccountScreen/>),
+    });
+	},
+	renderType: 'react'
+})
 
 walletRoutes.route('/accounts', {
 	name: 'walletAccounts',

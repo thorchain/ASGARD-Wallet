@@ -1,3 +1,4 @@
+import './walletSend.html'
 
 if (Meteor.isClient) {
   Template.walletSend.onCreated(function() {

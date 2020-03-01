@@ -1,3 +1,4 @@
+import './navbar.html'
 if (Meteor.isClient) {
   Template.navbar.helpers({
     isActive: function (routeName) {

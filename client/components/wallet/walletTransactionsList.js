@@ -1,3 +1,4 @@
+import './walletTransactionsList.html'
 // const shell = require('electron').shell;
 // UserTransactions collection
 if (Meteor.isClient) {
@@ -18,6 +19,9 @@ if (Meteor.isClient) {
     },
     decimals (val) {
       return parseFloat(val).toFixed(2)
+    },
+    eq (v1, v2) {
+      return v1 === v2 ? true : false
     }
   });
   Template.transactionsList.helpers({
@@ -31,7 +35,24 @@ if (Meteor.isClient) {
     },
     shortSym (symbol) {
       return symbol.split("-")[0].substr(0,4)
-    }
+    },
+    toCurrency (num) {
+      if (typeof num === "number") {
+
+        num = Math.round(num * 100);
+      } else {
+        num = parseFloat(num)
+        num = Math.round(num * 100);
+      }
+      var len = num.toString().length;
+
+      if (num !== 0) {
+        num = (num / 100).toPrecision(len);
+      } else {
+        num = "0.00";
+      }
+      return num;
+    },
   })
   Template.transactionsTable.helpers({
     selfAddr (addr) {
@@ -52,7 +73,24 @@ if (Meteor.isClient) {
     },
     link (hash) {
       return BNB.explorerBaseURL + "/tx/" + hash
-    }
+    },
+    toCurrency (num) {
+      if (typeof num === "number") {
+
+        num = Math.round(num * 100);
+      } else {
+        num = parseFloat(num)
+        num = Math.round(num * 100);
+      }
+      var len = num.toString().length;
+
+      if (num !== 0) {
+        num = (num / 100).toPrecision(len);
+      } else {
+        num = "0.00";
+      }
+      return num;
+    },
   })
   Template.transactionsTable.events({
     "click [data-event='externalLink']": function () {

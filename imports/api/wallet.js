@@ -1,4 +1,10 @@
 import { EventEmitter } from "events";
+// import UserAccount from '/imports/api/collections/UserAccountCollection'
+import { UserAccount } from '/client/lib/client_collections'
+console.log(UserAccount)
+import Binance from "/imports/api/binance";
+export const BNB = new Binance();
+
 // const argon2 = require('argon2-browser'); // confirm issue (WASM dep req not working)
 var bcrypt = require('bcryptjs');
 
@@ -95,6 +101,10 @@ export default class WalletController extends EventEmitter{
       return []
     }
       
+  }
+
+  getClient = () => {
+    return BNB.bnbClient
   }
 
   getTokenData = async (assets) => {
