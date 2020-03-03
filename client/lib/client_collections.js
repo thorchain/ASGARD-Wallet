@@ -19,6 +19,7 @@ if (Meteor.isClient) {
     insert: function(){ return true }
   });
   var userAssetsObserver = new PersistentMinimongo2(UserAssets, 'userAssets');
+  module.exports.UserAssets = UserAssets
 
   // User Transaction Data
   UserTransactions = new Mongo.Collection(null)
@@ -26,6 +27,7 @@ if (Meteor.isClient) {
     insert: function(){ return true }
   });
   var userTransactionsOberserver = new PersistentMinimongo2(UserTransactions, 'userTransactions')
+  module.exports.UserTransactions = UserTransactions
 
   // Token related data
   TokenData = new Mongo.Collection(null)
@@ -33,6 +35,7 @@ if (Meteor.isClient) {
     insert: function(){ return true }
   });
   var tokenDataOberserver = new PersistentMinimongo2(TokenData, 'tokenData')
+  module.exports.TokenData = TokenData
 
   // Market data for tokens
   MarketData = new Mongo.Collection(null)
@@ -40,5 +43,6 @@ if (Meteor.isClient) {
     insert: function(){ return true }
   });
   var marketDataOberserver = new PersistentMinimongo2(TokenData, 'marketData')
+  module.exports.MarketData = MarketData
 
 }

@@ -1,4 +1,5 @@
 import './walletImport.html'
+import { WALLET } from '/imports/startup/client/init'
 if (Meteor.isClient) {
   
   Template.walletImport.onCreated(function name(params) {

@@ -1,0 +1,27 @@
+// Icon circle
+
+// Used in conjunction with bootstrap 'rounded-circle' class
+.icon {
+  font-weight: 500;
+  // add contrast for potential poor color match from custom icons etc.
+  border-color: rgb(44, 50, 54); 
+}
+
+.circle-icon-sm {
+  @extend .icon;
+  width: 36px;
+  height: 36px;
+  font-size: 9px;
+}
+.circle-icon-md {
+  @extend .icon;
+  width: 48px;
+  height: 48px;
+  font-size: 12px;
+}
+.circle-icon-lg {
+  @extend .icon;
+  width: 58px;
+  height: 58px;
+  font-size: 16px;
+}

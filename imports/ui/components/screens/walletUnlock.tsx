@@ -3,8 +3,9 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 import { WALLET } from "/imports/startup/client/init";
 
 const UnlockScreen: React.FC = () => {
-  const [pwError, setPwError] = useState("");
-  const [loadingMsg, setLoadingMsg] = useState("");
+  const [pwError, setPwError] = useState<string>('');
+  const [loadingMsg, setLoadingMsg] = useState<string>('');
+
   const handlePwChange = () => { setPwError('') }
 
   const unlockWallet = async (event: React.FormEvent<HTMLFormElement>) => {

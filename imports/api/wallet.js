@@ -1,12 +1,12 @@
 import { EventEmitter } from "events";
+// import { UserAccount } from '/client/lib/client_collections'
 // import UserAccount from '/imports/api/collections/UserAccountCollection'
-import { UserAccount } from '/client/lib/client_collections'
-console.log(UserAccount)
+import { UserAccount, UserAssets, UserTransactions, TokenData, MarketData } from '/client/lib/client_collections'
 import Binance from "/imports/api/binance";
 export const BNB = new Binance();
+const bcrypt = require('bcryptjs');
 
 // const argon2 = require('argon2-browser'); // confirm issue (WASM dep req not working)
-var bcrypt = require('bcryptjs');
 
 export default class WalletController extends EventEmitter{
   constructor () {
@@ -484,7 +484,21 @@ export default class WalletController extends EventEmitter{
     })
   }
   
-
+  resetWallet = async () => {
+    // SECURITY: This is descrutive removal of all user account data and keystores
+    try {
+      this.lock() // this is to flag for app security
+      await UserAccount.remove({})
+      await UserTransactions.remove({})
+      await TokenData.remove({})
+      await MarketData.remove({})
+      await window.localStorage.removeItem("binance"); // vault
+      await localforage.clear(); // persistant store
+      return true
+    } catch (error) {
+      throw Error(error)
+    }
+  }
 
   
 }

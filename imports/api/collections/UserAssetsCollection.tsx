@@ -15,7 +15,8 @@ export type UserAssetsTypes = {
 
 const UserAssets = new Mongo.Collection<UserAssetsTypes>(null);
 UserAssets.allow({
-  insert: function(){ return true }
+  insert: function(){ return true },
+  update: function(){ return true }
 });
 export default UserAssets
 export const userAccountObserver = new PersistentMinimongo2(UserAssets, 'userAssets');

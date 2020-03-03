@@ -19,7 +19,7 @@ const NavbarMain: React.FC = (): JSX.Element => {
   return (
     <nav className="navbar fixed-top navbar-expand-lg navbar-dark">
       <a className="navbar-brand text-uppercase font-size-h5" href="{{pathFor 'home'}}">
-        <img src="/img/Asgard-Tri-White.png" className="float-left mr-2" with="28" height="28" alt="" />
+        <img src="/img/Asgard-Tri-White.png" className="float-left mr-2" width="28" height="28" alt="" />
         <span className="font-weight-bold">Asgard</span><span>&nbsp;Wallet</span><span className='small text-muted pl-2'>BETA</span>
       </a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

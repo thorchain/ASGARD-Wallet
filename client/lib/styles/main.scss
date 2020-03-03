@@ -221,40 +221,9 @@ ul.list-links > li:hover {
 
 
 
-// Custom component styles
+// Custom style components
 
-
-// Icon circle
-.circle {
-  border-radius: 50%;
-}
-
-.circle-icon-lg {
-  @extend .circle;
-  width: 52px;
-  height: 52px;
-  font-size: 14px;
-  font-weight: bold;
-  border-color: rgb(44, 50, 54);
-}
-
-.circle-icon-md {
-  @extend .circle;
-  width: 46px;
-  height: 46px;
-  font-size: 11px;
-  font-weight: bold;
-  border-color: rgb(44, 50, 54);
-}
-.circle-icon-sm {
-  @extend .circle;
-  width: 36px;
-  height: 36px;
-  font-size: 9px;
-  font-weight: bold;
-  border-color: rgb(44, 50, 54);
-}
-
+// Swirling Background graphic
 $swirl-width: 2020px;
 .bg-brand-swirl {
   width: $swirl-width;
@@ -271,6 +240,7 @@ $swirl-width: 2020px;
 @keyframes spin { from {transform:rotate(0deg);} to {transform:rotate(360deg);} }
 @keyframes spin-anti { from {transform:rotate(360deg);} to {transform:rotate(0deg);} }
 
+// Gradient border effect
 // When using this, place button text inside inner <span>
 $brand-gradient: linear-gradient(to right, $Asgard-Green, $Accent-Blue);
 .bg-brand-gradient {

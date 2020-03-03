@@ -4,18 +4,27 @@ import ReactDOM from "react-dom";
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
-import('/client/containers/appFrames.js')
-import('/client/components/wallet/walletNew/walletCreate.js')
-import('/client/components/wallet/walletNew/walletImport.js')
-import('/client/components/wallet/walletNew/walletNewMnemonicConfirm.js')
+import { mount, withOptions } from 'react-mounter';
+const mounter = withOptions({
+    rootId: '__react-root',
+    rootProps: {'className': 'app-root'}
+}, mount);
 
-import('/client/components/wallet/walletAccounts.js')
-import('/client/components/wallet/walletAssetDetails.js')
-import('/client/components/wallet/walletAssets.js')
-import('/client/components/wallet/walletAssetDetails.js')
-import('/client/components/wallet/walletReceive.js')
-import('/client/components/wallet/walletSend.js')
-import('/client/components/wallet/walletTransactionsList.js')
+import'/client/containers/appFrames.js'
+const mainFrame = 'mainAppFrame';
+// const bareFrame = 'bareAppFrame';
+// const bareNavFrame = 'bareAppNavFrame';
+import '/client/components/wallet/walletNew/walletCreate.js'
+import '/client/components/wallet/walletNew/walletImport.js'
+import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
+
+import '/client/components/wallet/walletAccounts.js'
+import '/client/components/wallet/walletAssetDetails.js'
+import '/client/components/wallet/walletAssets.js'
+import '/client/components/wallet/walletAssetDetails.js'
+import '/client/components/wallet/walletReceive.js'
+import '/client/components/wallet/walletSend.js'
+import '/client/components/wallet/walletTransactionsList.js'
 
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
@@ -26,23 +35,20 @@ import StartScreen from '/imports/ui/components/screens/walletStart'
 import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
 import UnlockOptionsScreen from '/imports/ui/components/screens/walletUnlockOptions'
 import UserAccountScreen from '/imports/ui/components/screens/walletAccountDetails'
+import UserAssetsScreen from '/imports/ui/components/screens/userAssets'
 
-import {mount, withOptions} from 'react-mounter';
-const mounter = withOptions({
-    rootId: '__react-root',
-    rootProps: {'className': 'app-root'}
-}, mount);
 
-const mainFrame = 'mainAppFrame';
-// const bareFrame = 'bareAppFrame';
-// const bareNavFrame = 'bareAppNavFrame';
 
+// SECURITY: Application, routing check
 const isVault = () => {
 	return window.localStorage.getItem('binance') ? true : false;
 }
+// SECURITY: Application, routing check
 const isUnlocked = () => {
 	return WALLET.isUnlocked() === true ? true : false;
 }
+
+// TODO: Remove after full migration to Blaze
 const swapRenderer = (newType) => {
 	if (newType === 'react') {
 		console.info("swapping view layer to react");
@@ -83,9 +89,11 @@ const appRoutes = FlowRouter.group({
 				FlowRouter.go('walletUnlock')
 			} else if (isVault() && isUnlocked()) {
 				// Redirect back to where came from
-				// SECURITY: assumes 'unlocked' is non-persistant
+				// SECURITY: assumes 'unlocked' is non-persistant state
 				// as is default on instantiation of wallet controller class
 				// There should be no possibility of missing 'oldRoute'
+				// ie. history since there is no way into this group of routes
+				// except create/import/unlock
 				FlowRouter.go(context.oldRoute.name)
 			}
 		}
@@ -182,8 +190,8 @@ walletRoutes.route('/home', {
 	renderType: 'blaze'
 });
 
-walletRoutes.route('/accounts-react', {
-	name: 'walletAccountsReact',
+walletRoutes.route('/accounts', {
+	name: 'walletAccounts',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
 			header: () => (<NavbarMain/>),
@@ -193,8 +201,8 @@ walletRoutes.route('/accounts-react', {
 	renderType: 'react'
 })
 
-walletRoutes.route('/accounts', {
-	name: 'walletAccounts',
+walletRoutes.route('/accounts-blaze', {
+	name: 'walletAccountsBlaze',
 	action: function (params, queryParams) {
 		BlazeLayout.render(mainFrame, {content:'walletAccounts'});
 	},
@@ -205,6 +213,16 @@ walletRoutes.route('/accounts', {
 })
 walletRoutes.route('/assets', {
 	name: 'walletAssets',
+	action: function (params, queryParams) {
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<UserAssetsScreen/>),
+    });
+	},
+	renderType: 'react'
+})
+walletRoutes.route('/assets-blaze', {
+	name: 'walletAssetsBlaze',
 	action: function (params, queryParams) {
 		BlazeLayout.render(mainFrame, {content:'walletAssets'});
 	},
