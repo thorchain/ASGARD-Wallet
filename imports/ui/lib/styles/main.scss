@@ -82,14 +82,10 @@ ul.list-links > li:hover {
   }
 }
 
-// Breadcrump
-
+// Breadcrumb
 .breadcrumb {
   z-index: 900;
-  position: relative;
   background: none;
-  padding: 0;
-  margin: 0;
   margin-bottom: -20px;
   >.breadcrumb-item {
     color: $Accent-Green;

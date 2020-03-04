@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { UserAccount } from '/client/lib/client_collections'
-// import UserAccount from '/imports/api/collections/UserAccountCollection'
-import { UserAccountTypes } from '/imports/api/collections/UserAccountCollection';
+import { UserAccountTypes } from '/imports/api/collections/userAccountCollection';
 
 import { WALLET } from '/imports/startup/client/init'
 

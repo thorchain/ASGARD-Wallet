@@ -1,9 +1,9 @@
 import React from "react";
 import { useTracker } from 'meteor/react-meteor-data';
 import { UserAssets } from '/client/lib/client_collections'
-import { UserAssetsTypes } from '/imports/api/collections/UserAssetsCollection'
+import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
 import { TokenData } from '/client/lib/client_collections'
-import { TokenDataTypes } from '/imports/api/collections/TokenDataCollection'
+import { TokenDataTypes } from '/imports/api/collections/tokenDataCollection'
 // TODO: Add MarketData & types
 
 import CircleIcon, { Sizes } from '/imports/ui/components/elements/circleIcon'
@@ -19,9 +19,9 @@ const UserAssetsScreen: React.FC = (): JSX.Element => {
     <div>
       <h5 className="text-center mb-4">Assets</h5>
       <ul className="list-unstyled list-links">
-      {userAssets.map(asset => { return (
-        <ListItem asset={asset} key={asset._id}/>
-      )})}
+      {userAssets.map(asset => {
+        return <ListItem asset={asset} key={asset._id}/>
+      })}
       </ul>
 
     </div>
@@ -32,16 +32,17 @@ const UserAssetsScreen: React.FC = (): JSX.Element => {
 export default UserAssetsScreen
 
 
-type Props = {asset: UserAssetsTypes}
-const ListItem: React.FC<Props> = (props): JSX.Element  => {
+type ItemProps = {asset: UserAssetsTypes}
+const ListItem: React.FC<ItemProps> = (props): JSX.Element  => {
   const asset = props.asset
   const token: TokenDataTypes = useTracker(() => {
     return TokenData.findOne({symbol:asset.symbol})
   },[])
   const price = (symbol: string) => { 
     return symbol
-    // get market data
+    // TODO: get market data
     // MarketData.findOne({symbol:symbol})
+    // calculate price based on
   }
   return (
     <li className="d-flex justify-content-between align-items-center mb-1 p-2"

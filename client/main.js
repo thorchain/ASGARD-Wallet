@@ -1,5 +1,11 @@
 import '/imports/startup/client'
+import 'bootstrap';
+import Popper from 'popper.js';
+window.Popper = Popper;
+import '@fortawesome/fontawesome-free/js/all.min.js';
 
-import { TokenData as TD } from './lib/client_collections'
+import '/imports/ui/lib/styles/main.scss'
 
-TokenData = TD
+import { UserTransactions as UT } from './lib/client_collections'
+
+UserTransactions = UT
