@@ -1,12 +1,12 @@
 import React, { useMemo } from 'react'
-import { UserAccount } from '/client/lib/client_collections'
+import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserTransactionTypes } from '/imports/api/collections/userTransactionsCollection'
 
 type Props = {transactions: UserTransactionTypes[]}
-const TransactionsList: React.FC<Props> = (props): JSX.Element => {
+const TransactionsList: React.FC<Props> = ({transactions}): JSX.Element => {
   return (
     <ul className="list-group">
-      {props.transactions.map((transaction) => {
+      {transactions.map((transaction) => {
         return <ListItem transaction={transaction} key={transaction._id} />
       })}
       

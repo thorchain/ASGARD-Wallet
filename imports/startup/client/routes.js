@@ -20,7 +20,7 @@ import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
 
 // import '/client/components/wallet/walletAccounts.js'
 // import '/client/components/wallet/walletAssets.js'
-import '/client/components/wallet/walletTransactionsList.js'
+// import '/client/components/wallet/walletTransactionsList.js'
 import '/client/components/wallet/walletAssetDetails.js'
 import '/client/components/wallet/walletReceive.js'
 import '/client/components/wallet/walletSend.js'
@@ -35,6 +35,7 @@ import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
 import UnlockOptionsScreen from '/imports/ui/components/screens/walletUnlockOptions'
 import UserAccountScreen from '/imports/ui/components/screens/userAccount'
 import UserAssetsScreen from '/imports/ui/components/screens/userAssets'
+import UserAssetDetailsScreen from '/imports/ui/components/screens/userAssetDetails'
 import UserTransactionsScreen from '/imports/ui/components/screens/transactions/userTransactions'
 
 
@@ -228,15 +229,28 @@ walletRoutes.route('/assets', {
 // 	},
 // 	renderType: 'blaze'
 // })
+// walletRoutes.route('/assetDetails-blaze/:symbol', {
+// 	name: 'walletAssetDetailsBlaze',
+// 	action: function (params, queryParams) {
+// 		BlazeLayout.render(mainFrame, {content:'walletAssetDetails'});
+// 	},
+// 	back: {
+// 		route: 'walletAssets',
+// 	},
+// 	renderType: 'blaze'
+// })
 walletRoutes.route('/assetDetails/:symbol', {
 	name: 'walletAssetDetails',
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletAssetDetails'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<UserAssetDetailsScreen symbol={params.symbol}/>),
+    });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 })
 walletRoutes.route('/transactionsList', {
 	name: "walletTransactionsList",

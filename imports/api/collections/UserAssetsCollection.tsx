@@ -7,6 +7,7 @@ export type UserAssetsTypes = {
   free: number;
   frozen: number; // This is a nested objet. TODO: Add types
   locked: number;
+  full?: number;
   symbol: string;
   shortSymbol: string;
   // createdAt: Date;

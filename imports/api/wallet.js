@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 // import { UserAccount } from '/client/lib/client_collections'
 // import UserAccount from '/imports/api/collections/UserAccountCollection'
-import { UserAccount, UserAssets, UserTransactions, TokenData, MarketData } from '/client/lib/client_collections'
+import { UserAccount, UserAssets, UserTransactions, TokenData, MarketData } from '/imports/api/collections/client_collections'
 import Binance from "/imports/api/binance";
 export const BNB = new Binance();
 const bcrypt = require('bcryptjs');

@@ -1,8 +1,8 @@
 import React from "react";
 import { useTracker } from 'meteor/react-meteor-data';
-import { UserAssets } from '/client/lib/client_collections'
+import { UserAssets } from '/imports/api/collections/client_collections'
 import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
-import { TokenData } from '/client/lib/client_collections'
+import { TokenData } from '/imports/api/collections/client_collections'
 import { TokenDataTypes } from '/imports/api/collections/tokenDataCollection'
 // TODO: Add MarketData & types
 

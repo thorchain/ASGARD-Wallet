@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
-import { UserAccount } from '/client/lib/client_collections'
+import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserAccountTypes } from '/imports/api/collections/userAccountCollection';
 
 import { WALLET } from '/imports/startup/client/init'
@@ -27,6 +27,7 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
 
   // Handlers
   const removeWallet = async () => { 
+    console.log("trying...")
     try {
       await WALLET.resetWallet()
       // SECURITY NOTE: this needs to await for above, to ensure dependent route's security
@@ -79,7 +80,7 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
     
           <input type="button" className="btn btn-primary w-100 my-2 disabled" value="View Phrase" data-event="viewPhrase" />
           <a href={downloadLink} download="keystore.txt" className="btn btn-primary w-100 mb-2">Export Keystore</a>
-          <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={removeWallet} />
+          <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={() => removeWallet()} />
     
         </div>
       </div>
