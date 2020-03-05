@@ -3,6 +3,8 @@ import { EventEmitter } from "events";
 // import UserAccount from '/imports/api/collections/UserAccountCollection'
 import { UserAccount, UserAssets, UserTransactions, TokenData, MarketData } from '/imports/api/collections/client_collections'
 import Binance from "/imports/api/binance";
+import { crypto } from '@binance-chain/javascript-sdk'
+// import WalletConnect from "@trustwallet/walletconnect";
 export const BNB = new Binance();
 const bcrypt = require('bcryptjs');
 
@@ -195,6 +197,8 @@ export default class WalletController extends EventEmitter{
     this.connTransfer.onmessage = (msg) => {
       console.log("got transfer websocket message");
       
+      const data = JSON.parse(msg.data)
+      console.log(data);
       // const data = JSON.parse(msg.data)
       // This data is missing too much (timestamp for instance)
       // Its possible if we want full speed to do as below, then update later
@@ -235,6 +239,8 @@ export default class WalletController extends EventEmitter{
     this.connAccount.onmessage = async (msg) => {
       console.log("got websocket account message")
       const data = JSON.parse(msg.data)
+      console.log(data);
+      
       
       const balances = data.data.B
       const assets = balances.map(function(elem) {
@@ -486,6 +492,7 @@ export default class WalletController extends EventEmitter{
   
   resetWallet = async () => {
     // SECURITY: This is descrutive removal of all user account data and keystores
+    // TODO: Add confirm method, set local flag "resetting" or something prior to
     try {
       this.lock() // this is to flag for app security
       await UserAccount.remove({})
@@ -498,6 +505,71 @@ export default class WalletController extends EventEmitter{
     } catch (error) {
       throw Error(error)
     }
+  }
+
+  vaultFreezeFunds = async (amount, asset, password) => {
+    console.log("starting to freeze the funds");
+    // const getFee = () => {
+      
+    //   BNB.fees()
+    //     .then((response) => {
+    //       console.log(response.data);
+          
+    //       const fee = response.data.find((item) => {
+    //         return item.msg_type === "tokensFreeze"
+    //       })
+    //       setFee(BNB.calculateFee(fee.fee))
+    //     })
+    //     .catch((error) => {
+    //       console.error(error)
+    //     })
+    // }
+    const userAccount = UserAccount.findOne()
+    // const account = BNB.getAccount(userAccount.address)
+
+    // const tx = {
+    //   accountNumber: account.account_number.toString(),
+    //   chainId: CHAIN_ID,
+    //   sequence: account.sequence.toString(),
+    // }
+    // tx.freeze_order = {
+    //   from: base64js.fromByteArray(crypto.decodeAddress(context.wallet.address)),
+    //   symbol: SYMBOL,
+    //   amount: (parseFloat(values.amount) * Math.pow(10, 8)).toString(),
+    // }
+    // console.log(tx);
+    // lol its even easier
+    // set the client key...
+    
+
+    console.log(password)
+    try {
+      let results
+      const privateKey = await crypto.getPrivateKeyFromKeyStore(
+        userAccount.keystore,
+        password
+      )
+      BNB.bnbClient.setPrivateKey(privateKey)
+      const res = await BNB.bnbTokens.freeze(userAccount.address, asset, amount)
+      BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
+      console.log("succesful freeze");
+      // console.log(privateKey);
+      
+      console.log(res);
+      return res
+    } catch (error) {
+      throw Error(error)
+    }
+
+  }
+  vaultUnfreezeFunds = () => {
+
+      // tx.unfreeze_order = {
+      //   from: base64js.fromByteArray(crypto.decodeAddress(context.wallet.address)),
+      //   symbol: SYMBOL,
+      //   amount: (parseFloat(values.amount) * Math.pow(10, 8)).toString(),
+      // }
+
   }
 
   

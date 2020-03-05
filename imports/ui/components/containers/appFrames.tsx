@@ -3,9 +3,9 @@ import Breadcrumb from '/imports/ui/components/elements/breadcrumb'
 
 type MainLayoutProps = { header() : React.Component, content() : React.Component }
 export const MainLayout: React.FC<MainLayoutProps> = ({header, content}): JSX.Element => {
-    return (
+  return (
     <div>
-      {header()/* Necessary for optional prop */}
+      {header()}
       <main id="app-wrapper" className="container-fluid">
         <Breadcrumb/>
         {content()}
@@ -20,7 +20,7 @@ type BareLayoutProps = { header?(): React.Component, content() : React.Component
 export const BareLayout: React.FC<BareLayoutProps> = ({header, content}) => {
   return (
     <div>
-      {header && header()/* for optional prop */}
+      {header && header()}
       <main id="app-wrapper" className="container-fluid">
         {content()}
       </main>

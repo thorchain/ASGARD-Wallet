@@ -21,7 +21,7 @@ import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
 // import '/client/components/wallet/walletAccounts.js'
 // import '/client/components/wallet/walletAssets.js'
 // import '/client/components/wallet/walletTransactionsList.js'
-import '/client/components/wallet/walletAssetDetails.js'
+// import '/client/components/wallet/walletAssetDetails.js'
 import '/client/components/wallet/walletReceive.js'
 import '/client/components/wallet/walletSend.js'
 
@@ -38,6 +38,8 @@ import UserAssetsScreen from '/imports/ui/components/screens/userAssets'
 import UserAssetDetailsScreen from '/imports/ui/components/screens/userAssetDetails'
 import UserTransactionsScreen from '/imports/ui/components/screens/transactions/userTransactions'
 
+import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
+// import VaultUnfreezeFundsScreen from '/imports/ui/components/screens/vaultUnfreezeFunds'
 
 
 // SECURITY: Application, routing check
@@ -49,7 +51,7 @@ const isUnlocked = () => {
 	return WALLET.isUnlocked() === true ? true : false;
 }
 
-// TODO: Remove after full migration to Blaze
+// TODO: Remove after full migration to React
 const swapRenderer = (newType) => {
 	if (newType === 'react') {
 		console.info("swapping view layer to react");
@@ -295,5 +297,18 @@ walletRoutes.route('/receive', {
 		route: 'walletAssets',
 	},
 	renderType: 'blaze'
+})
+walletRoutes.route('/freeze/:symbol', {
+	name: 'walletFreeze',
+	action: function (params, queryParams) {
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<FreezeFundsScreen symbol={params.symbol}/>),
+    });
+	},
+	back: {
+		route: 'walletAssets'
+	},
+	renderType: 'react'
 })
 

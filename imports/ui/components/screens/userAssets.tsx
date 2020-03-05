@@ -16,14 +16,17 @@ const UserAssetsScreen: React.FC = (): JSX.Element => {
     return UserAssets.find().fetch()
   }, [])
   return (
-    <div>
-      <h5 className="text-center mb-4">Assets</h5>
-      <ul className="list-unstyled list-links">
-      {userAssets.map(asset => {
-        return <ListItem asset={asset} key={asset._id}/>
-      })}
-      </ul>
+    <div className="row">
+      <div className="col">
 
+        <h5 className="text-center mb-4">Assets</h5>
+        <ul className="list-unstyled list-links">
+        {userAssets.map(asset => {
+          return <ListItem asset={asset} key={asset._id}/>
+        })}
+        </ul>
+
+      </div>
     </div>
   )
 

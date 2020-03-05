@@ -18,9 +18,11 @@ const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
         </tr>
       </thead>
       
-      {transactions.map((transaction) => {
-        return <TableRow transaction={transaction} key={transaction._id} />
-      })}
+      <tbody>
+        {transactions.map((transaction) => {
+          return <TableRow transaction={transaction} key={transaction._id} />
+        })}
+      </tbody>
 
     </table>
 

@@ -17,6 +17,7 @@ interface FlowRouterRoute {
   params: Object;
   queryParams: Object;
   route: { name: string };
+  oldRoute: { name: string, group: {name: string}; }; // Added
 }
 
 interface FlowRouterGroupParams {
