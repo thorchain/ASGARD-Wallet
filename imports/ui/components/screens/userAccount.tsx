@@ -26,6 +26,14 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
   }, [])
 
   // Handlers
+  const lockWallet = async () => {
+    try {
+      await WALLET.lock()
+      FlowRouter.go('walletUnlock')
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const removeWallet = async () => { 
     console.log("trying...")
     try {
@@ -76,13 +84,13 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
         <div className="row">
           <div className="col-md-8 col-lg-6 ml-auto mr-auto">
       
-            <input type="button" className="btn btn-primary w-100 my-5" value="Lock Wallet" data-event="lockWallet"/>
+            <input type="button" className="btn btn-primary w-100 my-5" value="Lock Wallet" onClick={lockWallet}/>
       
             <h5>Wallet Management</h5>
       
             <input type="button" className="btn btn-primary w-100 my-2 disabled" value="View Phrase" data-event="viewPhrase" />
             <a href={downloadLink} download="keystore.txt" className="btn btn-primary w-100 mb-2">Export Keystore</a>
-            <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={() => removeWallet()} />
+            <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={removeWallet} />
       
           </div>
         </div>

@@ -22,7 +22,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     return TokenData.findOne({symbol: symbol})
   },[])
   const userTransactions: UserTransactionTypes[] = useTracker(() => {
-    return UserTransactions.find().fetch()
+    return UserTransactions.find({txAsset:symbol},{sort: {timeStamp: -1}}).fetch()
   }, [])
   const freezable = () => {
     return (symbol === 'RUNE')
@@ -79,7 +79,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
             <button className="btn btn-primary w-100" onClick={() => FlowRouter.go('walletReceive')}>recieve</button>
             {freezable && (
               <div className="input-group flex-column text-center">
-                <button className="btn btn-text mt-3">Unfreeze</button>
+                <button className="btn btn-text mt-3" onClick={() => FlowRouter.go('walletUnfreeze',{symbol:symbol})}>Unfreeze</button>
                 <div className="small">Unfreeze assets on address</div>
               </div>
             )}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useTracker } from 'meteor/react-meteor-data'
+import { useTracker } from 'meteor/react-meteor-data';
 import { WALLET } from '/imports/startup/client/init'
 import { UserAccount, UserAssets } from '/imports/api/collections/client_collections'
 import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
@@ -7,13 +7,13 @@ import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
 import FreezeFundsFormSchema from '/imports/lib/schemas/freezeFundsFormSchema'
 
 type Props = { symbol: string }
-const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
-  const [amountError, setAmountError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
-  const [loadingMsg, setLoadingMsg] = useState('')
+const UnfreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
+  const [amountError, setAmountError] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [loadingMsg, setLoadingMsg] = useState('');
   const freezeFunds = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setLoadingMsg('freezing funds')
+    setLoadingMsg('unfreezing funds')
     const t = event.currentTarget
     const account = UserAccount.findOne()
     const balances = userAsset
@@ -21,7 +21,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     const validationContext = FreezeFundsFormSchema.namedContext('stakeFunds');
     const obj = validationContext.clean({
       pwHash: account.pwHash,
-      maxAmount: balances && balances.free || 0,
+      maxAmount: balances && balances.frozen || 0,
       sender: account.address,
       amount: t.amount.value,
       asset: symbol,
@@ -29,15 +29,15 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     });
     await validationContext.validate(obj)
     // delay to show change before crypto ui lag
-    const sleep = (m: number) => new Promise(r => setTimeout(r, m))
+    const sleep = (m:number) => new Promise(r => setTimeout(r, m))
     if (!validationContext.isValid()) {
       setAmountError(validationContext.keyErrorMessage('amount'))
       setPasswordError(validationContext.keyErrorMessage('password'))
       setLoadingMsg('')
     } else {
-      await sleep(200)
       try {
-        await WALLET.vaultFreezeFunds(obj.amount, obj.asset, obj.password)
+        await sleep(200)
+        await WALLET.vaultUnfreezeFunds(obj.amount, obj.asset, obj.password)
         FlowRouter.go('walletAssetDetails', {symbol:symbol})
       } catch (error) {
         setLoadingMsg('')
@@ -53,7 +53,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
   return (
     <div className="row">
       <div className="col">
-        <h5 className="text-center">Stake Funds</h5>
+        <h5 className="text-center">Withdraw Staked Funds</h5>
         <form className="form" onSubmit={freezeFunds}>
           <fieldset {...(loadingMsg ? {disabled:true} : {})}>
 
@@ -66,7 +66,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
                     amountError
                   )}
                   {!amountError && symbol && (
-                    <span>Max funds: {userAsset.free}</span>
+                    <span>Max funds: {userAsset.frozen}</span>
                   )}
                 </small>
               </div>
@@ -79,9 +79,8 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
             </div>
 
             <button className="btn btn-primary w-100" type="submit">
-
               {!loadingMsg &&(
-                <span>Freeze</span>
+                <span>Unfreeze</span>
               )} 
               {loadingMsg && (
                 <span>
@@ -91,7 +90,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
                   <span className="ml-1">{loadingMsg}</span>
                 </span>
               )}
-              </button>
+            </button>
 
           </fieldset>
         </form>
@@ -101,4 +100,4 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     </div>
   )
 }
-export default FreezeFundsScreen
+export default UnfreezeFundsScreen

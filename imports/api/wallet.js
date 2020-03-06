@@ -1,10 +1,7 @@
 import { EventEmitter } from "events";
-// import { UserAccount } from '/client/lib/client_collections'
-// import UserAccount from '/imports/api/collections/UserAccountCollection'
 import { UserAccount, UserAssets, UserTransactions, TokenData, MarketData } from '/imports/api/collections/client_collections'
 import Binance from "/imports/api/binance";
 import { crypto } from '@binance-chain/javascript-sdk'
-// import WalletConnect from "@trustwallet/walletconnect";
 export const BNB = new Binance();
 const bcrypt = require('bcryptjs');
 
@@ -64,14 +61,14 @@ export default class WalletController extends EventEmitter{
 
 
   initializeTransactionData = async (address) => {
-    console.log("initializing transaction data");
+    console.log("initializing transaction data...");
     const genesis = 1555545600000 // TODO: change per chain (test/main etc.)
     const transactions = await this.getTxsFrom(genesis, address)
     return UserTransactions.batchInsert(transactions)
   }
 
   updateTransactionData = async () => {
-    console.log("updating transactions");
+    console.log("updating transactions...");
     const address = UserAccount.findOne().address
     const lastTx = UserTransactions.find({},{sort: {timeStamp: -1}, limit: 1}).fetch()
     let epoch, d, transactions
@@ -110,7 +107,6 @@ export default class WalletController extends EventEmitter{
   }
 
   getTokenData = async (assets) => {
-    console.log("getting token data");
     if (assets && assets.length > 0) {
       
       const symbols = assets.map(asset => {
@@ -156,30 +152,42 @@ export default class WalletController extends EventEmitter{
   }
 
   initializeTokenData = async() => {
-      const usr = await UserAccount.findOne()
-      if (usr && usr.assets && usr.assets.length > 0) {
-        const tokens = await this.getTokenData(usr.assets)
-        TokenData.remove({})
-        TokenData.batchInsert(tokens)
-      }
-  }
-  watchTxsLoop = () => {
-    const sleep = m => new Promise(r => setTimeout(r, m))
-    const forLoop = async () => {
-      for (let index = 0; index < 5; index++) {
-        let res = []
-        await sleep(3000)
-        res = await this.updateTransactionData()
-        if (res.length > 0) { break }
-      }
+    console.log("initializing token data...");
+    const usr = await UserAccount.findOne()
+    if (usr && usr.assets && usr.assets.length > 0) {
+      const tokens = await this.getTokenData(usr.assets)
+      TokenData.remove({})
+      TokenData.batchInsert(tokens)
     }
-    forLoop()
+  }
+  watchTxsLoop = async () => {
+    // IF this is running, just extend it to a max amount
+    // track as member to class
+    if (this.txTicks) {
+      if (this.txTicks <= 10) { this.txTicks += 5 }
+      console.log("added ticks");
+      console.log(this.txTicks)
+    } else {
+      this.txTicks = 5 // value for looping
+      const sleep = m => new Promise(r => setTimeout(r, m))
+      const forLoop = async () => {
+        for (let index = 0; index < this.txTicks; index++) {
+          let res = []
+          await sleep(3000)
+          res = await this.updateTransactionData()
+          if (res.length > 0) { this.txTicks = null; break; }
+        }
+      }
+
+      forLoop()
+    }
   }
 
   initializeConn = async (address) => {
+    console.log("initializing sockets...");
     try {
-      this.connTransfer = new WebSocket("wss://testnet-dex.binance.org/api/ws");
-      this.connAccount = new WebSocket("wss://testnet-dex.binance.org/api/ws");
+      // todo: do we need to use '/stream' ?
+      this.conn = new WebSocket('wss://testnet-dex.binance.org/api/ws')
     } catch (error) {
       // For debugging
       console.log("socket error");
@@ -189,69 +197,37 @@ export default class WalletController extends EventEmitter{
     }
 
     // subscribe transactions
-    console.log("initializing sockets");
     
-    this.connTransfer.onopen = (evt) => {
-      this.connTransfer.send(JSON.stringify({ method: "subscribe", topic: "transfers", address: address }))
+    this.conn.onopen = (evt) => {
+      console.log("testing new CONN!!!")
+      this.conn.send(JSON.stringify({ method: "subscribe", topic: "transfers", address: address }))
+      this.conn.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
     }
-    this.connTransfer.onmessage = (msg) => {
-      console.log("got transfer websocket message");
-      
+    this.conn.onmessage = (msg) => {
+      console.log("new socket CONN msg")
       const data = JSON.parse(msg.data)
-      console.log(data);
-      // const data = JSON.parse(msg.data)
-      // This data is missing too much (timestamp for instance)
-      // Its possible if we want full speed to do as below, then update later
-      // this has to match existing schema
-      // {
-      //   "stream": "transfers",
-      //   "data": {
-      //     "e": "outboundTransferInfo",
-      //     "E": 64970606,
-      //     "H": "613970E613792738E00854F06567EB7531B22C9CB033DAB4653A81DA37B4BE8B",
-      //     "M": "",
-      //     "f": "tbnb1ewk0yypfhuw358qw35rw059jkfym96rt7hrykm",
-      //     "t": [
-      //       {
-      //         "o": "tbnb1u4s75mmna5mwqzkj63vye5ykq4numzrnww4rnu",
-      //         "c": [
-      //           {
-      //             "a": "TCAN-014",
-      //             "A": "77.00000000"
-      //           }
-      //         ]
-      //       }
-      //     ]
-      //   }
-      // }
-
-
-      // the tx is not available from the tx api as soon as websocket event
+      console.log(msg)
+      switch (data.stream) {
+        case "accounts":
+          this.connHandleAccountMessage(data)
+          break;
+        case "transfers":
+          this.connHanleTransferMessage(data)
+          break;
+      
+        default:
+          break;
+      }
+      // delay between ws broadcast & blockchain confirmation
       this.watchTxsLoop()
-
-      
     }
 
-    // subscribe account
-    this.connAccount.onopen = (evt) => {
-      this.connAccount.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
-    }
-    this.connAccount.onmessage = async (msg) => {
-      console.log("got websocket account message")
-      const data = JSON.parse(msg.data)
-      console.log(data);
-      
-      
+  }
+  connHandleAccountMessage = async (data) => {
       const balances = data.data.B
       const assets = balances.map(function(elem) {
         // these are the new balances
-        // These mappings for account are different than http api...
-        // free = f
-        // frozen = r
-        // locked = l
-        // symbol = a
-        // shortSymbol = nothing....
-        //
+        // These mappings for account ws are different than REST api...
         const asset = {
           free: parseFloat(elem.f),
           frozen: parseFloat(elem.r),
@@ -262,6 +238,7 @@ export default class WalletController extends EventEmitter{
         return asset
       })
       // IF this is a new asset, then we need to get the token data
+      // TODO: replace with 'updateTokenData()' method
       const account = UserAccount.findOne();
       if (assets.length !== account.assets.length) {
         // Check to only add new tokens
@@ -272,15 +249,47 @@ export default class WalletController extends EventEmitter{
         })
         TokenData.batchInsert(addTokens)
       }
-      const select = account && account._id ? {_id: account._id} : {};
-      // TODO: Remove UserAccount.update when fully deprecated
-      UserAccount.update(select, {$set: {assets: assets}})
+      // const select = account && account._id ? {_id: account._id} : {};
+      // This method should only ever be called after instatiation of wallet/account
+      // Refactor into seperate 'updateUserAccount' method
+      UserAccount.update({_id: account._id}, {$set: {assets: assets}})
       this.updateUserAssetsStore(assets)
-    }
 
+
+
+    // this.watchTxsLoop()
   }
+  connHanleTransferMessage = () => {
+    // TODO: parse ws event and pre-load tx with 'unconfirmed' status
+    // this will need to be updated later after the actual tx even is in block
+    //   // This data is missing too much (timestamp for instance)
+    //   // Its possible if we want full speed to do as below, then update later
+    //   // this has to match existing schema
+    //   // {
+    //   //   "stream": "transfers",
+    //   //   "data": {
+    //   //     "e": "outboundTransferInfo",
+    //   //     "E": 64970606,
+    //   //     "H": "613970E613792738E00854F06567EB7531B22C9CB033DAB4653A81DA37B4BE8B",
+    //   //     "M": "",
+    //   //     "f": "tbnb1ewk0yypfhuw358qw35rw059jkfym96rt7hrykm",
+    //   //     "t": [
+    //   //       {
+    //   //         "o": "tbnb1u4s75mmna5mwqzkj63vye5ykq4numzrnww4rnu",
+    //   //         "c": [
+    //   //           {
+    //   //             "a": "TCAN-014",
+    //   //             "A": "77.00000000"
+    //   //           }
+    //   //         ]
+    //   //       }
+    //   //     ]
+    //   //   }
+    //   // }
+  }
+
   updateUserAssetsStore = (assets) => {
-    console.log("updating new userassets context/collection");
+    console.log("updating user assets...");
     // we need to find the assets that changed
     const oldAssets = UserAssets.find().fetch()
     const changed = assets.filter((asset) => {
@@ -305,7 +314,7 @@ export default class WalletController extends EventEmitter{
   }
 
   initializeUserAccount = async (account) => {
-    console.log("initializing user account data");
+    console.log("initializing user account data...");
     
     await BNB.getBalances(account.address).then(e => {
       if (e.length > 0) {
@@ -331,13 +340,13 @@ export default class WalletController extends EventEmitter{
   }
 
   initializeVault = (keystore) => {
-    console.log("initializeVault")
+    console.log("initializing vault...")
     window.localStorage.setItem("binance", JSON.stringify(keystore));
   }
 
 
   generateAccount = async (pw, mnemonic) => {
-    console.log("generateKeystore");
+    console.log("generateing keystore...");
     
     let account
     if (mnemonic) {
@@ -418,8 +427,12 @@ export default class WalletController extends EventEmitter{
       this.connAccount.close()
       this.connTransfer.close()
     }
+    // handle if this is broken data source during wallet reset
+    // we unlock before reset in case the reset fails
     const account = UserAccount.findOne()
-    UserAccount.update({_id:account._id},{$set: {locked: true}})
+    if (account && account._id) {
+      UserAccount.update({_id:account._id},{$set: {locked: true}})
+    }
     this.setIsUnlocked(false)
     return true
   }
@@ -463,12 +476,12 @@ export default class WalletController extends EventEmitter{
     // potentially automaticallyl do this on unlock
     await this.updateUserBalances()
     await this.updateTransactionData()
-    // TODO: update token data
+    // TODO: update token data. Is this necessary?
     // TODO: update market data
   }
 
   updateUserBalances = async () => {
-    console.log("we are updating user balances");
+    console.log("updating user balances");
 
     const user = UserAccount.findOne()
     let balances = {}
@@ -481,7 +494,6 @@ export default class WalletController extends EventEmitter{
         return elem
       })
       
-      // const select = doc && doc._id ? {_id: doc._id} : {};
       if (balances.length > 0) {
         const doc = UserAccount.findOne();
         UserAccount.update({_id:doc._id}, {$set: {assets: balances}})
@@ -492,7 +504,8 @@ export default class WalletController extends EventEmitter{
   
   resetWallet = async () => {
     // SECURITY: This is descrutive removal of all user account data and keystores
-    // TODO: Add confirm method, set local flag "resetting" or something prior to
+    // TODO: Add a second 'confirmResetWallet()' method
+    // set local member/flag "resetting" or something prior executing below
     try {
       this.lock() // this is to flag for app security
       await UserAccount.remove({})
@@ -508,68 +521,35 @@ export default class WalletController extends EventEmitter{
   }
 
   vaultFreezeFunds = async (amount, asset, password) => {
-    console.log("starting to freeze the funds");
-    // const getFee = () => {
-      
-    //   BNB.fees()
-    //     .then((response) => {
-    //       console.log(response.data);
-          
-    //       const fee = response.data.find((item) => {
-    //         return item.msg_type === "tokensFreeze"
-    //       })
-    //       setFee(BNB.calculateFee(fee.fee))
-    //     })
-    //     .catch((error) => {
-    //       console.error(error)
-    //     })
-    // }
     const userAccount = UserAccount.findOne()
-    // const account = BNB.getAccount(userAccount.address)
-
-    // const tx = {
-    //   accountNumber: account.account_number.toString(),
-    //   chainId: CHAIN_ID,
-    //   sequence: account.sequence.toString(),
-    // }
-    // tx.freeze_order = {
-    //   from: base64js.fromByteArray(crypto.decodeAddress(context.wallet.address)),
-    //   symbol: SYMBOL,
-    //   amount: (parseFloat(values.amount) * Math.pow(10, 8)).toString(),
-    // }
-    // console.log(tx);
-    // lol its even easier
-    // set the client key...
-    
-
-    console.log(password)
     try {
-      let results
-      const privateKey = await crypto.getPrivateKeyFromKeyStore(
-        userAccount.keystore,
-        password
-      )
-      BNB.bnbClient.setPrivateKey(privateKey)
+      const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
+      await BNB.bnbClient.setPrivateKey(privateKey)
       const res = await BNB.bnbTokens.freeze(userAccount.address, asset, amount)
-      BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
-      console.log("succesful freeze");
-      // console.log(privateKey);
+      // SECURITY: This creates errors, as key swap happens too soon...
+      // TODO: private key should be unset
+      // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
       
-      console.log(res);
       return res
     } catch (error) {
       throw Error(error)
     }
 
   }
-  vaultUnfreezeFunds = () => {
-
-      // tx.unfreeze_order = {
-      //   from: base64js.fromByteArray(crypto.decodeAddress(context.wallet.address)),
-      //   symbol: SYMBOL,
-      //   amount: (parseFloat(values.amount) * Math.pow(10, 8)).toString(),
-      // }
-
+  vaultUnfreezeFunds = async (amount, asset, password) => {
+    const userAccount = UserAccount.findOne()
+    try {
+      const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
+      await BNB.bnbClient.setPrivateKey(privateKey)
+      const res = await BNB.bnbTokens.unfreeze(userAccount.address, asset, amount)
+      // SECURITY: This creates errors, as key swap happens too soon...
+      // TODO: private key should be unset
+      // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
+      
+      return res
+    } catch (error) {
+      throw Error(error)
+    }
   }
 
   

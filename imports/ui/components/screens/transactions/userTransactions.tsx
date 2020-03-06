@@ -7,7 +7,7 @@ import TransactionsList from './transactionsList'
 
 const UserTransactionsScreen: React.FC = (): JSX.Element => {
   const userTransactions: UserTransactionTypes[] = useTracker(() => {
-    return UserTransactions.find().fetch()
+    return UserTransactions.find({},{sort: {timeStamp: -1}}).fetch()
   }, [])
   return (
     <div className="row">

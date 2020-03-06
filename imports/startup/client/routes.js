@@ -39,7 +39,7 @@ import UserAssetDetailsScreen from '/imports/ui/components/screens/userAssetDeta
 import UserTransactionsScreen from '/imports/ui/components/screens/transactions/userTransactions'
 
 import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
-// import VaultUnfreezeFundsScreen from '/imports/ui/components/screens/vaultUnfreezeFunds'
+import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
 
 
 // SECURITY: Application, routing check
@@ -304,6 +304,19 @@ walletRoutes.route('/freeze/:symbol', {
 		mounter(MainLayout, {
 			header: () => (<NavbarMain/>),
       content: () => (<FreezeFundsScreen symbol={params.symbol}/>),
+    });
+	},
+	back: {
+		route: 'walletAssets'
+	},
+	renderType: 'react'
+})
+walletRoutes.route('/unfreeze/:symbol', {
+	name: 'walletUnfreeze',
+	action: function (params, queryParams) {
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<UnfreezeFundsScreen symbol={params.symbol}/>),
     });
 	},
 	back: {

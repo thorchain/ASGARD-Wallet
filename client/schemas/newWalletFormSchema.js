@@ -1,3 +1,4 @@
+import SimpleSchema from 'simpl-schema'
 Schemas = (typeof Schemas === "undefined") ? {} : Schemas;
 
 Schemas.formNewWallet = new SimpleSchema({
@@ -57,3 +58,4 @@ Schemas.formNewMnemonicWallet = new SimpleSchema({
 },{ tracker: Tracker });
 
   
+export default Schemas
