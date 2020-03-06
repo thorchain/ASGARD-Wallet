@@ -178,7 +178,7 @@ ul.list-links > li:hover {
 
 // Custom General Utilities
 
-.hr {
+:global(.hr) {
   border-bottom: 1px solid $Light-Gray;
   height: 0;
   margin: 0 -15px 0 -15px; // account for container margin
@@ -192,7 +192,7 @@ ul.list-links > li:hover {
 // Custom Styles
 
 // Custom background
-#app-wrapper.bg-img-brand {
+#app-wrapper > .bg-img-brand {
   background-image: url("/img/Asgard-Swirl.png");
   background-attachment: fixed;
 	background-size: auto;

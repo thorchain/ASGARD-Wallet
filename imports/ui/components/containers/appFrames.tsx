@@ -4,9 +4,9 @@ import Breadcrumb from '/imports/ui/components/elements/breadcrumb'
 type MainLayoutProps = { header() : React.Component, content() : React.Component }
 export const MainLayout: React.FC<MainLayoutProps> = ({header, content}): JSX.Element => {
   return (
-    <div>
+    <div id="app-wrapper">
       {header()}
-      <main id="app-wrapper" className="container-fluid">
+      <main className="container-fluid">
         <Breadcrumb/>
         {content()}
       </main>
@@ -19,9 +19,9 @@ export const MainLayout: React.FC<MainLayoutProps> = ({header, content}): JSX.El
 type BareLayoutProps = { header?(): React.Component, content() : React.Component}
 export const BareLayout: React.FC<BareLayoutProps> = ({header, content}) => {
   return (
-    <div>
+    <div id="app-wrapper">
       {header && header()}
-      <main id="app-wrapper" className="container-fluid">
+      <main className="container-fluid">
         {content()}
       </main>
       <footer>
@@ -33,8 +33,8 @@ export const BareLayout: React.FC<BareLayoutProps> = ({header, content}) => {
 type BareLayoutBrandedProps = {content() : React.Component }
 export const BareLayoutBranded: React.FC<BareLayoutBrandedProps> = ({content}): JSX.Element => {
   return (
-  <div>
-    <main id="app-wrapper" className="container-fluid bg-img-brand">
+  <div id="app-wrapper">
+    <main className="container-fluid bg-img-brand">
       {content()}
     </main>
     <footer>

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserTransactionTypes } from '/imports/api/collections/userTransactionsCollection'
+import { cryptoCurr } from '/imports/ui/lib/numbersHelpers'
 
 type Props = {transactions: UserTransactionTypes[]}
 const TransactionsList: React.FC<Props> = ({transactions}): JSX.Element => {
@@ -38,7 +39,7 @@ const ListItem: React.FC<ItemProps> = (props): JSX.Element => {
         break;
     }
     // return empty
-    return {msg:"",label:"",address:"",color:""}
+    return {msg:'',label:'',address:'',color:'',op:''}
 
   },[])
   const shortSym = (symbol: string) => {
@@ -58,7 +59,7 @@ const ListItem: React.FC<ItemProps> = (props): JSX.Element => {
 
       <div className="pl-1">
         <div className="text-right">
-          <span className={"d-block text-" + party.color}>{party.op}{tx.value}</span>
+          <span className={"d-block text-" + party.color}>{party.op}{cryptoCurr(tx.value)}</span>
           <span className="d-none d-md-inline-block text-muted" style={{width: "62px"}}>[{shortSym(tx.txAsset)}]</span>
           <span className="d-block d-md-none small text-muted">[{shortSym(tx.txAsset)}]</span>
         </div>

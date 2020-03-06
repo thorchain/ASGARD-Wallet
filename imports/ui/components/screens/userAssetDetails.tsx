@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTracker } from 'meteor/react-meteor-data'
-import { UserAssets } from '/imports/api/collections/client_collections'
+import { UserAssets, UserAccount } from '/imports/api/collections/client_collections'
 import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
 import { UserTransactions } from '/imports/api/collections/client_collections'
 import { UserTransactionTypes } from '/imports/api/collections/userTransactionsCollection'
@@ -24,8 +24,31 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
   const userTransactions: UserTransactionTypes[] = useTracker(() => {
     return UserTransactions.find({txAsset:symbol},{sort: {timeStamp: -1}}).fetch()
   }, [])
-  const freezable = () => {
-    return (symbol === 'RUNE')
+  const freezable = () => balances.free > 0
+  const unfreezable = () => balances.frozen > 0
+  const sendable = () =>  balances.free > 0
+  const goRoute = (route: string) => {
+    // workaroudn for inconsistent conventions.
+    // TODO: Fix when migrating desination component (walletSend)
+    const params = route === "walletSend" ? {asset:symbol}:{symbol:symbol}
+    switch (route) {
+      case 'walletSend':
+        sendable() && FlowRouter.go(route,params)
+        break;
+      case 'walletFreeze':
+        freezable() && FlowRouter.go(route,params)
+        break;
+      case 'walletUnfreeze':
+        unfreezable() && FlowRouter.go(route,params)
+        break;
+      case 'walletReceive':
+        FlowRouter.go(route)
+        break;
+    
+      default:
+        break;
+    }
+
   }
   return (
     <div className="row">
@@ -39,7 +62,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
 
           </div>
 
-      <div className="col-12 d-flex justify-content-center">
+      <div className="col-12 d-flex justify-content-center text-center">
 
         <div className="p-3 mx-2">
           <div>Free:</div>
@@ -51,7 +74,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
           <div className="font-size-h4">{balances.frozen}</div>
         </div>
 
-        <div className="p-3 mxhh-2">
+        <div className="p-3 mx-2">
           <div>Locked:</div>
           <div className="font-size-h4">{balances.locked}</div>
         </div>
@@ -66,23 +89,19 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
         <div className="row">
 
           <div className="col-6 my-4">
-            <button className="btn btn-primary w-100" onClick={() => FlowRouter.go('walletSend', {asset:symbol})}>send</button>
-            {freezable && (
-              <div className="input-group flex-column text-center">
-                <button className="btn btn-text mt-3" onClick={() => FlowRouter.go('walletFreeze',{symbol:symbol})}>Freeze</button>
-                <div className="small">Freeze assets on address</div>
-              </div>
-            )}
+            <button className={"btn btn-primary w-100 " + (!sendable() && ("disabled"))} onClick={() => goRoute('walletSend')}>send</button>
+            <div className="input-group flex-column text-center">
+              <button className={"btn btn-text mt-3 " + (!freezable() && ("disabled"))} onClick={() => goRoute('walletFreeze')}>Freeze</button>
+              <div className="small">Freeze assets on address</div>
+            </div>
           </div>
 
           <div className="col-6 my-4">
-            <button className="btn btn-primary w-100" onClick={() => FlowRouter.go('walletReceive')}>recieve</button>
-            {freezable && (
-              <div className="input-group flex-column text-center">
-                <button className="btn btn-text mt-3" onClick={() => FlowRouter.go('walletUnfreeze',{symbol:symbol})}>Unfreeze</button>
-                <div className="small">Unfreeze assets on address</div>
-              </div>
-            )}
+            <button className="btn btn-primary w-100" onClick={() => goRoute('walletReceive')}>recieve</button>
+            <div className="input-group flex-column text-center">
+              <button className={"btn btn-text mt-3 " + (!unfreezable() && ("disabled"))} onClick={() => goRoute('walletUnfreeze')}>Unfreeze</button>
+              <div className="small">Unfreeze assets on address</div>
+            </div>
           </div>
 
 

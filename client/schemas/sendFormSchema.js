@@ -1,3 +1,6 @@
+import SimpleSchema from 'simpl-schema'
+import { Tracker } from 'meteor/tracker'
+import { BNB } from '/imports/api/wallet'
 Schemas = (typeof Schemas === "undefined") ? {} : Schemas;
 
 var bcrypt = require('bcryptjs');
@@ -53,3 +56,5 @@ Schemas.formTransferTx = new SimpleSchema({
     label: "pwHash"
   }
 },{ tracker: Tracker });
+
+export default Schemas

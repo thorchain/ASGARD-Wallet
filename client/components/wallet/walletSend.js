@@ -1,4 +1,10 @@
 import './walletSend.html'
+import '/client/components/widgets/circleColorIcon'
+import '/client/lib/helpers/compareHelpers'
+import '/client/lib/helpers/genericHelpers'
+import { BNB } from '/imports/api/wallet'
+import { WALLET } from '/imports/startup/client/init'
+import Schemas from '/client/schemas/sendFormSchema'
 
 if (Meteor.isClient) {
   Template.walletSend.onCreated(function() {
