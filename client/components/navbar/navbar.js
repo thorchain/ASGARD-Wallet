@@ -16,4 +16,9 @@ if (Meteor.isClient) {
       return UserAssets.find().count() > 0
     }
   });
+  Template.navbar.events({
+    "click .navbar-collapse>ul>li>a:not([data-toggle])": function () {
+      $(".navbar-collapse").collapse('hide');
+    }
+  })
 }

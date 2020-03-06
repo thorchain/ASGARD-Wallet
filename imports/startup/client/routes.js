@@ -157,7 +157,7 @@ appRoutes.route('/unlock', {
 appRoutes.route('/options', {
 	name: 'options',
 	action: function (params, queryParams) {
-		mounter(MainLayout, {
+		mounter(BareLayout, {
 			header: () => (<NavbarSimple/>),
       content: () => (<UnlockOptionsScreen/>),
     });

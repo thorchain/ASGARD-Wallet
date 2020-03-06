@@ -33,9 +33,9 @@ export default TransactionsTable
 type RowProps = { transaction: UserTransactionTypes }
 const TableRow: React.FC<RowProps> = (props): JSX.Element => {
   const tx = props.transaction
-  const timeShort = (d: Date) => {
-    return momentShort(d).short()
-  }
+  // const timeShort = (d: Date) => {
+  //   return momentShort(d).short()
+  // }
   const party:{ msg: string; address: string} = useMemo(() => {
     const usr = UserAccount.findOne()
     if (tx.fromAddr === usr.address) {
@@ -45,14 +45,18 @@ const TableRow: React.FC<RowProps> = (props): JSX.Element => {
     }
 
   }, [])
+  const txType = (type: string) =>{
+    const t = type.split('_')
+    return t[0] === 'UN' ? t.slice(0,2) : t[0];// first and second... optionally
+  }
   const shortSym = (symbol: string) => {
       return symbol.split("-")[0].substr(0,4)
   }
   return (
     <tr>
 
-      <td className="text-nowrap">{timeShort(tx.timeStamp)}</td>
-      <td className="text-capitals">{tx.txType}</td>
+      <td className="text-nowrap">{momentShort(tx.timeStamp).short()}</td>
+      <td className="text-capitals">{txType(tx.txType)}</td>
 
       <td className="px-0" colSpan={2}>
         <div className="row m-0">

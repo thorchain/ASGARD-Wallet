@@ -23,12 +23,22 @@ const ListItem: React.FC<ItemProps> = (props): JSX.Element => {
     const from = tx.fromAddr
     const to = tx.toAddr
     const usr = UserAccount.findOne()
-    if (from === usr.address) {
-      return {msg:"send", label: "to", address:to, color:"danger", op:"-"}
-    // } else if (to === usr.address) {
-    } else {
-      return {msg:"receive", label: "from", address:from, color:"success", op:"+"}
+    switch (tx.txType) {
+      case 'TRANSFER':
+        if (from === usr.address) {
+          return {msg:"send", label: "to", address:to, color:"danger", op:"-"}
+        } else {
+          return {msg:"receive", label: "from", address:from, color:"success", op:"+"}
+        }
+      case 'FREEZE_TOKEN':
+        return {msg:"freeze", label: "from", address:from, color:"info", op:"-"}
+      case 'UN_FREEZE_TOKEN':
+        return {msg:"unfreeze", label: "to", address:from, color:"warning", op:"+"}
+      default:
+        break;
     }
+    // return empty
+    return {msg:"",label:"",address:"",color:""}
 
   },[])
   const shortSym = (symbol: string) => {
@@ -43,12 +53,12 @@ const ListItem: React.FC<ItemProps> = (props): JSX.Element => {
       <div className="d-none d-md-block col-2 col-lg-1 px-1 font-weight-bold text-uppercase ">{party.msg}</div>
 
       <div className="text-truncate mr-auto p-1">
-        <div className="text-truncate"><span className="small text-monospace">{party.address}</span></div>
+        <div className="text-truncate"><strong className="font-weight-bold small pr-2">{party.label}:</strong><span className="small text-monospace">{party.address}</span></div>
       </div>
 
       <div className="pl-1">
         <div className="text-right">
-          <span className="text-{{party.color}}">{party.op}{tx.value}</span>
+          <span className={"d-block text-" + party.color}>{party.op}{tx.value}</span>
           <span className="d-none d-md-inline-block text-muted" style={{width: "62px"}}>[{shortSym(tx.txAsset)}]</span>
           <span className="d-block d-md-none small text-muted">[{shortSym(tx.txAsset)}]</span>
         </div>

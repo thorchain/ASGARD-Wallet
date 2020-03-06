@@ -5,8 +5,6 @@ import { crypto } from '@binance-chain/javascript-sdk'
 export const BNB = new Binance();
 const bcrypt = require('bcryptjs');
 
-// const argon2 = require('argon2-browser'); // confirm issue (WASM dep req not working)
-
 export default class WalletController extends EventEmitter{
   constructor () {
     super()
@@ -423,9 +421,7 @@ export default class WalletController extends EventEmitter{
 
   lock = () => {
     if (this.getIsUnlocked() === true) {
-      // TODO: Check this logic is comprehensive
-      this.connAccount.close()
-      this.connTransfer.close()
+      this.conn.close()
     }
     // handle if this is broken data source during wallet reset
     // we unlock before reset in case the reset fails

@@ -17,12 +17,12 @@ const NavbarSimple: React.FC = (): JSX.Element => {
       <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul className="navbar-nav float-right pr-3">
           <li className="nav-item">
-            <a className={linkClasses('options')} href={FlowRouter.path('options')}>
+            <a className={linkClasses('options')} data-toggle="collapse" data-target=".navbar-collapse.show" onClick={() => FlowRouter.go('options')}>
               <i className="fa fa-lg fa-cog"></i>
             </a>
           </li>
           <li className="nav-item">
-            <a className={linkClasses('walletUnlock')} href={FlowRouter.path('walletUnlock')}>
+            <a className={linkClasses('walletUnlock')} data-toggle="collapse" data-target=".navbar-collapse.show" onClick={() => FlowRouter.go('walletUnlock')}>
               <i className="fa fa-lg fa-unlock"></i>
             </a>
           </li>
