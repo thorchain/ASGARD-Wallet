@@ -1,4 +1,5 @@
 import SimpleSchema from 'simpl-schema'
+import { UserAssets } from '/imports/api/collections/client_collections'
 // import SimpleSchema2Bridge from 'uniforms-bridge-simple-schema-2';
 import { Tracker } from 'meteor/tracker'
 import { BNB } from '/imports/api/wallet'
@@ -24,8 +25,12 @@ const FreezeFundsFormSchema = new SimpleSchema({
     label: "Amount",
     custom() {
       if (this.value > this.field('maxAmount').value) {
-        return "insufficientFunds";
+        return "insufficientFunds"
       }
+      // TODO: Enable below
+      // if (BNB.getFee('tokensFreeze') < UserAssets.findOne({symbol:this.field('asset').value})) {
+      //   return "insufficientFeeFunds"
+      // }
     }
   },
   maxAmount: {

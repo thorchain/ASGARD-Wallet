@@ -13,7 +13,7 @@ const UserAssetsScreen: React.FC = (): JSX.Element => {
   // Hard to imagine more than a couple of dozen on the high end
   // TODO: Can also hide zero balances using mongo query doc
   const userAssets: UserAssetsTypes[] = useTracker(() => {
-    return UserAssets.find().fetch()
+    return UserAssets.find({},{sort: {symbol: 1}}).fetch()
   }, [])
   return (
     <div className="row">
@@ -70,7 +70,7 @@ const ListItem: React.FC<ItemProps> = (props): JSX.Element  => {
 
       <div>
         <div className="h5 mb-0 text-right">{asset.free}</div>
-        <div className="text-right font-italic color-grey small">{price('9.99')}</div>
+        <div className="text-right font-italic text-muted small">{price('0.00')}</div>
       </div>
 
     </li>

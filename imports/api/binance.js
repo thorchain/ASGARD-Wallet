@@ -91,6 +91,19 @@ class Binance {
   fees = () => {
     return this.httpClient.get('/fees');
   };
+  getFee = async (txType) => {
+    try {
+
+      const res = await this.fees()
+      console.log(res)
+      const fee = res.data.find((item) => {
+        return item.msg_type === txType
+      })
+      return fee.fee
+    } catch (error) {
+      throw Error(error)
+    }
+  }
 
   getTokens = (options) => {
     let query = "/tokens"

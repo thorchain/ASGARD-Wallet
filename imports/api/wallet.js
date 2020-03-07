@@ -162,11 +162,9 @@ export default class WalletController extends EventEmitter{
     // IF this is running, just extend it to a max amount
     // track as member to class
     if (this.txTicks) {
-      if (this.txTicks <= 10) { this.txTicks += 5 }
-      console.log("added ticks");
-      console.log(this.txTicks)
+      if (this.txTicks <= 10) { this.txTicks += 8 }
     } else {
-      this.txTicks = 5 // value for looping
+      this.txTicks = 8 // value for looping
       const sleep = m => new Promise(r => setTimeout(r, m))
       const forLoop = async () => {
         for (let index = 0; index < this.txTicks; index++) {
@@ -197,14 +195,12 @@ export default class WalletController extends EventEmitter{
     // subscribe transactions
     
     this.conn.onopen = (evt) => {
-      console.log("testing new CONN!!!")
+      console.log("socket connected")
       this.conn.send(JSON.stringify({ method: "subscribe", topic: "transfers", address: address }))
       this.conn.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
     }
     this.conn.onmessage = (msg) => {
-      console.log("new socket CONN msg")
       const data = JSON.parse(msg.data)
-      console.log(msg)
       switch (data.stream) {
         case "accounts":
           this.connHandleAccountMessage(data)
@@ -521,14 +517,42 @@ export default class WalletController extends EventEmitter{
     try {
       const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
       await BNB.bnbClient.setPrivateKey(privateKey)
-      const res = await BNB.bnbTokens.freeze(userAccount.address, asset, amount)
+      await BNB.bnbTokens.freeze(userAccount.address, asset, amount)
+      // .then((e) => {
+      //       BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
+      // }).catch((e) => {
+      // })
       // SECURITY: This creates errors, as key swap happens too soon...
       // TODO: private key should be unset
       // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
       
-      return res
-    } catch (error) {
-      throw Error(error)
+      // return res
+    } catch (e) {
+      // return Error(error)
+
+            if (e.message.includes("insufficient fund")) {
+              let msg
+              if (e.message.includes("fee needed")) {
+                // get the amount.
+                const res = e.message.split("but")[1].trim().split(" ")[0]
+                // const res2 = res.split(" ")
+                const amount = res.substring(0, res.length - 3)
+                const num = parseInt(amount)
+                const fee = BNB.calculateFee(num)
+                
+                msg = "Insufficient fee funds: " + fee + " (BNB) required"
+                // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
+              } else {
+                msg = "Error freezing funds"
+              }
+              throw Error(msg)
+
+            } else if (e.message.includes("<")) { // this is how insuficient funds come back
+              const res = e.message.split(",").find(f => { return f.includes("<")} )
+              // TODO: Handle all errors
+              throw Error("Insufficient funds");
+            }
+      throw Error(e)
     }
 
   }
@@ -537,16 +561,38 @@ export default class WalletController extends EventEmitter{
     try {
       const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
       await BNB.bnbClient.setPrivateKey(privateKey)
-      const res = await BNB.bnbTokens.unfreeze(userAccount.address, asset, amount)
+      await BNB.bnbTokens.unfreeze(userAccount.address, asset, amount)
       // SECURITY: This creates errors, as key swap happens too soon...
       // TODO: private key should be unset
       // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
       
-      return res
-    } catch (error) {
-      throw Error(error)
+    } catch (e) {
+            if (e.message.includes("insufficient fund")) {
+              let msg
+              if (e.message.includes("fee needed")) {
+                // get the amount.
+                const res = e.message.split("but")[1].trim().split(" ")[0]
+                // const res2 = res.split(" ")
+                const amount = res.substring(0, res.length - 3)
+                const num = parseInt(amount)
+                const fee = BNB.calculateFee(num)
+                
+                msg = "Insufficient fee funds: " + fee + " (BNB) required"
+                // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
+              } else {
+                msg = "Error freezing funds"
+              }
+              throw Error(msg)
+
+            } else if (e.message.includes("<")) { // this is how insuficient funds come back
+              const res = e.message.split(",").find(f => { return f.includes("<")} )
+              // TODO: Handle all errors
+              throw Error("Insufficient funds");
+            }
+      throw Error(e)
     }
   }
+
 
   
 }

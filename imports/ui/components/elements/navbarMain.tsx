@@ -1,11 +1,12 @@
 import React from 'react'
 import { WALLET } from '/imports/startup/client/init'
+import { UserAssets } from '/imports/api/collections/client_collections'
 // import ReactDOM from "react-dom";
 import { FlowRouter } from 'meteor/kadira:flow-router'
 
 const NavbarMain: React.FC = (): JSX.Element => {
   const hasFunds = (): boolean => {
-    return true
+    return UserAssets.find().count() > 0
   }
   const lockWallet = () => {
     WALLET.lock()
@@ -34,7 +35,7 @@ const NavbarMain: React.FC = (): JSX.Element => {
           <li className="nav-item">
             <a className={linkClasses('walletTransactionsList')} onClick={()=>FlowRouter.go('walletTransactionsList')} data-toggle="collapse" data-target=".navbar-collapse.show">Transactions</a>
           </li>
-          {hasFunds && (
+          {hasFunds() && (
             <li className="nav-item">
               <a className={linkClasses('walletSend')} onClick={()=> FlowRouter.go('walletSend')} data-toggle="collapse" data-target=".navbar-collapse.show">Send</a>
             </li>

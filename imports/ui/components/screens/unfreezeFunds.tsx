@@ -18,7 +18,8 @@ const UnfreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     const account = UserAccount.findOne()
     const balances = userAsset
     
-    const validationContext = FreezeFundsFormSchema.namedContext('stakeFunds');
+    // Schema can be used in both instances
+    const validationContext = FreezeFundsFormSchema.namedContext('unFreezeFunds');
     const obj = validationContext.clean({
       pwHash: account.pwHash,
       maxAmount: balances && balances.frozen || 0,
@@ -52,8 +53,8 @@ const UnfreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
   })
   return (
     <div className="row">
-      <div className="col">
-        <h5 className="text-center">Withdraw Staked Funds</h5>
+      <div className="col-md-8 col-lg-6 ml-auto mr-auto">
+        <h5 className="text-center">Unfreeze Funds</h5>
         <form className="form" onSubmit={freezeFunds}>
           <fieldset {...(loadingMsg ? {disabled:true} : {})}>
 

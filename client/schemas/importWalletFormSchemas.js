@@ -1,3 +1,5 @@
+import SimpleSchema from 'simpl-schema'
+import { BNB } from '/imports/api/wallet'
 Schemas = (typeof Schemas === "undefined") ? {} : Schemas;
 
 validateMnemonic = function () {
@@ -76,3 +78,5 @@ validateKeystoreFile = function () {
   // Execute file read
   return reader.readAsText(file)
 }
+
+export default Schemas

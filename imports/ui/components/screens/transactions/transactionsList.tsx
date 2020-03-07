@@ -50,8 +50,8 @@ const ListItem: React.FC<ItemProps> = (props): JSX.Element => {
     <li className="media list-group-item p-1">
     <div className="media-body d-flex align-items-center justify-content-start">
 
-      <div className="d-md-none col-2 col-lg-1 px-1 font-weight-bold small text-uppercase ">{party.msg}</div>
-      <div className="d-none d-md-block col-2 col-lg-1 px-1 font-weight-bold text-uppercase ">{party.msg}</div>
+      <div className={"d-md-none col-2 col-lg-1 px-1 font-weight-bold small text-uppercase text-" + party.color}>{party.msg}</div>
+      <div className={"d-none d-md-block col-2 col-lg-1 px-1 font-weight-bold text-uppercase text-" + party.color }>{party.msg}</div>
 
       <div className="text-truncate mr-auto p-1">
         <div className="text-truncate"><strong className="font-weight-bold small pr-2">{party.label}:</strong><span className="small text-monospace">{party.address}</span></div>

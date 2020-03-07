@@ -1,6 +1,8 @@
 import React from 'react'
 import { rainbowStop, getIntFromName } from '/imports/ui/lib/colorHelper';
+import { shortSym } from '/imports/ui/lib/tokenHelpers'
 import './circleIconStyles.scss'
+
 export enum Sizes { sm = "sm", md = "md", lg = "lg"} // TODO: Add enum support
 type Props = { shortSymbol: string, size: Sizes }
 
@@ -12,16 +14,12 @@ const CircleIcon: React.FC<Props>= (props): JSX.Element => {
     const stop = rainbowStop(numbers[1]);
     return 'linear-gradient(45deg,'+ start +', ' + stop +')'
   }
-  const hasIcon = () => {
+  const hasImg = () => {
     // TODO: Add generic support for more tokens
-    console.log(sym)
-    if (sym === "RUNE") {
-      return true
-    }
+    if (shortSym(sym) === "RUNE") { return true }
     return false
   }
   const imgSize = () => {
-    console.log(props.size)
     // this needs to by synced with styles
     switch (props.size) {
       case 'sm':
@@ -40,10 +38,9 @@ const CircleIcon: React.FC<Props>= (props): JSX.Element => {
   }
   return (
     <div>
-    {!hasIcon &&(
+    {hasImg() ? (
       <img src="/img/RUNE-ICON.svg" width={imgSize()} />
-    )}
-    {hasIcon &&(
+    ) : (
       <div className={"circle-icon-" + props.size + " rounded-circle d-flex align-items-center text-white"} style={circleStyle}>
         <div className="text-center w-100">{props.shortSymbol}</div>
       </div>

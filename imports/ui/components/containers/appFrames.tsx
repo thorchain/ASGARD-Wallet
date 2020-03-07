@@ -33,13 +33,13 @@ export const BareLayout: React.FC<BareLayoutProps> = ({header, content}) => {
 type BareLayoutBrandedProps = {content() : React.Component }
 export const BareLayoutBranded: React.FC<BareLayoutBrandedProps> = ({content}): JSX.Element => {
   return (
-  <div id="app-wrapper">
-    <main className="container-fluid bg-img-brand">
-      {content()}
-    </main>
-    <footer>
-    {/* This is where modal will go */}
-    </footer>
-  </div>
+    <div id="app-wrapper" className="bg-img-brand">
+      <main className="container-fluid">
+        {content()}
+      </main>
+      <footer>
+      {/* This is where modal will go */}
+      </footer>
+    </div>
   )
 }

@@ -18,7 +18,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     const account = UserAccount.findOne()
     const balances = userAsset
     
-    const validationContext = FreezeFundsFormSchema.namedContext('stakeFunds');
+    const validationContext = FreezeFundsFormSchema.namedContext('freezeFunds');
     const obj = validationContext.clean({
       pwHash: account.pwHash,
       maxAmount: balances && balances.free || 0,
@@ -42,6 +42,8 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
       } catch (error) {
         setLoadingMsg('')
         console.log(error)
+        // if includes funds, amount error, else
+        setAmountError(error.message)
       }
 
     }
@@ -52,8 +54,8 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
   })
   return (
     <div className="row">
-      <div className="col">
-        <h5 className="text-center">Stake Funds</h5>
+      <div className="col-md-8 col-lg-6 ml-auto mr-auto">
+        <h5 className="text-center">Freeze Funds</h5>
         <form className="form" onSubmit={freezeFunds}>
           <fieldset {...(loadingMsg ? {disabled:true} : {})}>
 
@@ -62,10 +64,9 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
                 <label htmlFor="inputAmount">Amount</label>
                 <input type="text" className="form-control mb-3" name="amount" id="inputAmount" aria-describedby="amountHelp" placeholder="0.00" />
                 <small className={amountError ? ("form-text text-warning") : ('form-text text-info')}>
-                  {amountError && (
+                  {amountError ? (
                     amountError
-                  )}
-                  {!amountError && symbol && (
+                  ) : (
                     <span>Max funds: {userAsset.free}</span>
                   )}
                 </small>
