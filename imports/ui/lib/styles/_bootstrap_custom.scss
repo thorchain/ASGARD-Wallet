@@ -156,4 +156,5 @@ $input-btn-font-family:       Exo2;
 
 $card-bg: null; // doesnt not fully work
 
+// Work around until transition to React bootstrap
 @import '{}/imports/bootstrap/scss/bootstrap.scss';

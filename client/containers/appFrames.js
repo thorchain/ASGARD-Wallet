@@ -1,5 +1,10 @@
+import './appFrames.html'
+import '../components/navbar/navbar.js'
+import '../components/widgets/breadcrumb.js'
 if (Meteor.isClient) {
   Template.mainAppFrame.onCreated(function () {
+    console.log("we created the main app frame...");
+    
     const self = this;
     // self.isVault = new ReactiveVar();
 

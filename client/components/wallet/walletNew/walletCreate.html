@@ -31,9 +31,9 @@
             </div>
           </div>
           <p class="text-warning my-4 font-weight-bold">This is the phrase used to seed your wallet accounts. Record and keep this in a safe place. If you loose access to your wallet and backups, your account can <strong class="text-underline">only</strong> be recovered using this phrase.</p>
-          <button type="button" class="form-control btn btn-dark btn-brand-border" data-nav="{{pathFor 'walletMnemonicConfirm'}}">
+          <a type="button" class="form-control btn btn-dark btn-brand-border" href="{{pathFor 'walletMnemonicConfirm'}}">
             <span>Next</span>
-          </button>
+          </a>
         {{else}}
     
         <form name="generate-wallet-form" id="generate-wallet-form" class="form">

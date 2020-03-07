@@ -1,3 +1,4 @@
+import './walletAssetDetails.html'
 if (Meteor.isClient) {
   Template.walletAssetDetails.helpers({
     balances () {

@@ -1,0 +1,11 @@
+// Breadcrumb
+.breadcrumb {
+  z-index: 900;
+  background: none;
+  margin-bottom: -20px;
+  color: blue;
+  >.breadcrumb-item {
+    // color: $Accent-Green;
+    // font-family: Exo2;
+  }
+}
