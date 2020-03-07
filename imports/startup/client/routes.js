@@ -12,16 +12,10 @@ const mounter = withOptions({
 
 import'/client/containers/appFrames.js'
 const mainFrame = 'mainAppFrame';
-// const bareFrame = 'bareAppFrame';
-// const bareNavFrame = 'bareAppNavFrame';
 import '/client/components/wallet/walletNew/walletCreate.js'
 import '/client/components/wallet/walletNew/walletImport.js'
 import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
 
-// import '/client/components/wallet/walletAccounts.js'
-// import '/client/components/wallet/walletAssets.js'
-// import '/client/components/wallet/walletTransactionsList.js'
-// import '/client/components/wallet/walletAssetDetails.js'
 import '/client/components/wallet/walletReceive.js'
 import '/client/components/wallet/walletSend.js'
 
@@ -204,16 +198,6 @@ walletRoutes.route('/accounts', {
 	renderType: 'react'
 })
 
-// walletRoutes.route('/accounts-blaze', {
-// 	name: 'walletAccountsBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletAccounts'});
-// 	},
-// 	back: {
-// 		route: 'walletAssets',
-// 	},
-// 	renderType: 'blaze'
-// })
 walletRoutes.route('/assets', {
 	name: 'walletAssets',
 	action: function (params, queryParams) {
@@ -224,23 +208,6 @@ walletRoutes.route('/assets', {
 	},
 	renderType: 'react'
 })
-// walletRoutes.route('/assets-blaze', {
-// 	name: 'walletAssetsBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletAssets'});
-// 	},
-// 	renderType: 'blaze'
-// })
-// walletRoutes.route('/assetDetails-blaze/:symbol', {
-// 	name: 'walletAssetDetailsBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletAssetDetails'});
-// 	},
-// 	back: {
-// 		route: 'walletAssets',
-// 	},
-// 	renderType: 'blaze'
-// })
 walletRoutes.route('/assetDetails/:symbol', {
 	name: 'walletAssetDetails',
 	action: function (params, queryParams) {
