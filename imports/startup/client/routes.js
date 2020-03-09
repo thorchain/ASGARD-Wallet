@@ -16,7 +16,6 @@ import '/client/components/wallet/walletNew/walletCreate.js'
 import '/client/components/wallet/walletNew/walletImport.js'
 import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
 
-import '/client/components/wallet/walletReceive.js'
 import '/client/components/wallet/walletSend.js'
 
 import { WALLET } from '/imports/startup/client/init'
@@ -34,6 +33,7 @@ import UserTransactionsScreen from '/imports/ui/components/screens/transactions/
 
 import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
+import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 
 
 // SECURITY: Application, routing check
@@ -258,13 +258,26 @@ walletRoutes.route('/send/:asset?', {
 walletRoutes.route('/receive', {
 	name: "walletReceive",
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletReceive'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<ReceiveFundsScreen/>),
+    });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 })
+// walletRoutes.route('/receive', {
+// 	name: "walletReceive",
+// 	action: function (params, queryParams) {
+// 		BlazeLayout.render(mainFrame, {content:'walletReceive'});
+// 	},
+// 	back: {
+// 		route: 'walletAssets',
+// 	},
+// 	renderType: 'blaze'
+// })
 walletRoutes.route('/freeze/:symbol', {
 	name: 'walletFreeze',
 	action: function (params, queryParams) {

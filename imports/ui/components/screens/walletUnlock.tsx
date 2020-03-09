@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { WALLET } from "/imports/startup/client/init";
+import WalletUnlockFormSchema from '/imports/lib/schemas/walletUnlockFormSchema'
+import { UserAccount } from '/imports/api/collections/client_collections'
 
 const UnlockScreen: React.FC = () => {
   const [pwError, setPwError] = useState<string>('');
@@ -11,9 +13,17 @@ const UnlockScreen: React.FC = () => {
   const unlockWallet = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const tar = event.currentTarget
-
-    if (!tar.password || !tar.password.value || tar.password.value.length === 0) { 
-      setPwError('Password required')
+    const account = UserAccount.findOne()
+    
+    const validationContext = WalletUnlockFormSchema.namedContext('walletUnlock')
+    const obj = validationContext.clean({
+      password: tar.password.value,
+      pwHash: account.pwHash
+    })
+    
+    await validationContext.validate(obj)
+    if (!validationContext.isValid()) {
+      setPwError(validationContext.keyErrorMessage('password'))
     } else {
       setLoadingMsg('unlocking')
       try {
@@ -24,7 +34,6 @@ const UnlockScreen: React.FC = () => {
         setLoadingMsg('')
 				throw new Error(err.message)
       }
-
     }
   }
   return (
