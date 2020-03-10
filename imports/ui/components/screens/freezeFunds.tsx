@@ -3,7 +3,6 @@ import { useTracker } from 'meteor/react-meteor-data'
 import { WALLET } from '/imports/startup/client/init'
 import { UserAccount, UserAssets } from '/imports/api/collections/client_collections'
 import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
-
 import FreezeFundsFormSchema from '/imports/lib/schemas/freezeFundsFormSchema'
 
 type Props = { symbol: string }
@@ -13,8 +12,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState('')
   const freezeFunds = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setLoadingMsg('freezing funds')
-    const t = event.currentTarget
+    const tar = event.currentTarget
     const account = UserAccount.findOne()
     const balances = userAsset
     
@@ -23,9 +21,9 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
       pwHash: account.pwHash,
       maxAmount: balances && balances.free || 0,
       sender: account.address,
-      amount: t.amount.value,
+      amount: tar.amount.value,
       asset: symbol,
-      password: t.password.value
+      password: tar.password.value
     });
     await validationContext.validate(obj)
     // delay to show change before crypto ui lag
@@ -33,8 +31,8 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     if (!validationContext.isValid()) {
       setAmountError(validationContext.keyErrorMessage('amount'))
       setPasswordError(validationContext.keyErrorMessage('password'))
-      setLoadingMsg('')
     } else {
+      setLoadingMsg('freezing funds')
       await sleep(200)
       try {
         await WALLET.vaultFreezeFunds(obj.amount, obj.asset, obj.password)

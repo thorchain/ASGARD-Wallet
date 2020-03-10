@@ -10,13 +10,11 @@ const mounter = withOptions({
     rootProps: {'className': 'app-root'}
 }, mount);
 
-import'/client/containers/appFrames.js'
-const mainFrame = 'mainAppFrame';
+import '/client/containers/appFrames.js'
 import '/client/components/wallet/walletNew/walletCreate.js'
 import '/client/components/wallet/walletNew/walletImport.js'
 import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
 
-import '/client/components/wallet/walletReceive.js'
 import '/client/components/wallet/walletSend.js'
 
 import { WALLET } from '/imports/startup/client/init'
@@ -34,7 +32,9 @@ import UserTransactionsScreen from '/imports/ui/components/screens/transactions/
 
 import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
+import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 
+const mainFrame = 'mainAppFrame';
 
 // SECURITY: Application, routing check
 const isVault = () => {
@@ -258,12 +258,15 @@ walletRoutes.route('/send/:asset?', {
 walletRoutes.route('/receive', {
 	name: "walletReceive",
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletReceive'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<ReceiveFundsScreen/>),
+    });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 })
 walletRoutes.route('/freeze/:symbol', {
 	name: 'walletFreeze',
