@@ -10,8 +10,7 @@ const mounter = withOptions({
     rootProps: {'className': 'app-root'}
 }, mount);
 
-import'/client/containers/appFrames.js'
-const mainFrame = 'mainAppFrame';
+import '/client/containers/appFrames.js'
 import '/client/components/wallet/walletNew/walletCreate.js'
 import '/client/components/wallet/walletNew/walletImport.js'
 import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
@@ -35,6 +34,7 @@ import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
 import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 
+const mainFrame = 'mainAppFrame';
 
 // SECURITY: Application, routing check
 const isVault = () => {
@@ -268,16 +268,6 @@ walletRoutes.route('/receive', {
 	},
 	renderType: 'react'
 })
-// walletRoutes.route('/receive', {
-// 	name: "walletReceive",
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletReceive'});
-// 	},
-// 	back: {
-// 		route: 'walletAssets',
-// 	},
-// 	renderType: 'blaze'
-// })
 walletRoutes.route('/freeze/:symbol', {
 	name: 'walletFreeze',
 	action: function (params, queryParams) {
