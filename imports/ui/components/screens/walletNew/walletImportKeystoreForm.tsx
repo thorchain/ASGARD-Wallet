@@ -82,7 +82,7 @@ const ImportKeystoreForm: React.FC = (): JSX.Element => {
       // Delay to allow for UI render DOM update before CPU takes over keystore processing
       setTimeout(async () => {
         try {
-          importWalletFile(files, pw)
+          importWalletFile(files, obj.password)
         } catch (err) {
           console.log(err)
           setLoadingMsg('')
