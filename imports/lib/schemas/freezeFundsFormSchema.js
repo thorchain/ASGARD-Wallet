@@ -1,8 +1,8 @@
 import SimpleSchema from 'simpl-schema'
-import { UserAssets } from '/imports/api/collections/client_collections'
 // import SimpleSchema2Bridge from 'uniforms-bridge-simple-schema-2';
 import { Tracker } from 'meteor/tracker'
 import { BNB } from '/imports/api/wallet'
+import { UserAssets } from '/imports/api/collections/client_collections'
 
 var bcrypt = require('bcryptjs');
 
