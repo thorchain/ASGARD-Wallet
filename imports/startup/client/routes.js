@@ -34,6 +34,7 @@ import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
 import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 
+import CreateScreen from "/imports/ui/components/screens/walletNew/walletCreate";
 const mainFrame = 'mainAppFrame';
 
 // SECURITY: Application, routing check
@@ -107,16 +108,20 @@ appRoutes.route('/', {
 	renderType: 'react'
 })
 
-appRoutes.route('/create', {
+appRoutes.route('/create/:type?', {
 	name: 'walletCreate',
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletCreate'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<CreateScreen type={params.type}/>),
+    });
 	},
 	back: {
 		route: 'walletStart',
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 });
+
 appRoutes.route('/mnemonic-confirm', {
 	name: 'walletMnemonicConfirm',
 	// restric/direct access to this route
@@ -234,17 +239,6 @@ walletRoutes.route('/transactionsList', {
 	},
 	renderType: 'react'
 });
-walletRoutes.route('/transactionsList-blaze', {
-	name: "walletTransactionsListBlaze",
-	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletTransactionsList'});
-	},
-	back: {
-		route: 'walletAssets',
-	},
-	renderType: 'blaze'
-});
-
 walletRoutes.route('/send/:asset?', {
 	name: "walletSend",
 	action: function (params, queryParams) {
