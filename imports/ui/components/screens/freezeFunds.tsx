@@ -25,7 +25,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
       asset: symbol,
       password: tar.password.value
     });
-    await validationContext.validate(obj)
+    validationContext.validate(obj)
     // delay to show change before crypto ui lag
     const sleep = (m: number) => new Promise(r => setTimeout(r, m))
     if (!validationContext.isValid()) {
@@ -79,10 +79,9 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
 
             <button className="btn btn-primary w-100" type="submit">
 
-              {!loadingMsg &&(
+              {!loadingMsg ? (
                 <span>Freeze</span>
-              )} 
-              {loadingMsg && (
+              ) : (
                 <span>
                   <div className="spinner-border spinner-border-sm" role="status">
                     <span className="sr-only">Loading...</span>
