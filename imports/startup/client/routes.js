@@ -144,17 +144,6 @@ appRoutes.route('/import', {
 	},
 	renderType: 'react'
 });
-// appRoutes.route('/import-blaze', {
-// 	name: 'walletImportBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletImport'});
-// 	},
-// 	back: {
-// 		route: 'walletStart',
-// 	},
-// 	renderType: 'blaze'
-// });
-
 appRoutes.route('/unlock', {
 	name: 'walletUnlock',
 	action() {
