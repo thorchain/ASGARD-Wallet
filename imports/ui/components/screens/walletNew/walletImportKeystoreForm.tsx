@@ -67,7 +67,7 @@ const ImportKeystoreForm: React.FC = (): JSX.Element => {
     const pw = tar.password.value
 
     // Schema validation will not work with the file, yet...
-    const validationContext = ImportKeystoreFormSchema.namedContext('importKeystore')
+    const validationContext = ImportKeystoreFormSchema.newContext()
     const obj = validationContext.clean({password:pw})
     validationContext.validate(obj)
     if (files.length === 0) {
