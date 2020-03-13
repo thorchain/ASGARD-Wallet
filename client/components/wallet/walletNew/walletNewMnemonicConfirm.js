@@ -2,10 +2,12 @@ import './walletNewMnemonicConfirm.html'
 import { Mongo } from 'meteor/mongo'
 import { WALLET } from '/imports/startup/client/init'
 import Schemas from '/client/schemas/newWalletFormSchema'
+import { Session } from 'meteor/session'
 
 if (Meteor.isClient) {
   Template.walletNewMnemonicConfirm.onCreated(function() {
     const self = this
+    
     // This is for pure reference, as it is created by Binance lib
     self.wlist = new ReactiveVar(Session.get('seedphrase'))
     // we have to create a dict with id's to prevent duplicates problem
@@ -16,7 +18,7 @@ if (Meteor.isClient) {
     self.loadingMsg = new ReactiveVar("")
 
     self.init = () => {
-      let words = Session.get('seedphrase') && Session.get('seedphrase').split(" ")
+      let words = Session.get('mnemonic') && Session.get('mnemonic').split(" ")
       if (words) {
         words = words.map(e => {
           return {text:e}
@@ -24,7 +26,7 @@ if (Meteor.isClient) {
         // NOTE: This is assumed to enter in a predictable order (mini-Mongo should be consistent)
         self.wlistColl.batchInsert(words)
       } else {
-        FlowRouter.go('walletCreate', {type:'mnemonic'})
+        FlowRouter.go('walletCreate',{type:'mnemonic'})
       }
     }
 

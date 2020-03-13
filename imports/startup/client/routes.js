@@ -11,9 +11,7 @@ const mounter = withOptions({
 }, mount);
 
 import '/client/containers/appFrames.js'
-import '/client/components/wallet/walletNew/walletCreate.js'
 import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
-
 import '/client/components/wallet/walletSend.js'
 
 import { WALLET } from '/imports/startup/client/init'
@@ -23,6 +21,8 @@ import NavbarSimple from '/imports/ui/components/elements/navbarSimple'
 
 import StartScreen from '/imports/ui/components/screens/walletStart'
 import ImportScreen from '/imports/ui/components/screens/walletNew/walletImport'
+import CreateScreen from "/imports/ui/components/screens/walletNew/walletCreate";
+
 import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
 import UnlockOptionsScreen from '/imports/ui/components/screens/walletUnlockOptions'
 
@@ -31,10 +31,9 @@ import UserAssetsScreen from '/imports/ui/components/screens/userAssets'
 import UserAssetDetailsScreen from '/imports/ui/components/screens/userAssetDetails'
 import UserTransactionsScreen from '/imports/ui/components/screens/transactions/userTransactions'
 
+import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
-import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
-
 
 const mainFrame = 'mainAppFrame';
 
@@ -109,16 +108,20 @@ appRoutes.route('/', {
 	renderType: 'react'
 })
 
-appRoutes.route('/create', {
+appRoutes.route('/create/:type?', {
 	name: 'walletCreate',
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletCreate'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<CreateScreen type={params.type}/>),
+    });
 	},
 	back: {
 		route: 'walletStart',
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 });
+
 appRoutes.route('/mnemonic-confirm', {
 	name: 'walletMnemonicConfirm',
 	// restric/direct access to this route
@@ -141,17 +144,6 @@ appRoutes.route('/import', {
 	},
 	renderType: 'react'
 });
-// appRoutes.route('/import-blaze', {
-// 	name: 'walletImportBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletImport'});
-// 	},
-// 	back: {
-// 		route: 'walletStart',
-// 	},
-// 	renderType: 'blaze'
-// });
-
 appRoutes.route('/unlock', {
 	name: 'walletUnlock',
 	action() {
@@ -249,7 +241,6 @@ walletRoutes.route('/transactionsList', {
 	},
 	renderType: 'react'
 });
-
 walletRoutes.route('/send/:asset?', {
 	name: "walletSend",
 	action: function (params, queryParams) {

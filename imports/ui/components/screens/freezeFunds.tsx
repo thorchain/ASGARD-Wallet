@@ -16,7 +16,7 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     const account = UserAccount.findOne()
     const balances = userAsset
     
-    const validationContext = FreezeFundsFormSchema.namedContext('freezeFunds');
+    const validationContext = FreezeFundsFormSchema.newContext();
     const obj = validationContext.clean({
       pwHash: account.pwHash,
       maxAmount: balances && balances.free || 0,
@@ -78,16 +78,15 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
             </div>
 
             <button className="btn btn-primary w-100" type="submit">
-
-              {!loadingMsg ? (
-                <span>Freeze</span>
-              ) : (
-                <span>
+              {loadingMsg ? (
+                <>
                   <div className="spinner-border spinner-border-sm" role="status">
                     <span className="sr-only">Loading...</span>
                   </div>
                   <span className="ml-1">{loadingMsg}</span>
-                </span>
+                </>
+              ) : (
+                <>Freeze</>
               )}
               </button>
 
