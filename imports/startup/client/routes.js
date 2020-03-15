@@ -7,7 +7,6 @@ import { mount, withOptions } from 'react-mounter';
 
 import '/client/containers/appFrames.js'
 import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
-import '/client/components/wallet/walletSend.js'
 
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'

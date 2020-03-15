@@ -45,7 +45,6 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({userAssets,assetsData,symb
   const [selected, setSelected] = useState<string>('default') // used only for select
 
   useEffect(() => {
-    console.log("using effect")
     if (symbol) { setSymb(symbol) }
     if (userAsset) {
       setAmountMsg('Available balance: ' + (userAsset.free) + ' ' + userAsset.shortSymbol)
