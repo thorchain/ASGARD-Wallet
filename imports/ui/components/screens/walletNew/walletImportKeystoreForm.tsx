@@ -13,7 +13,6 @@ const ImportKeystoreForm: React.FC = (): JSX.Element => {
   // TODO: Add keystore types
   // Move to schema validation if possible(?)
   function validateKeystore (file: any) {
-    console.log(file)
     try {
       const keystore = JSON.parse(file)
       if (keystore.version && keystore.id) {

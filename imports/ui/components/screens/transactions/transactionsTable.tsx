@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserTransactionTypes } from '/imports/api/collections/userTransactionsCollection'
-import { cryptoCurr } from '/imports/ui/lib/numbersHelpers'
+import { toCrypto } from '/imports/ui/lib/numbersHelpers'
+import { shortSymbol } from '/imports/ui/lib/tokenHelpers'
 import { BNB } from '/imports/api/wallet'
 const momentShort = require('moment-shortformat')
 
@@ -21,9 +22,9 @@ const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
       </thead>
       
       <tbody>
-        {transactions.map((transaction) => {
-          return <TableRow transaction={transaction} key={transaction._id} />
-        })}
+        {transactions.map((transaction) => (
+          <TableRow transaction={transaction} key={transaction._id} />
+        ))}
       </tbody>
 
     </table>
@@ -35,9 +36,6 @@ export default TransactionsTable
 type RowProps = { transaction: UserTransactionTypes }
 const TableRow: React.FC<RowProps> = (props): JSX.Element => {
   const tx = props.transaction
-  // const timeShort = (d: Date) => {
-  //   return momentShort(d).short()
-  // }
   const link = (hash:string) => {
     return BNB.explorerBaseURL + "/tx/" + hash
   }
@@ -66,9 +64,6 @@ const TableRow: React.FC<RowProps> = (props): JSX.Element => {
     return {msg:'',label:'',address:'',color:'',op:''}
 
   },[])
-  const shortSym = (symbol: string) => {
-      return symbol.split("-")[0].substr(0,4)
-  }
   return (
     <tr>
 
@@ -84,7 +79,7 @@ const TableRow: React.FC<RowProps> = (props): JSX.Element => {
         </div>
       </td>
 
-      <td className="text-right"><span className={"text-" + party.color }>{party.op}{cryptoCurr(tx.value)}</span> <span>{shortSym(tx.txAsset)}</span></td>
+      <td className="text-right"><span className={"text-" + party.color }>{party.op}{toCrypto(tx.value)}</span> <span>{shortSymbol(tx.txAsset)}</span></td>
       <td className="text-center"><a href={link(tx.txHash)} target="_blank"><i className="fa fa-external-link-square-alt"></i></a></td>
 
     </tr>

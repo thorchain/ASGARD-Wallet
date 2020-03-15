@@ -512,6 +512,55 @@ export default class WalletController extends EventEmitter{
     }
   }
 
+  transferFunds = async (sender, recipient, amount, asset, password) => {
+    console.log('sending from wallet method...')
+    const userAccount = UserAccount.findOne()
+
+        try {
+          let keystore = window.localStorage.getItem("binance")
+          
+          let privateKey = BNB.sdk.crypto.getPrivateKeyFromKeyStore(keystore, password)
+          password = null // SECURITY: unset
+          await BNB.bnbClient.setPrivateKey(privateKey, true)
+          privateKey = null // SECURITY: unset
+
+          // setLoadingMsg("sending tx")
+          console.log("emitting...")
+          this.emit('transfer','Sending funds')
+          
+          BNB.transfer(sender, recipient, amount, asset).then((e) => {
+            // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
+            return true
+          }).catch((e) => {
+            // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
+            console.log(e.message);
+            
+            if (e.message.includes("insufficient fund")) { // this is how insufficient fees return
+              if (e.message.includes("fee needed")) {
+                const res = e.message.split("but")[1].trim().split(" ")[0]
+                const amount = res.substring(0, res.length - 3)
+                const num = parseInt(amount)
+                // TODO: Add to form validation, get the fee schedule ahead of actually accessing client
+                const fee = BNB.calculateFee(num)
+                throw Error('Insufficient fee funds: ' + fee + ' (BNB) required')
+              } else {
+                // What other errors are there?
+              }
+
+            } else if (e.message.includes("<")) { // this is how insuficient funds return
+              throw Error('Insufficient funds')
+            } else {
+              throw Error(e)
+            }
+
+          })
+          
+        } catch (error) {
+          throw Error(error)
+        }
+
+  }
+
   vaultFreezeFunds = async (amount, asset, password) => {
     const userAccount = UserAccount.findOne()
     try {

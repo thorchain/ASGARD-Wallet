@@ -30,7 +30,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
   const goRoute = (route: string) => {
     // workaroudn for inconsistent conventions.
     // TODO: Fix when migrating desination component (walletSend)
-    const params = route === "walletSend" ? {asset:symbol}:{symbol:symbol}
+    const params = {symbol:symbol}
     switch (route) {
       case 'walletSend':
         sendable() && FlowRouter.go(route,params)
@@ -109,7 +109,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
 
       </div>
 
-      <div className="col">
+      <div className="col-12">
         <TransactionsTable transactions={userTransactions} />
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import { rainbowStop, getIntFromName } from '/imports/ui/lib/colorHelper';
-import { shortSym } from '/imports/ui/lib/tokenHelpers'
+import { shortSymbol } from '/imports/ui/lib/tokenHelpers'
 import './circleIconStyles.scss'
 
 export enum Sizes { sm = "sm", md = "md", lg = "lg"} // TODO: Add enum support
@@ -16,7 +16,7 @@ const CircleIcon: React.FC<Props>= (props): JSX.Element => {
   }
   const hasImg = () => {
     // TODO: Add generic support for more tokens
-    if (shortSym(sym) === "RUNE") { return true }
+    if (shortSymbol(sym) === "RUNE") { return true }
     return false
   }
   const imgSize = () => {
