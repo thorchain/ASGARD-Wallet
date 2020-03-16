@@ -1,6 +1,6 @@
 
 
-export const curr = (num:any) => {
+export const toCurrency = (num:any) => {
   // we want to handle string vals, as well as number vals
   // we want to set as currency
 	if (typeof num === "number") {
@@ -23,7 +23,7 @@ export const curr = (num:any) => {
 	return num;
 }
 
-export const cryptoCurr = (num:any) => {
+export const toCrypto = (num:any) => {
   // use significant digits
 	if (typeof num === "number") {
 

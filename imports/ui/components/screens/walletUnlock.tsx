@@ -56,10 +56,9 @@ const UnlockScreen: React.FC = () => {
               </div>
             </div>
             <button type="submit" className="form-control btn btn-primary">
-              {!loadingMsg &&(
+              {!loadingMsg ? (
                 <span>Unlock</span>
-              )} 
-              {loadingMsg && (
+              ) : (
                 <span>
                   <div className="spinner-border spinner-border-sm" role="status">
                     <span className="sr-only">Loading...</span>

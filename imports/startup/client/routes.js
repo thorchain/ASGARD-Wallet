@@ -3,16 +3,10 @@ import ReactDOM from "react-dom";
 // import { Blaze } from 'meteor/blaze'
 import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { FlowRouter } from 'meteor/kadira:flow-router';
-
 import { mount, withOptions } from 'react-mounter';
-const mounter = withOptions({
-    rootId: '__react-root',
-    rootProps: {'className': 'app-root'}
-}, mount);
 
 import '/client/containers/appFrames.js'
 import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
-import '/client/components/wallet/walletSend.js'
 
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
@@ -31,6 +25,7 @@ import UserAssetsScreen from '/imports/ui/components/screens/userAssets'
 import UserAssetDetailsScreen from '/imports/ui/components/screens/userAssetDetails'
 import UserTransactionsScreen from '/imports/ui/components/screens/transactions/userTransactions'
 
+import SendFundsScreen from '/imports/ui/components/screens/sendFunds'
 import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
@@ -45,6 +40,10 @@ const isVault = () => {
 const isUnlocked = () => {
 	return WALLET.isUnlocked() === true ? true : false;
 }
+const mounter = withOptions({
+    rootId: '__react-root',
+    rootProps: {'className': 'app-root'}
+}, mount);
 
 // TODO: Remove after full migration to React
 const swapRenderer = (newType) => {
@@ -74,8 +73,6 @@ const swapRenderer = (newType) => {
 const appRoutes = FlowRouter.group({
 	name: 'mainAppRoutes',
 	triggersEnter: [function (context, redirect) {
-		console.log("entering new route");
-		console.log(context);
 		const newType = context.route.options.renderType
 		const oldType = context.oldRoute && context.oldRoute.options && context.oldRoute.options.renderType
 		if (newType !== oldType && typeof oldType !== 'undefined') {
@@ -241,15 +238,18 @@ walletRoutes.route('/transactionsList', {
 	},
 	renderType: 'react'
 });
-walletRoutes.route('/send/:asset?', {
+walletRoutes.route('/send/:symbol?', {
 	name: "walletSend",
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletSend'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<SendFundsScreen symbol={params.symbol}/>),
+    });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 })
 walletRoutes.route('/receive', {
 	name: "walletReceive",

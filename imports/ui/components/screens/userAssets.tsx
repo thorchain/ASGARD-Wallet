@@ -21,9 +21,9 @@ const UserAssetsScreen: React.FC = (): JSX.Element => {
 
         <h5 className="text-center mb-4">Assets</h5>
         <ul className="list-unstyled list-links">
-        {userAssets.map(asset => {
-          return <ListItem asset={asset} key={asset._id}/>
-        })}
+        {userAssets.map(asset => (
+          <ListItem asset={asset} key={asset._id}/>
+        ))}
         </ul>
 
       </div>
