@@ -4,6 +4,8 @@ import { WALLET } from '/imports/startup/client/init'
 import { UserAssetsTypes } from '/imports/api/collections/UserAssetsCollection'
 import { TokenDataTypes } from '/imports/api/collections/TokenDataCollection'
 import { UserAccount, UserAssets, TokenData } from '/imports/api/collections/client_collections'
+import SendFundsFormSchema from '/imports/lib/schemas/sendFundsFormSchema'
+
 import CircleIcon, { Sizes } from '/imports/ui/components/elements/circleIcon'
 import { shortSymbol } from '/imports/ui/lib/tokenHelpers'
 import { toCrypto } from '/imports/ui/lib/numbersHelpers'
@@ -25,7 +27,7 @@ const SendFundsScreen: React.FC<{symbol?:string}> = ({symbol}): JSX.Element => {
       )}
 
       <div className="col-md-8 col-lg-6 ml-auto mr-auto">
-        <SendFundsForm userAssets={userAssets} assetsData={tokenData} symbol={symbol}/>
+        <SendFundsForm userAssets={userAssets} symbol={symbol}/>
       </div>
 
     </div>
@@ -33,15 +35,15 @@ const SendFundsScreen: React.FC<{symbol?:string}> = ({symbol}): JSX.Element => {
 }
 export default SendFundsScreen
 
-type SendFundsFormProps = {userAssets: UserAssetsTypes[],assetsData: TokenDataTypes[],symbol?:string}
-const SendFundsForm: React.FC<SendFundsFormProps> = ({userAssets,assetsData,symbol}): JSX.Element => {
+type SendFundsFormProps = {userAssets: UserAssetsTypes[],symbol?:string}
+const SendFundsForm: React.FC<SendFundsFormProps> = ({userAssets,symbol}): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState<string>('')
   const [recipientError, setRecipientError] = useState<string>('')
   const [amountError, setAmountError] = useState<string>('')
   const [amountMsg, setAmountMsg] = useState<string>('')
   const [assetError, setAssetError] = useState<string>('')
   const [passwordError, setPasswordError] = useState<string>('')
-  const [symb, setSymb] = useState<string>('')
+  const [symb, setSymb] = useState<string>('') // reactive local state
   const [selected, setSelected] = useState<string>('default') // used only for select
 
   useEffect(() => {
@@ -51,12 +53,11 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({userAssets,assetsData,symb
     } else {
       setAmountMsg('')
     }
-  },[symbol])
+  },[symbol, symb])
 
   const userAsset = useMemo(() => {
     if (symb) {
-      const ret = userAssets.find((e: UserAssetsTypes) => e.symbol === symb)
-      return ret
+      return userAssets.find((e: UserAssetsTypes) => e.symbol === symb)
     }
   },[symb])
 
@@ -72,7 +73,7 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({userAssets,assetsData,symb
     const from = acc.address
 
     // Schema based validation
-    const validationContext = Schemas.formTransferTx.newContext();
+    const validationContext = SendFundsFormSchema.newContext();
     // TODO: Add check fee amount to pre-check insufficient fee funds
     const obj = validationContext.clean({
       pwHash: acc.pwHash,
@@ -85,14 +86,10 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({userAssets,assetsData,symb
     });
     
     validationContext.validate(obj);
-    console.log("WTF")
-    console.log(validationContext.isValid())
-    console.log(validationContext.validationErrors())
     if (validationContext.isValid()) {
       const sleep = (m:number) => new Promise(r => setTimeout(r, m))
       setLoadingMsg("preparing tx")
       await sleep(200)
-      console.log("transferring...");
       
       WALLET.on('transfer', (msg:string) => { setLoadingMsg(msg) })
       try {
@@ -100,13 +97,13 @@ const SendFundsForm: React.FC<SendFundsFormProps> = ({userAssets,assetsData,symb
         delete obj.password // SECURITY: unset
         FlowRouter.go('walletAssetDetails',{symbol: obj.asset})
       } catch (error) {
-          setLoadingMsg('')
-          console.log(error)
-          if (error.message.includes('password')) { 
-            setPasswordError(error.message)
-          } else if (error.message.includes('funds')) {
-            setAmountError(error.message)
-          } 
+        setLoadingMsg('')
+        console.log(error)
+        if (error.message.includes('password')) { 
+          setPasswordError(error.message)
+        } else if (error.message.includes('funds')) {
+          setAmountError(error.message)
+        } 
       }
       
     } else {
