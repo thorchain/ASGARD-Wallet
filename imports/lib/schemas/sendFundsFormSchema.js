@@ -1,7 +1,6 @@
 import SimpleSchema from 'simpl-schema'
 import { Tracker } from 'meteor/tracker'
 import { BNB } from '/imports/api/wallet'
-Schemas = (typeof Schemas === "undefined") ? {} : Schemas;
 
 var bcrypt = require('bcryptjs');
 
