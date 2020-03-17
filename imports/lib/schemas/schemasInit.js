@@ -3,8 +3,6 @@ import SimpleSchema from 'simpl-schema'
 SimpleSchema.extendOptions(['uniform']);
 SimpleSchema.debug = true;
 
-console.log("initializing SimpleSchema?");
-
 SimpleSchema.setDefaultMessages({
 	messages: {
 		en: {
