@@ -93,7 +93,7 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
 
   const handleResetPhrase = () => {
     selectedWordsColl.find().fetch().forEach((e:any) => {
-      selectedWordsColl.update({_id:e._id},{$set: {selected: false, error: null, disabled: null}})
+      selectedWordsColl.update({_id:e._id},{$set: {selected: false, error: ''}})
     });
     setMnemonicError('')
   }
@@ -111,18 +111,17 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     // handle the form
       event.preventDefault();
-      const t = event.currentTarget
+      const tar = event.currentTarget
       const validationContext = NewMnemonicWalletFormSchema.newContext();
       const phrase = selectedWordsColl.find().map((e:any) => {return e.text}).join(" ")
-      console.log("handling form!!!!!");
       
       const repeatPhrase = selectedWordsColl.find({selected:true}).map((e:any) => {return e.text}).join(" ")
       
       const obj = validationContext.clean({
         phrase: phrase,
         repeatPhrase: repeatPhrase,
-        password: t.password.value,
-        repeatPassword: t.repeatPassword.value
+        password: tar.password.value,
+        repeatPassword: tar.repeatPassword.value
       })
 
       validationContext.validate(obj);

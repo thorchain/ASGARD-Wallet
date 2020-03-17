@@ -10,11 +10,8 @@ const CreateScreen: React.FC<{type?:string}> = ({type}): JSX.Element => {
   
   useEffect(()=>{
     if (type && type === 'mnemonic') { setIsMnemonic(true) }
-    console.log('using an effect')
     let mnemonic
     if (Session.get('mnemonic')) {
-      console.log("setting existing mnemonic");
-      
       setMnemonic(Session.get('mnemonic'));
     } else {
       mnemonic = bip39.generateMnemonic();
@@ -24,7 +21,6 @@ const CreateScreen: React.FC<{type?:string}> = ({type}): JSX.Element => {
       let duplicates = false
       while (!duplicates) {
         if (findDuplicates(mnemonic.split(" ")).length > 0) {
-          console.log("we got a duplicate in new mnemonic");
           // reroll mnemonic. low odds for double duplicate
           // confirm UI should handle it as well
           mnemonic = bip39.generateMnemonic()
@@ -32,7 +28,6 @@ const CreateScreen: React.FC<{type?:string}> = ({type}): JSX.Element => {
           duplicates = true
         }
       }
-      console.log("setting new mnemonic");
       setMnemonic(mnemonic);
       Session.set('mnemonic', mnemonic);
     }

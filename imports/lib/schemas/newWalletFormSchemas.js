@@ -32,9 +32,6 @@ export const NewMnemonicWalletFormSchema = new SimpleSchema({
     custom() {
       const phrase = this.field('phrase').value.trim()
       const repeatPhrase = this.value.trim()
-      // console.log(phrase)
-      // console.log(repeatPhrase)
-      
       if (phrase.length !== repeatPhrase.length) {
         console.log("error with phrase");
         return "incompleteMnemonic"
