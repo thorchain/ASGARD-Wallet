@@ -168,7 +168,7 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
                     onClick={() => handleRemoveWord(word._id)}
                     key={word._id}>
                     <span>{word.text}</span>
-                    <span className="ml-1"><i className="fa fa-sm fa-times"></i></span>
+                    <span className="ml-1 text-muted"><i className="fa fa-sm fa-times"></i></span>
                   </a>
                 ))}
               </div>
