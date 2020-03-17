@@ -5,6 +5,8 @@ import { WALLET } from '/imports/startup/client/init'
 import { Session } from 'meteor/session'
 import { NewMnemonicWalletFormSchema } from '/imports/lib/schemas/newWalletFormSchemas'
 
+// TODO: In this file, fill 'any' gaps/workarounds for types
+
 const selectedWordsColl = new Mongo.Collection(null) // local only client
 type wordTypes = {
   _id?:string,
@@ -12,7 +14,6 @@ type wordTypes = {
   error?:string
   text:string,
 }
-// first thing set up context?
 
 const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState<string>('')
@@ -148,7 +149,7 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
             WALLET.generateNewWallet(obj.password, mnemonic).then(async () => {
               await WALLET.unlock(obj.password)
               Session.set('mnemonic', null) // SECURITY: unset
-              FlowRouter.go('home')
+              FlowRouter.go('walletAccounts')
             })
           } catch (err) {
             setLoadingMsg('')
@@ -163,7 +164,7 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
       <div className="col-md-8 mx-auto">
         <form name="generate-wallet-form" id="generate-wallet-form" className="form" onSubmit={handleFormSubmit}>
 
-          <h5 className="text-center">Confirm Mnemonic</h5>
+          <h5 className="text-center mb-4">Confirm Mnemonic</h5>
           <div id="confirm-words" className="card border mb-3" style={{minHeight:'138px'}}>
             <div className="card-body p-2">
               <div className="h3 mb-0 text-justify">
