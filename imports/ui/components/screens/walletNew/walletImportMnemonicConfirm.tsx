@@ -9,10 +9,10 @@ import { NewMnemonicWalletFormSchema } from '/imports/lib/schemas/newWalletFormS
 
 const selectedWordsColl = new Mongo.Collection(null) // local only client
 type wordTypes = {
-  _id?:string,
-  sequence?:number
-  error?:string
-  text:string,
+  _id?:string;
+  sequence?:number;
+  error?:string;
+  text:string;
 }
 
 const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
@@ -73,7 +73,6 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
       
       let isErr = false
       for (let i = 0; i < words.length; i++) {
-        // go through original and selected words to confirm
         const word:any = words[i]
         const selectWord:any = selectedWords[i];
         
@@ -117,9 +116,7 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
       const phrase = selectedWordsColl.find().map((e:any) => {return e.text}).join(" ")
       console.log("handling form!!!!!");
       
-      // console.log(phrase)
       const repeatPhrase = selectedWordsColl.find({selected:true}).map((e:any) => {return e.text}).join(" ")
-      // console.log(repeatPhrase);
       
       const obj = validationContext.clean({
         phrase: phrase,
@@ -145,7 +142,6 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
         setTimeout(async () => {
           try {
             const mnemonic = Session.get('mnemonic');
-            // await self.generateNewWallet(obj.password, words);
             WALLET.generateNewWallet(obj.password, mnemonic).then(async () => {
               await WALLET.unlock(obj.password)
               Session.set('mnemonic', null) // SECURITY: unset
