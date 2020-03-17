@@ -5,8 +5,8 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { mount, withOptions } from 'react-mounter';
 
-import '/client/containers/appFrames.js'
-import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
+// import '/client/containers/appFrames.js'
+// import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
 
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
@@ -15,7 +15,8 @@ import NavbarSimple from '/imports/ui/components/elements/navbarSimple'
 
 import StartScreen from '/imports/ui/components/screens/walletStart'
 import ImportScreen from '/imports/ui/components/screens/walletNew/walletImport'
-import CreateScreen from "/imports/ui/components/screens/walletNew/walletCreate";
+import CreateScreen from "/imports/ui/components/screens/walletNew/walletCreate"
+import MnemonicConfirmScreen from '/imports/ui/components/screens/walletNew/walletImportMnemonicConfirm'
 
 import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
 import UnlockOptionsScreen from '/imports/ui/components/screens/walletUnlockOptions'
@@ -123,9 +124,12 @@ appRoutes.route('/mnemonic-confirm', {
 	name: 'walletMnemonicConfirm',
 	// restric/direct access to this route
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletNewMnemonicConfirm'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<MnemonicConfirmScreen/>),
+    });
 	},
-	renderType: 'blaze'
+	renderType: 'react'
 })
 
 appRoutes.route('/import', {

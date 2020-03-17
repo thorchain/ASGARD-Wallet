@@ -4,7 +4,12 @@ import './breadcrumbStyles.scss'
 const Breadcrumb: React.FC = (): JSX.Element => {
   const goBack = () => {
     const current = FlowRouter.current()
-    if (current.oldRoute && current.oldRoute.group && current.oldRoute.group.name === 'walletRoutes') {
+    const isVault = window.localStorage.getItem('binance') ? true : false;
+    // this prevents back to login screens etc.
+    if (isVault && current.oldRoute && current.oldRoute.group && current.oldRoute.group.name === 'walletRoutes') {
+      window.history.back()
+      // Can assume this is only signup routes
+    } else if (!isVault) {
       window.history.back()
     }
   }
