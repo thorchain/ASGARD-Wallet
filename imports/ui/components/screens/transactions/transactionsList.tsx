@@ -7,9 +7,9 @@ type Props = {transactions: UserTransactionTypes[]}
 const TransactionsList: React.FC<Props> = ({transactions}): JSX.Element => {
   return (
     <ul className="list-group">
-      {transactions.map((transaction) => {
-        return <ListItem transaction={transaction} key={transaction._id} />
-      })}
+      {transactions.map((transaction) => (
+        <ListItem transaction={transaction} key={transaction._id} />
+      ))}
       
     </ul>
   )

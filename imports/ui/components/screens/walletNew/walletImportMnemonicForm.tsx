@@ -20,7 +20,7 @@ const ImportMnemonicForm: React.FC = (): JSX.Element => {
   const handleImportFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const tar = event.currentTarget
-    const validationContext = ImportMnemonicFormSchema.namedContext('importMnemonic');
+    const validationContext = ImportMnemonicFormSchema.newContext();
     const obj = validationContext.clean({
       mnemonic: tar.mnemonic.value,
       password: tar.password.value,

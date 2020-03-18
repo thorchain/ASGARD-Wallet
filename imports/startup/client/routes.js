@@ -1,12 +1,7 @@
 import React from 'react';
 import ReactDOM from "react-dom";
-// import { Blaze } from 'meteor/blaze'
-import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { mount, withOptions } from 'react-mounter';
-
-import '/client/containers/appFrames.js'
-import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
 
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
@@ -15,7 +10,8 @@ import NavbarSimple from '/imports/ui/components/elements/navbarSimple'
 
 import StartScreen from '/imports/ui/components/screens/walletStart'
 import ImportScreen from '/imports/ui/components/screens/walletNew/walletImport'
-import CreateScreen from "/imports/ui/components/screens/walletNew/walletCreate";
+import CreateScreen from "/imports/ui/components/screens/walletNew/walletCreate"
+import MnemonicConfirmScreen from '/imports/ui/components/screens/walletNew/walletImportMnemonicConfirm'
 
 import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
 import UnlockOptionsScreen from '/imports/ui/components/screens/walletUnlockOptions'
@@ -45,39 +41,10 @@ const mounter = withOptions({
     rootProps: {'className': 'app-root'}
 }, mount);
 
-// TODO: Remove after full migration to React
-const swapRenderer = (newType) => {
-	if (newType === 'react') {
-		console.info("swapping view layer to react");
-		$("#__blaze-root").hide()
-		try {
-			BlazeLayout.reset()
-		} catch (error) {
-			// fail silently
-		}
-		$("#__react-root").show()
-	} else if (newType === 'blaze') {
-		console.info("swapping view layer to blaze");
-		$("#__react-root").hide()
-		try {
-			const ele = document.getElementById('__react-root')
-			ReactDOM.unmountComponentAtNode(ele)
-		} catch (error) {
-			// fail silently
-		}
-		$("#__blaze-root").show()
-	}
-
-}
 
 const appRoutes = FlowRouter.group({
 	name: 'mainAppRoutes',
 	triggersEnter: [function (context, redirect) {
-		const newType = context.route.options.renderType
-		const oldType = context.oldRoute && context.oldRoute.options && context.oldRoute.options.renderType
-		if (newType !== oldType && typeof oldType !== 'undefined') {
-			swapRenderer(newType)
-		}
 		
 		if (context.route.name !== "options") {
 			if (isVault() && !isUnlocked()) {
@@ -102,7 +69,6 @@ appRoutes.route('/', {
       content: () => (<StartScreen/>)
     });
   },
-	renderType: 'react'
 })
 
 appRoutes.route('/create/:type?', {
@@ -116,16 +82,17 @@ appRoutes.route('/create/:type?', {
 	back: {
 		route: 'walletStart',
 	},
-	renderType: 'react'
 });
 
 appRoutes.route('/mnemonic-confirm', {
 	name: 'walletMnemonicConfirm',
 	// restric/direct access to this route
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletNewMnemonicConfirm'});
+		mounter(MainLayout, {
+			header: () => (<NavbarMain/>),
+      content: () => (<MnemonicConfirmScreen/>),
+    });
 	},
-	renderType: 'blaze'
 })
 
 appRoutes.route('/import', {
@@ -139,7 +106,6 @@ appRoutes.route('/import', {
 	back: {
 		route: 'walletStart',
 	},
-	renderType: 'react'
 });
 appRoutes.route('/unlock', {
 	name: 'walletUnlock',
@@ -149,7 +115,6 @@ appRoutes.route('/unlock', {
       content: () => (<UnlockScreen/>),
     });
 	},
-	renderType: 'react'
 })
 
 appRoutes.route('/options', {
@@ -163,18 +128,12 @@ appRoutes.route('/options', {
 	back: {
 		route: 'home',
 	},
-	renderType: 'react'
 });
 
 const walletRoutes = FlowRouter.group({
 	name: 'walletRoutes',
 	prefix: '/wallet',
 	triggersEnter: [function (context, redirect){
-		const newType = context.route.options.renderType
-		const oldType = context.oldRoute && context.oldRoute.options && context.oldRoute.options.renderType
-		if (newType !== oldType && typeof oldType !== 'undefined') {
-			swapRenderer(newType)
-		}
 		if (!isVault() && !isUnlocked()) {
 			FlowRouter.go('walletStart')
 		} else if (isVault() && !isUnlocked()) {
@@ -199,7 +158,6 @@ walletRoutes.route('/accounts', {
       content: () => (<UserAccountScreen/>),
     });
 	},
-	renderType: 'react'
 })
 
 walletRoutes.route('/assets', {
@@ -210,7 +168,6 @@ walletRoutes.route('/assets', {
       content: () => (<UserAssetsScreen/>),
     });
 	},
-	renderType: 'react'
 })
 walletRoutes.route('/assetDetails/:symbol', {
 	name: 'walletAssetDetails',
@@ -223,7 +180,6 @@ walletRoutes.route('/assetDetails/:symbol', {
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'react'
 })
 walletRoutes.route('/transactionsList', {
 	name: "walletTransactionsList",
@@ -236,7 +192,6 @@ walletRoutes.route('/transactionsList', {
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'react'
 });
 walletRoutes.route('/send/:symbol?', {
 	name: "walletSend",
@@ -249,7 +204,6 @@ walletRoutes.route('/send/:symbol?', {
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'react'
 })
 walletRoutes.route('/receive', {
 	name: "walletReceive",
@@ -262,7 +216,6 @@ walletRoutes.route('/receive', {
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'react'
 })
 walletRoutes.route('/freeze/:symbol', {
 	name: 'walletFreeze',
@@ -275,7 +228,6 @@ walletRoutes.route('/freeze/:symbol', {
 	back: {
 		route: 'walletAssets'
 	},
-	renderType: 'react'
 })
 walletRoutes.route('/unfreeze/:symbol', {
 	name: 'walletUnfreeze',
@@ -288,6 +240,5 @@ walletRoutes.route('/unfreeze/:symbol', {
 	back: {
 		route: 'walletAssets'
 	},
-	renderType: 'react'
 })
 

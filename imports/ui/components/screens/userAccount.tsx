@@ -35,7 +35,6 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
     }
   }
   const removeWallet = async () => { 
-    console.log("trying...")
     try {
       await WALLET.resetWallet()
       // SECURITY NOTE: this needs to await for above, to ensure dependent route's security
