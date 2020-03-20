@@ -1,6 +1,57 @@
 @import './_antd_custom.less';
 
 // these are custom styles
+
+// Layouts
+
+// First heading in row
+.ant-row > .ant-col {
+  > h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+    color: @link-color;
+  }
+}
+
+
+
+// Temp simple style hack. Overly generalized? Mostly for mobile.
+.ant-btn {
+  width: 100%;
+}
+
 form .ant-btn[type='submit'] {
   width: 100%;
+}
+
+// Specific styles
+.ant-btn-brand {
+  position: relative;
+  padding: @btn-border-width; // this creates the pseudo border
+  // TODO: Replace this with new darker btn type
+  background-color: darken(@Darker-Gray, 4%); // this is overriden, but for iherit in pseudo below
+  background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
+  border: none;
+  &:hover {
+    background-color: darken(@Darker-Gray, 12%);
+    background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
+  }
+  &::after {
+    // Pseudo background
+    display: block;
+    position: relative;
+    background-color: inherit;
+    width: 100%;
+    height: 100%;
+    border-radius: @btn-border-radius-base; // needs different sizes
+    content: "";
+  }
+  >span {
+    // required: assummed content
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: (@btn-padding-horizontal-base / 2) (@input-padding-vertical-base / 2);
+  }
 }
