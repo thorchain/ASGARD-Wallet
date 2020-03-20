@@ -17,7 +17,7 @@ const UnlockScreen: React.FC = (): JSX.Element => {
     .then(() => FlowRouter.go('walletAssets'))
     .catch(e => {
       setLoadingMsg(e.message)
-      // TODO: Add alert? This would not be expected to fail unless there were
+      // TODO: Add alert? This would not be expected to fail unless there were connection errors
       throw Error(e)
     })
       
