@@ -15,7 +15,11 @@ const UnlockScreen: React.FC = (): JSX.Element => {
     setLoadingMsg('Unlocking')
     WALLET.unlockAndSync(model.password)
     .then(() => FlowRouter.go('walletAssets'))
-    .catch(e => {throw Error(e)})
+    .catch(e => {
+      setLoadingMsg(e.message)
+      // TODO: Add alert? This would not be expected to fail unless there were
+      throw Error(e)
+    })
       
   }
   const btnContent = (): JSX.Element => {
