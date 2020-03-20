@@ -22,3 +22,11 @@ SimpleSchema.setDefaultMessages({
 		},
 	},
 });
+
+// TODO: Add method to get field name/types to use for typescript types
+// This is not quite right... extend the SimplSchema class instead
+// Inteded outcome is Myschema.getTypes()... OR maybe not...
+// SimpleSchema.getTypes = (schema) => {
+	// console.log("make this method return field names with types")
+	// https://stackoverflow.com/questions/45771307/typescript-dynamically-create-interface/45777530
+// }

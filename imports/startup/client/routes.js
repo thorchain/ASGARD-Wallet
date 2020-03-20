@@ -26,8 +26,6 @@ import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
 
-const mainFrame = 'mainAppFrame';
-
 // SECURITY: Application, routing check
 const isVault = () => {
 	return window.localStorage.getItem('binance') ? true : false;

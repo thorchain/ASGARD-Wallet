@@ -1,79 +1,59 @@
-import React, { useState } from 'react';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { WALLET } from "/imports/startup/client/init";
-import WalletUnlockFormSchema from '/imports/lib/schemas/walletUnlockFormSchema'
-import { UserAccount } from '/imports/api/collections/client_collections'
+import React, { useState } from 'react'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { WALLET } from "/imports/startup/client/init"
+import { WalletUnlockFormSchema, WalletUnlockFormBridge } from '/imports/lib/schemas/walletUnlockFormSchema'
 
-const UnlockScreen: React.FC = () => {
-  const [pwError, setPwError] = useState<string>('');
+import { Row, Col } from 'antd'
+import { AutoForm, AutoField, SubmitField } from 'uniforms-antd'
+import { ErrorField } from '/imports/uniforms-antd-custom/'
+import { Loading3QuartersOutlined } from '@ant-design/icons'
+
+const UnlockScreen: React.FC = (): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState<string>('');
-
-  const handlePwChange = () => { setPwError('') }
-
-  const unlockWallet = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const tar = event.currentTarget
-    const account = UserAccount.findOne()
-    
-    const validationContext = WalletUnlockFormSchema.namedContext('walletUnlock')
-    const obj = validationContext.clean({
-      password: tar.password.value,
-      pwHash: account.pwHash
+  const handleUnlockFormSubmit = (model:{password:string,pwHash:string}) => {
+    // SECURITY: This only gets called from valid form
+    setLoadingMsg('Unlocking')
+    WALLET.unlockAndSync(model.password)
+    .then(() => FlowRouter.go('walletAssets'))
+    .catch(e => {
+      setLoadingMsg(e.message)
+      // TODO: Add alert? This would not be expected to fail unless there were connection errors
+      throw Error(e)
     })
-    
-    await validationContext.validate(obj)
-    if (!validationContext.isValid()) {
-      setPwError(validationContext.keyErrorMessage('password'))
-    } else {
-      setLoadingMsg('unlocking')
-      try {
-        await WALLET.unlockAndSync(tar.password.value)
-        FlowRouter.go('walletAssets')
-      } catch (err) {
-        setPwError(err.message)
-        setLoadingMsg('')
-				throw new Error(err.message)
-      }
-    }
+      
   }
-  return (
+  const btnContent = (): JSX.Element => {
+    return (
+      !loadingMsg ? (
+        <span>Unlock</span>
+      ) : (
+        <>
+          <Loading3QuartersOutlined spin/>
+          <span className="ml-2">{loadingMsg}</span>
+        </>
+      )
+    )
+  }
+  return (<>
+    <Row>
 
-    <div className="row">
-
-      <div className="col-md-8 col-lg-7 col-xl-7 ml-auto mr-auto">
+      <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:0}}>
         <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Wallet-Gradient-512.svg"/>
-      </div>
+      </Col>
 
-      <div className="col-md-8 col-lg-7 col-xl-7 ml-auto mr-auto">
+      <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:6}}>
+        <AutoForm
+          model={WalletUnlockFormSchema.clean({})}
+          schema={WalletUnlockFormBridge}
+          onSubmit={handleUnlockFormSubmit}
+        >
+          <AutoField name="password" size='large' label={false}/>
+          <ErrorField name='password'/>
+          <SubmitField value={btnContent()} size='large' disabled={loadingMsg}/>
+        </AutoForm>
+      </Col>
 
-        <form id="wallet-unlock-form" className="form" onSubmit={unlockWallet}>
-          <fieldset {...(loadingMsg ? {disabled:true} : {})}>
-
-            <div className="form-row">
-              <div className="form-group col-md-12">
-                <input type="password" className="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password" onChange={handlePwChange} />
-                <small id="passwordHelp" className="form-text text-warning">{pwError}</small>
-              </div>
-            </div>
-            <button type="submit" className="form-control btn btn-primary">
-              {!loadingMsg ? (
-                <span>Unlock</span>
-              ) : (
-                <span>
-                  <div className="spinner-border spinner-border-sm" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                  <span className="ml-1">{loadingMsg}</span>
-                </span>
-              )}
-            </button>
-
-          </fieldset>
-        </form>
-
-      </div>
-
-    </div>
-  )
+    </Row>
+  </>)
 }
 export default UnlockScreen
