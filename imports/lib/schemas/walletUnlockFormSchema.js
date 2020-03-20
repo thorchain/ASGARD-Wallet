@@ -1,8 +1,12 @@
 import SimpleSchema from 'simpl-schema'
 import { Tracker } from 'meteor/tracker'
+import SimpleSchema2Bridge from 'uniforms-bridge-simple-schema-2';
+import { HiddenField } from 'uniforms-antd';
+
+import { UserAccount } from '/imports/api/collections/client_collections'
 var bcrypt = require('bcryptjs');
 
-const WalletUnlockFormSchema = new SimpleSchema({
+export const WalletUnlockFormSchema = new SimpleSchema({
   password: {
     type: String,
     label: 'Password',
@@ -13,10 +17,15 @@ const WalletUnlockFormSchema = new SimpleSchema({
     }
   },
   pwHash: {
-    // Passed in manual validation, do not send from html form
     type: String,
-    label: "pwHash"
+    label: "pwHash",
+    autoValue() {
+      console.log('setting autovalue')
+      const res = UserAccount.findOne()
+      return res.pwHash
+    },
+    uniforms: HiddenField
   }
-},{ tracker: Tracker})
+},{tracker: Tracker})
 
-export default WalletUnlockFormSchema
+export const WalletUnlockFormBridge = new SimpleSchema2Bridge(WalletUnlockFormSchema);

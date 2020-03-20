@@ -33,3 +33,4 @@ mikowals:batch-insert
 frozeman:persistent-minimongo2
 session@1.2.0
 react-meteor-data
+less
