@@ -1,6 +1,7 @@
 @import '{}/node_modules/antd/dist/antd.dark.less';
 // Customization of antd only
 
+// Original defaults
 /*
 @primary-color: @blue-6;
 @info-color: @blue-6;
@@ -13,11 +14,14 @@
 @white: #fff;
 @black: #000;
 */
+
+// Custom Theming
+
 // Brand Colour Pallete: 
-@Asgard-Green: #33FF99; // #58E2C2 //#58E2C2
+@Asgard-Green: #33FF99;
 @Accent-Green: #58E2C2;
 @Accent-Blue: #00CCFF;
-@Warning-Red: #EC5569; // #EC5569
+@Warning-Red: #EC5569;
 @Caution-Yellow: #F0B90B;
 
 
@@ -31,21 +35,6 @@
 @Lighter-Gray: #848E9B;
 @Highlight-Gray: #90A1B0; // uknown if wanted...
 @White-Gray: #EBEBEB; // probably font-white?
-
-
-
-/* Bootstrap Variable Overrides *************** */
-
-// $black:    #000 !default;
-// @gray-900: $Black-Gray;
-// @gray-800: $Darker-Gray;
-// @gray-700: $Dark-Gray;
-// @gray-600: $Primary-Gray;
-// @gray-500: $Middle-Gray;
-// @gray-400: $Light-Gray;
-// @gray-300: $Lighter-Gray;
-// @gray-200: $Highlight-Gray;
-// @gray-100: $White-Gray;
 
 @body-background: @Darker-Gray;
 @component-background: @body-background;

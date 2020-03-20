@@ -13,14 +13,10 @@ const UnlockScreen: React.FC = (): JSX.Element => {
   const handleUnlockFormSubmit = (model:{password:string,pwHash:string}) => {
     // SECURITY: This only gets called from valid form
     setLoadingMsg('Unlocking')
-    try {
-      WALLET.unlockAndSync(model.password)
-      .then(() => FlowRouter.go('walletAssets'))
-      .catch(e => {throw Error(e)})
+    WALLET.unlockAndSync(model.password)
+    .then(() => FlowRouter.go('walletAssets'))
+    .catch(e => {throw Error(e)})
       
-    } catch (err) {
-      throw Error(err.message)
-    }
   }
   const btnContent = (): JSX.Element => {
     return (
@@ -46,7 +42,6 @@ const UnlockScreen: React.FC = (): JSX.Element => {
           model={WalletUnlockFormSchema.clean({})}
           schema={WalletUnlockFormBridge}
           onSubmit={handleUnlockFormSubmit}
-          disbled={loadingMsg}
         >
           <AutoField name="password" size='large' label={false}/>
           <ErrorField name='password'/>

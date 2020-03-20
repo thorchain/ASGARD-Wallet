@@ -20,7 +20,6 @@ export const WalletUnlockFormSchema = new SimpleSchema({
     type: String,
     label: "pwHash",
     autoValue() {
-      console.log('setting autovalue')
       const res = UserAccount.findOne()
       return res.pwHash
     },
