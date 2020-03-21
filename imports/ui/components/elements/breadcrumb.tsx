@@ -6,8 +6,6 @@ import './breadcrumbStyles.less'
 
 const NavBreadcrumb: React.FC = (): JSX.Element => {
   const [canBack, setCanBack] = useState(false)
-  // NOTE: Does this need to be reactive?
-  // or Reactive call is enough? Currently working as intended
   useTracker(() => {
     const isVault = window.localStorage.getItem('binance') ? true : false;
     FlowRouter.watchPathChange()

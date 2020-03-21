@@ -3,7 +3,6 @@ import { FlowRouter } from 'meteor/kadira:flow-router';
 
 import { Row, Col, Button, Typography } from 'antd'
 const { Title } = Typography
-// const { Link } = Anchor;
 
 const StartScreen: React.FC = (): JSX.Element => {
   return (
