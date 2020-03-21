@@ -1,4 +1,7 @@
 @import './_antd_custom.less';
+@import './_OpenSans.less';
+@import './_Montserrat.less';
+@import './_Exo2.less';
 
 // these are custom styles
 
@@ -17,6 +20,13 @@
 // Temp simple style hack. Overly generalized? Mostly for mobile.
 .ant-btn {
   width: 100%;
+  letter-spacing: 0.08em;
+  font-family: Exo2;
+  & .ant-btn-primary {
+    &:hover {
+      background-color: darken(@primary-color, 12%)
+    }
+  }
 }
 
 form .ant-btn[type='submit'] {

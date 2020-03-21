@@ -16,23 +16,11 @@ const UnlockScreen: React.FC = (): JSX.Element => {
     WALLET.unlockAndSync(model.password)
     .then(() => FlowRouter.go('walletAssets'))
     .catch(e => {
-      setLoadingMsg(e.message)
+      // setLoadingMsg(e.message)
       // TODO: Add alert? This would not be expected to fail unless there were connection errors
       throw Error(e)
     })
       
-  }
-  const btnContent = (): JSX.Element => {
-    return (
-      !loadingMsg ? (
-        <span>Unlock</span>
-      ) : (
-        <>
-          <Loading3QuartersOutlined spin/>
-          <span className="ml-2">{loadingMsg}</span>
-        </>
-      )
-    )
   }
   return (<>
     <Row>
@@ -49,7 +37,7 @@ const UnlockScreen: React.FC = (): JSX.Element => {
         >
           <AutoField name="password" size='large' label={false}/>
           <ErrorField name='password'/>
-          <SubmitField value={btnContent()} size='large' disabled={loadingMsg}/>
+          <SubmitField value='Unlock' size='large' loading={loadingMsg}/>
         </AutoForm>
       </Col>
 
