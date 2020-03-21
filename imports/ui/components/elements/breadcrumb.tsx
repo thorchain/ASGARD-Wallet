@@ -1,24 +1,35 @@
-import React from 'react'
-import './breadcrumbStyles.scss'
+import React, { useState } from 'react'
+import { useTracker } from 'meteor/react-meteor-data';
+import { Breadcrumb } from 'antd'
+import { LeftOutlined } from '@ant-design/icons';
+import './breadcrumbStyles.less'
 
-const Breadcrumb: React.FC = (): JSX.Element => {
-  const goBack = () => {
-    const current = FlowRouter.current()
+const NavBreadcrumb: React.FC = (): JSX.Element => {
+  const [canBack, setCanBack] = useState(false)
+  useTracker(() => {
     const isVault = window.localStorage.getItem('binance') ? true : false;
-    // this prevents back to login screens etc.
+    FlowRouter.watchPathChange()
+    const current = FlowRouter.current()
     if (isVault && current.oldRoute && current.oldRoute.group && current.oldRoute.group.name === 'walletRoutes') {
-      window.history.back()
+      setCanBack(true)
       // Can assume this is only signup routes
     } else if (!isVault) {
-      window.history.back()
+      setCanBack(true)
+    } else {
+      setCanBack(false)
     }
+  },[FlowRouter])
+  const goBack = () => {
+    if (canBack) { window.history.back() }
   }
   return (
-    <nav aria-label="breadcrumb">
-      <ol className="breadcumb list-unstyled position-absolute m-0 p-0" style={{zIndex: 900}}>
-        <li className="breadcrumb-item"><a href="" onClick={goBack}><i className="fa fa-chevron-left"></i> Back</a></li>
-      </ol>
-    </nav>
+    <Breadcrumb>
+      {canBack && (
+        <Breadcrumb.Item>
+          <a href="" onClick={goBack}><LeftOutlined />&nbsp;Back</a>
+        </Breadcrumb.Item>
+      )}
+    </Breadcrumb>
   )
 }
-export default Breadcrumb
+export default NavBreadcrumb

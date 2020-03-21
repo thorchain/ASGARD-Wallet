@@ -1,28 +1,25 @@
 import React from 'react';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 
+import { Row, Col, Button, Typography } from 'antd'
+const { Title } = Typography
+
 const StartScreen: React.FC = (): JSX.Element => {
   return (
+    <Row>
+      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}} xl={{span:16,offset:4}}>
 
-    <div className="row">
+        <img src="/img/Asgard-Wallet-Gradient-512.svg" />
+        <Title level={4}>Asgard Wallet</Title>
+        <Button type="primary" size={'large'} className={'ant-btn-brand'} onClick={() => FlowRouter.go('walletCreate')}>
+          New
+        </Button>
+        <Button type="primary" size={'large'} onClick={() => FlowRouter.go('walletImport')}>
+          Import
+        </Button>
 
-      <div className="col-md-8 col-lg-6 ml-auto mr-auto">
-        <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Wallet-Gradient-512.svg" />
-        <h5 className="text-center mb-5">Asgard Wallet</h5>
-        <a className="form-control btn btn-dark btn-brand-border mb-4" href={FlowRouter.path('walletCreate')}>
-          <span>New</span>
-        </a>
-        <div className="form-group">
-          <a className="form-control btn btn-primary w-100 mb-4" href={FlowRouter.path('walletImport')}>Import</a>
-        </div>
-
-        <div>
-          <div className="h5 text-uppercase text-center">Attention:</div>
-          <p className="text-justify"> This beta software is provided for testing purposes as is, with no warranty. Usage is restricted to Binance testnet.</p>
-        </div>
-      </div>
-
-    </div>
+      </Col>
+    </Row>
   )
 }
 export default StartScreen
