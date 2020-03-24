@@ -69,8 +69,8 @@ const ListItem: React.FC<ItemProps> = (props): JSX.Element  => {
       </div>
 
       <div>
-        <div className="h5 mb-0 text-right">{asset.free}</div>
-        <div className="text-right font-italic text-muted small">{price('0.00')}</div>
+        <div className="h5 mb-0 text-right">{asset.free.toLocaleString()}</div>
+        {/* <div className="text-right font-italic text-muted small">{price('0.00')}</div> */}
       </div>
 
     </li>
