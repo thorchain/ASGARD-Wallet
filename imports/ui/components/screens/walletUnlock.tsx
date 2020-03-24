@@ -32,7 +32,7 @@ const UnlockScreen: React.FC = () => {
     <div className="row">
 
       <div className="col-md-8 col-lg-7 col-xl-7 ml-auto mr-auto">
-        <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Wallet-Gradient-512.svg"/>
+        <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Tri-Gradient.svg"/>
       </div>
 
       <div className="col-md-8 col-lg-7 col-xl-7 ml-auto mr-auto">
