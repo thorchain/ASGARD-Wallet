@@ -65,8 +65,8 @@ reywood:publish-composite@1.7.3
 routepolicy@1.1.0
 session@1.2.0
 shell-server@0.5.0
-skadmin:meteor-desktop-bundler@2.2.0
-skadmin:meteor-desktop-watcher@2.2.0
+skadmin:meteor-desktop-bundler@2.2.7
+skadmin:meteor-desktop-watcher@2.2.7
 socket-stream-client@0.2.3
 standard-minifier-css@1.6.0
 standard-minifier-js@2.6.0

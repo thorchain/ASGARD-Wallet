@@ -18,8 +18,8 @@ shell-server@0.5.0            # Server-side component of the `meteor shell` comm
 
 autopublish@1.0.7             # Publish all data to the clients (for prototyping)
 insecure@1.0.7                # Allow all DB writes from clients (for prototyping)
-skadmin:meteor-desktop-watcher@=2.2.0
-skadmin:meteor-desktop-bundler@=2.2.0
+skadmin:meteor-desktop-watcher@=2.2.7
+skadmin:meteor-desktop-bundler@=2.2.7
 
 fetch@0.1.1
 http@1.4.2

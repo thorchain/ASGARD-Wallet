@@ -7,3 +7,9 @@ version.desktop
 .desktop-installer/
 
 *.code-workspace
+
+*.meteor
+*.desktop
+*._desktop/
+
+.DS_Store
