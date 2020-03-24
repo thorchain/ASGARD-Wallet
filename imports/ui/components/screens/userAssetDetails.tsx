@@ -97,7 +97,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
           </div>
 
           <div className="col-6 my-4">
-            <button className="btn btn-primary w-100" onClick={() => goRoute('walletReceive')}>recieve</button>
+            <button className="btn btn-primary w-100" onClick={() => goRoute('walletReceive')}>receive</button>
             <div className="input-group flex-column text-center">
               <button className={"btn btn-text mt-3 " + (!unfreezable() && ("disabled"))} onClick={() => goRoute('walletUnfreeze')}>Unfreeze</button>
               <div className="small">Unfreeze assets on address</div>
