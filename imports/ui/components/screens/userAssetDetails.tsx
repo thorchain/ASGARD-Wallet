@@ -50,6 +50,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     }
 
   }
+
   return (
     <div className="row">
 
@@ -58,7 +59,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
             <div className="d-flex justify-content-center my-2"><CircleIcon shortSymbol={balances.shortSymbol} size={Sizes.lg} /></div>
             <div className="h4">{token.name} {balances.shortSymbol}</div>
             <div className="my-4">{balances.symbol}</div>
-            <div className="font-size-h3 text-center">{balances.full} <small>{balances.shortSymbol}</small></div>
+            <div className="font-size-h3 text-center">{balances.full.toLocaleString()} <small>{balances.shortSymbol}</small></div>
 
           </div>
 
@@ -66,17 +67,17 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
 
         <div className="p-3 mx-2">
           <div>Free:</div>
-          <div className="font-size-h4">{balances.free}</div>
+          <div className="font-size-h4">{balances.free.toLocaleString()}</div>
         </div>
 
         <div className="p-3 mx-2">
           <div>Frozen:</div>
-          <div className="font-size-h4">{balances.frozen}</div>
+          <div className="font-size-h4">{balances.frozen.toLocaleString()}</div>
         </div>
 
         <div className="p-3 mx-2">
           <div>Locked:</div>
-          <div className="font-size-h4">{balances.locked}</div>
+          <div className="font-size-h4">{balances.locked.toLocaleString()}</div>
         </div>
 
       </div>
