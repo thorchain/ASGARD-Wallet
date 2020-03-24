@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="314px" height="304px" viewBox="0 0 314 304" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57 (83077) - https://sketch.com -->
+    <title>Asgard-Tri-Gradient</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="0%" y1="86.9853953%" x2="74.9152148%" y2="50%" id="linearGradient-1">
+            <stop stop-color="#33FF99" offset="0%"></stop>
+            <stop stop-color="#00CCFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="DESKTOP" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard" transform="translate(-108.000000, -125.000000)" fill="url(#linearGradient-1)">
+            <g id="Logo/Asgard-Tri">
+                <g id="Group">
+                    <g id="Logo/Tri-Gradient" transform="translate(0.000000, 125.708525)">
+                        <path d="M211.903553,0 L315.675,178.5 L251.421,178.5 L211.577515,110 L171.734,178.5 L108.132,178.5 L211.903553,0 Z" id="Combined-Shape"></path>
+                    </g>
+                    <g id="Logo/Tri-Gradient" transform="translate(266.819215, 336.861140) rotate(-120.000000) translate(-266.819215, -336.861140) translate(54.819215, 154.361140)">
+                        <path d="M211.903553,0 L315.675,178.5 L251.421,178.5 L211.577515,110 L171.734,178.5 L108.132,178.5 L211.903553,0 Z" id="Combined-Shape"></path>
+                    </g>
+                    <g id="Logo/Tri-Gradient" transform="translate(264.264730, 275.250000) rotate(120.000000) translate(-264.264730, -275.250000) translate(52.361176, 93.000000)">
+                        <path d="M211.903553,0 L315.675,178.5 L251.421,178.5 L211.577515,110 L171.734,178.5 L108.132,178.5 L211.903553,0 Z" id="Combined-Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
