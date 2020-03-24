@@ -6,7 +6,6 @@ import { WalletUnlockFormSchema, WalletUnlockFormBridge } from '/imports/lib/sch
 import { Row, Col } from 'antd'
 import { AutoForm, AutoField, SubmitField } from 'uniforms-antd'
 import { ErrorField } from '/imports/uniforms-antd-custom/'
-import { Loading3QuartersOutlined } from '@ant-design/icons'
 
 const UnlockScreen: React.FC = (): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState<string>('');
@@ -16,13 +15,12 @@ const UnlockScreen: React.FC = (): JSX.Element => {
     WALLET.unlockAndSync(model.password)
     .then(() => FlowRouter.go('walletAssets'))
     .catch(e => {
-      // setLoadingMsg(e.message)
-      // TODO: Add alert? This would not be expected to fail unless there were connection errors
+      setLoadingMsg('')
       throw Error(e)
     })
       
   }
-  return (<>
+  return (
     <Row>
 
       <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:0}}>
@@ -42,6 +40,6 @@ const UnlockScreen: React.FC = (): JSX.Element => {
       </Col>
 
     </Row>
-  </>)
+  )
 }
 export default UnlockScreen

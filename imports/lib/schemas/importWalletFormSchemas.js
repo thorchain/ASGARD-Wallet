@@ -1,6 +1,8 @@
 import SimpleSchema from 'simpl-schema'
 import { Tracker } from 'meteor/tracker'
 import { BNB } from '/imports/api/wallet'
+import SimpleSchema2Bridge from 'uniforms-bridge-simple-schema-2';
+
 
 validateMnemonic = function () {
   if (!BNB.sdk.crypto.validateMnemonic(this.value)) { return "invalidMnemonic"}
@@ -21,13 +23,26 @@ export const ImportKeystoreFormSchema = new SimpleSchema({
   },
   // NOTE: This will not properly clean the file object
   // Uncaught TypeError: Cannot assign to read only property 'size' of object '#<File>'
+  // keystore: {
+  //   type: Object, // Try to switch to type 'File' above
+  //   blackbox: true,
+  //   optional: true // override when cleaning/validating
+  //   // TODO: Get the validation working here ?
+  // }
   keystore: {
-    type: Object, // Try to switch to type 'File' above
-    blackbox: true,
-    optional: true // override when cleaning/validating
+    type: File, // Try to switch to type 'File' above
+    // blackbox: true,
+    optional: true, // override when cleaning/validating
     // TODO: Get the validation working here ?
+    custom() {
+      console.log("ok in SCHEMA");
+      
+    }
   }
 },{ tracker: Tracker, })
+
+export const ImportKeystoreFormBridge = new SimpleSchema2Bridge(ImportKeystoreFormSchema);
+
 export const ImportMnemonicFormSchema = new SimpleSchema({
   mnemonic: {
     type: String,
@@ -48,4 +63,6 @@ export const ImportMnemonicFormSchema = new SimpleSchema({
     },
   },
 },{ tracker: Tracker });
+
+export const ImportMnemonicFormBridge = new SimpleSchema2Bridge(ImportMnemonicFormSchema);
 

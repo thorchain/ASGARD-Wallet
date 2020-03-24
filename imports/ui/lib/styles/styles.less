@@ -29,12 +29,12 @@
   }
 }
 
-form .ant-btn[type='submit'] {
+form .ant-btn, form .ant-upload {
   width: 100%;
 }
 
 // Specific styles
-.ant-btn-brand {
+button.ant-btn.ant-btn-brand {
   position: relative;
   padding: @btn-border-width; // this creates the pseudo border
   // TODO: Replace this with new darker btn type
@@ -59,9 +59,14 @@ form .ant-btn[type='submit'] {
     // required: assummed content
     position: absolute;
     z-index: 1;
-    top: 0;
+    // accomodate shift
+    top: -2px;
     left: 0;
     width: 100%;
     padding: (@btn-padding-horizontal-base / 2) (@input-padding-vertical-base / 2);
+    // Assumed Icon
+    >span {
+      margin-right: 0.4em;
+    }
   }
 }

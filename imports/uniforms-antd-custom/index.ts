@@ -19,6 +19,7 @@ export { default as ErrorField } from './ErrorField';
 // export { default as RadioField } from './RadioField';
 // export { default as SelectField } from './SelectField';
 // export { default as SubmitField } from './SubmitField';
+export { default as SubmitFieldBranded } from './SubmitFieldBranded';
 // export { default as TextField } from './TextField';
 // export { default as ValidatedForm } from './ValidatedForm';
 // export { default as ValidatedQuickForm } from './ValidatedQuickForm';
