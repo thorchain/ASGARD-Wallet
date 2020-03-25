@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 
 import { Row, Col, Typography, Tabs } from 'antd'
 const { Title } = Typography
@@ -9,7 +9,7 @@ import ImportMnemonicForm from './walletImportMnemonicForm'
 
 const ImportScreen: React.FC = (): JSX.Element => {
   const [activeTab, setActiveTab] = useState('1')
-  const handleTabsChange = (activeKey:string) => { setActiveTab(activeKey) }
+  const handleTabsChange = useCallback((activeKey:string) => { setActiveTab(activeKey) },[activeTab])
   const isActiveTab = (keynum:string) => { return (keynum === activeTab) }
   return (
     <Row>

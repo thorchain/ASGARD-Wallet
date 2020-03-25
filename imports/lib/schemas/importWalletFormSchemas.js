@@ -6,7 +6,6 @@ import { HiddenField } from 'uniforms-antd';
 
 
 validateMnemonic = function () {
-  // TODO: This `trim()` is a workaround for missing cleaning..?
   if (!BNB.sdk.crypto.validateMnemonic(this.value.trim())) { return "invalidMnemonic"}
 }
 
@@ -23,21 +22,10 @@ export const ImportKeystoreFormSchema = new SimpleSchema({
     type: String,
     // min: 8
   },
-  // NOTE: This will not properly clean the file object
-  // Uncaught TypeError: Cannot assign to read only property 'size' of object '#<File>'
-  // keystore: {
-  //   type: Object, // Try to switch to type 'File' above
-  //   blackbox: true,
-  //   optional: true // override when cleaning/validating
-  //   // TODO: Get the validation working here ?
-  // }
   keystore: {
     type: Object, // Try to switch to type 'File' above
     blackbox: true,
-    optional: true, // override when cleaning/validating
-    // TODO: Get the validation working here ?
-    custom() {
-    },
+    optional: true,
     uniforms: HiddenField
   }
 },{ tracker: Tracker, })

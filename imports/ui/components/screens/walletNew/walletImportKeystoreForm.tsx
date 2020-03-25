@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { WALLET } from '/imports/startup/client/init'
 import { ImportKeystoreFormSchema, ImportKeystoreFormBridge } from '/imports/lib/schemas/importWalletFormSchemas'
 
 import { Button, Upload, Row } from 'antd'
+import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface'
 import { AutoForm, AutoField } from 'uniforms-antd'
 import { SubmitFieldBranded as SubmitField, ErrorField } from '/imports/uniforms-antd-custom/'
 
@@ -12,29 +13,33 @@ const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
   const [passwordError, setPasswordError] = useState<string>('')
   const [loadingMsg, setLoadingMsg] = useState<string>('')
   const [fileBtnText, setFileBtnText] = useState<string>('Select file')
-  const [file, setFile] = useState<any>(null)
+  const [file, setFile] = useState<UploadFile | null>()
+  const [keystore, setKeystore] = useState<any>()
   let formRef:any = useRef(null) // TODO: add autoform type
 
   useEffect(() => {
     if (!activetab) { 
-      formRef.reset()
+      formRef.current.reset()
       setFile(null)
       setFileBtnText('Select file')
+      setPasswordError('')
+      setKeystoreError('')
+      setKeystore(null)
     }
   },[activetab])
 
-  function validateKeystore (file: any) {
+  function validateKeystore (file: string | ArrayBuffer | null) {
     try {
-      const keystore = JSON.parse(file)
-      if (keystore.version && keystore.id && keystore.crypto.cipher === 'aes-256-ctr') {
-        return keystore
+      const key = JSON.parse(file as string)
+      if (key.version && key.id && key.crypto.cipher === 'aes-256-ctr') {
+        setKeystore(key)
+        return key
       } else {
         setKeystoreError('Not a valid keystore')
         return false
       }
     } catch (objError) {
       console.log(objError);
-      
       if (objError instanceof SyntaxError) {
         setKeystoreError('Error in file format')
       } else {
@@ -44,73 +49,88 @@ const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
     }
   }
 
-  const handleImportFormSubmit = (model:{password:string}) => {
-    if (!file) {
+  const handleImportFormSubmit = useCallback((model:{password:string}) => {
+    if (!keystore) {
       setKeystoreError('Keystore file required')
     } else {
       setLoadingMsg("Processing file")
       setTimeout(async () => {
-        try {
-          const reader: FileReader = new FileReader();
-          let keystore
-          reader.onerror = () => {
-            console.error(reader.error)
-            setKeystoreError("Error reading file. Code: " + reader.error)
-          };
-          reader.onload = async () => {
-            const contents = reader.result;
-            keystore = validateKeystore(contents)
-            if (keystore) { 
-              WALLET.generateNewWallet(model.password, null, keystore).then(async () => {
-                await WALLET.unlock(model.password)
-                FlowRouter.go("home")
-              }).catch(err => {
-                if (err.message.includes('wrong password')) {
-                  setPasswordError('Incorrect password')
-                }
-                setLoadingMsg('')
-              })
-            } else {
-              throw Error('invalid keystore')
-            }
-          };
-          // Execute file read
-          reader.readAsText(file.originFileObj)
-
-        } catch (err) {
-          console.log(err)
+        WALLET.generateNewWallet(model.password, null, keystore).then(async () => {
+          await WALLET.unlock(model.password)
+          FlowRouter.go("home")
+        }).catch(err => {
+          if (err.message.includes('wrong password')) {
+            setPasswordError('Incorrect password')
+          }
           setLoadingMsg('')
-        }
+        })
       }, 200);
     }
-  }
+  },[keystore])
 
-  const handleInputFileChange = (info:any) => {
+  const handleInputFileChange = useCallback((info:UploadChangeParam) => {
     const file = info.file
     setFile(file);
-    
     if (file && file.status === 'done') {
       setFileBtnText(file.name)
       setKeystoreError('')
-      const reader = new FileReader();
-      reader.onload = e => {
-        validateKeystore(e.target?.result)
+      const reader = new FileReader()
+      const onLoadHandler = () => {
+        try {
+          validateKeystore(reader.result)
+        } catch {
+          setKeystoreError('Not a valid json file')
+        }
       };
-      reader.onerror = () => {
-        console.error(reader.error)
+      const onErrorHandler = () => {
         setKeystoreError("Error reading file. Code: " + reader.error)
       }
+      reader.addEventListener('load', onLoadHandler)
+      reader.addEventListener('error', onErrorHandler)
       reader.readAsText(file.originFileObj);
+      return () => {
+        reader.removeEventListener('load', onLoadHandler)
+      }
     }
     
-  }
+  },[])
+  const handleFormChange = useCallback((field:string) => {
+    // Handle rejected password from keystore after ascyn catch from Wallet client
+    if (passwordError && field === 'password') {
+      setPasswordError('')
+      formRef.current.validate().then().catch(e => e)
+    }
+  },[passwordError])
+  const passwordFieldProps = useMemo(() => {
+    const p:{name:string,type:string,size:string,error?:string} = {
+      name: 'password',
+      type: 'password',
+      size: 'large',
+    }
+    if (passwordError) p.error = passwordError
+    return p
+  },[passwordError])
+  const submitProps = useMemo(() => {
+    const p:{size:string,value:string,loading:string,disabled:boolean} = {
+      size: 'large',
+      value: loadingMsg || 'Import',
+      loading: loadingMsg,
+      disabled: !!(loadingMsg || passwordError || keystoreError)
+    }
+    return p
+  },[loadingMsg, passwordError, keystoreError])
+  const passwordErrorProps = useMemo(() => {
+    const p:{name:string,error?:boolean,errorMessage?:string} = {name:'password'} 
+    if (passwordError) { p.error = true; p.errorMessage = passwordError }
+    return p
+  },[passwordError])
   return (
     <AutoForm
-      id='keystore-upload-form'
       model={ImportKeystoreFormSchema.clean({})}
       schema={ImportKeystoreFormBridge}
       onSubmit={handleImportFormSubmit}
-      ref={(ref:any) => (formRef = ref)}
+      onChange={handleFormChange}
+      ref={formRef}
     >
       <Row className="ant-form-item" style={{margin:"12px 0"}}>
         <Upload multiple={false} showUploadList={false} onChange={handleInputFileChange}>
@@ -118,9 +138,9 @@ const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
         </Upload>
       </Row>
       <ErrorField name="keystore" errorMessage={keystoreError} error={keystoreError}/>
-      <AutoField name="password" type="password" size="large"/>
-      <ErrorField name="password"/>
-      <SubmitField value={loadingMsg || 'Import'} size="large" loading={loadingMsg} disabled={(loadingMsg || passwordError || keystoreError)}/>
+      <AutoField {...passwordFieldProps}/>
+      <ErrorField {...passwordErrorProps}/>
+      <SubmitField {...submitProps}/>
     </AutoForm>
   )
 }

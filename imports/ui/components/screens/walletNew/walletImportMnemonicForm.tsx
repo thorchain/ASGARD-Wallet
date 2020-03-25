@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { WALLET } from '/imports/startup/client/init'
 import { ImportMnemonicFormSchema, ImportMnemonicFormBridge } from '/imports/lib/schemas/importWalletFormSchemas'
@@ -20,7 +20,7 @@ const ImportMnemonicForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
     }).catch(e => { throw Error(e)}) // TODO: Display some error
   }
 
-  const handleImportFormSubmit = (model:{password:string,repeatPassword:string,mnemonic:string}) => {
+  const handleImportFormSubmit = useCallback((model:{password:string,repeatPassword:string,mnemonic:string}) => {
     setLoadingMsg("Generating wallet")
     // Delay to allow for UI render DOM update before CPU takes over keystore processing
     setTimeout(() => {
@@ -31,7 +31,7 @@ const ImportMnemonicForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
         console.log(err)
       }
     }, 200);
-  }
+  },[])
   return (
     <AutoForm
       ref={(ref:any) => (formRef = ref)}
