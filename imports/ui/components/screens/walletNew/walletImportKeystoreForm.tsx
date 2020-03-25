@@ -70,8 +70,8 @@ const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
 
   const handleInputFileChange = useCallback((info:UploadChangeParam) => {
     const file = info.file
-    setFile(file);
     if (file && file.status === 'done') {
+      setFile(file);
       setFileBtnText(file.name)
       setKeystoreError('')
       const reader = new FileReader()
