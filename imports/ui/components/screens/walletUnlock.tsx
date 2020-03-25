@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { FlowRouter } from 'meteor/kadira:flow-router'
 import { WALLET } from "/imports/startup/client/init"
 import { WalletUnlockFormSchema, WalletUnlockFormBridge } from '/imports/lib/schemas/walletUnlockFormSchema'
@@ -9,8 +9,7 @@ import { ErrorField } from '/imports/uniforms-antd-custom/'
 
 const UnlockScreen: React.FC = (): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState<string>('');
-  const handleUnlockFormSubmit = (model:{password:string,pwHash:string}) => {
-    // SECURITY: This only gets called from valid form
+  const handleUnlockFormSubmit = useCallback((model:{password:string,pwHash:string}) => {
     setLoadingMsg('Unlocking')
     WALLET.unlockAndSync(model.password)
     .then(() => FlowRouter.go('walletAssets'))
@@ -19,7 +18,7 @@ const UnlockScreen: React.FC = (): JSX.Element => {
       throw Error(e)
     })
       
-  }
+  },[])
   return (
     <Row>
 
