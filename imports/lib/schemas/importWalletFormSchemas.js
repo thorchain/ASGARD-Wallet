@@ -2,10 +2,12 @@ import SimpleSchema from 'simpl-schema'
 import { Tracker } from 'meteor/tracker'
 import { BNB } from '/imports/api/wallet'
 import SimpleSchema2Bridge from 'uniforms-bridge-simple-schema-2';
+import { HiddenField } from 'uniforms-antd';
 
 
 validateMnemonic = function () {
-  if (!BNB.sdk.crypto.validateMnemonic(this.value)) { return "invalidMnemonic"}
+  // TODO: This `trim()` is a workaround for missing cleaning..?
+  if (!BNB.sdk.crypto.validateMnemonic(this.value.trim())) { return "invalidMnemonic"}
 }
 
 const File = new SimpleSchema({
@@ -30,14 +32,13 @@ export const ImportKeystoreFormSchema = new SimpleSchema({
   //   // TODO: Get the validation working here ?
   // }
   keystore: {
-    type: File, // Try to switch to type 'File' above
-    // blackbox: true,
+    type: Object, // Try to switch to type 'File' above
+    blackbox: true,
     optional: true, // override when cleaning/validating
     // TODO: Get the validation working here ?
     custom() {
-      console.log("ok in SCHEMA");
-      
-    }
+    },
+    uniforms: HiddenField
   }
 },{ tracker: Tracker, })
 

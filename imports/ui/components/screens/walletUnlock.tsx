@@ -33,7 +33,7 @@ const UnlockScreen: React.FC = (): JSX.Element => {
           schema={WalletUnlockFormBridge}
           onSubmit={handleUnlockFormSubmit}
         >
-          <AutoField name="password" size='large' label={false}/>
+          <AutoField name="password" type="password" size='large' label={false}/>
           <ErrorField name='password'/>
           <SubmitField value='Unlock' size='large' loading={loadingMsg}/>
         </AutoForm>

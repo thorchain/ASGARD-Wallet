@@ -24,3 +24,4 @@ export { default as SubmitFieldBranded } from './SubmitFieldBranded';
 // export { default as ValidatedForm } from './ValidatedForm';
 // export { default as ValidatedQuickForm } from './ValidatedQuickForm';
 // export { default as wrapField } from './wrapField';
+export { default as UploadKeystoreField } from './UploadKeystoreField';
