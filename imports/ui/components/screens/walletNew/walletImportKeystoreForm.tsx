@@ -7,6 +7,7 @@ import { Button, Upload, Row } from 'antd'
 import { UploadChangeParam, UploadFile } from 'antd/lib/upload/interface'
 import { AutoForm, AutoField } from 'uniforms-antd'
 import { SubmitFieldBranded as SubmitField, ErrorField } from '/imports/uniforms-antd-custom/'
+import { delay } from '/imports/lib/helpers/asyncHelper'
 
 const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.Element => {
   const [keystoreError, setKeystoreError] = useState<string>('')
@@ -49,22 +50,21 @@ const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
     }
   }
 
-  const handleImportFormSubmit = useCallback((model:{password:string}) => {
+  const handleImportFormSubmit = useCallback(async (model:{password:string}) => {
     if (!keystore) {
       setKeystoreError('Keystore file required')
     } else {
       setLoadingMsg("Processing file")
-      setTimeout(async () => {
-        WALLET.generateNewWallet(model.password, null, keystore).then(async () => {
-          await WALLET.unlock(model.password)
-          FlowRouter.go("home")
-        }).catch(err => {
-          if (err.message.includes('wrong password')) {
-            setPasswordError('Incorrect password')
-          }
-          setLoadingMsg('')
-        })
-      }, 200);
+      await delay(200)
+      WALLET.generateNewWallet(model.password, null, keystore).then(async () => {
+        await WALLET.unlock(model.password)
+        FlowRouter.go("home")
+      }).catch(err => {
+        if (err.message.includes('wrong password')) {
+          setPasswordError('Incorrect password')
+        }
+        setLoadingMsg('')
+      })
     }
   },[keystore])
 
