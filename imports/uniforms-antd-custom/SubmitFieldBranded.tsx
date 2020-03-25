@@ -24,8 +24,8 @@ const SubmitFieldBranded = (
       )
     )
   },[props])
-  const classes = ():string => {
-    let sz = ''
+  const classes = useMemo(():string => {
+    let sz
     switch (props.size) {
       case 'large':
         sz = 'ant-btn-lg'
@@ -38,13 +38,13 @@ const SubmitFieldBranded = (
         break;
     }
     return 'ant-btn ant-btn-primary ant-btn-brand ' + sz
-  }
+  },[])
   return (
     <button
       disabled={!!(error || disabled || props.loading)}
       type="submit"
       ref={inputRef}
-      className={classes()}
+      className={classes}
       {...props}
     >
       {trueValue}
