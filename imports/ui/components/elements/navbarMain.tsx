@@ -1,13 +1,17 @@
 import React from 'react'
 import { WALLET } from '/imports/startup/client/init'
-import { UserAssets } from '/imports/api/collections/client_collections'
-// import ReactDOM from "react-dom";
+import { UserAssets, UserAccount } from '/imports/api/collections/client_collections'
 import { FlowRouter } from 'meteor/kadira:flow-router'
+import { useTracker } from 'meteor/react-meteor-data'
 
 const NavbarMain: React.FC = (): JSX.Element => {
-  const hasFunds = (): boolean => {
+  const hasFunds = useTracker((): boolean => {
     return UserAssets.find().count() > 0
-  }
+  },[UserAssets])
+  const canUse = useTracker((): boolean => {
+    const acc = UserAccount.findOne()
+    return !!(acc && !acc.locked)
+  },[UserAccount])
   const lockWallet = () => {
     WALLET.lock()
     FlowRouter.go('walletUnlock')
@@ -29,26 +33,31 @@ const NavbarMain: React.FC = (): JSX.Element => {
 
       <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
         <ul className="navbar-nav text-right">
-          <li className="nav-item">
-            <a className={linkClasses('walletAssets')} onClick={()=>FlowRouter.go('walletAssets')} data-toggle="collapse" data-target=".navbar-collapse.show">Assets</a>
-          </li>
-          <li className="nav-item">
-            <a className={linkClasses('walletTransactionsList')} onClick={()=>FlowRouter.go('walletTransactionsList')} data-toggle="collapse" data-target=".navbar-collapse.show">Transactions</a>
-          </li>
-          {hasFunds() && (
+          {canUse && (<>
+
             <li className="nav-item">
-              <a className={linkClasses('walletSend')} onClick={()=> FlowRouter.go('walletSend')} data-toggle="collapse" data-target=".navbar-collapse.show">Send</a>
+              <a className={linkClasses('walletAssets')} onClick={()=>FlowRouter.go('walletAssets')} data-toggle="collapse" data-target=".navbar-collapse.show">Assets</a>
             </li>
-          )}
-          <li className="nav-item">
-            <a className={linkClasses('walletReceive')} onClick={()=>FlowRouter.go('walletReceive')} data-toggle="collapse" data-target=".navbar-collapse.show">Receive</a>
-          </li>
-          <li className="nav-item">
-            <a className={linkClasses('walletAccounts')} onClick={()=>FlowRouter.go('walletAccounts')} data-toggle="collapse" data-target=".navbar-collapse.show">Account</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" onClick={lockWallet} data-toggle="collapse" data-target=".navbar-collapse.show">Lock</a>
-          </li>
+            <li className="nav-item">
+              <a className={linkClasses('walletTransactionsList')} onClick={()=>FlowRouter.go('walletTransactionsList')} data-toggle="collapse" data-target=".navbar-collapse.show">Transactions</a>
+            </li>
+            {hasFunds && (
+              <li className="nav-item">
+                <a className={linkClasses('walletSend')} onClick={()=> FlowRouter.go('walletSend')} data-toggle="collapse" data-target=".navbar-collapse.show">Send</a>
+              </li>
+            )}
+            <li className="nav-item">
+              <a className={linkClasses('walletReceive')} onClick={()=>FlowRouter.go('walletReceive')} data-toggle="collapse" data-target=".navbar-collapse.show">Receive</a>
+            </li>
+            <li className="nav-item">
+              <a className={linkClasses('walletAccounts')} onClick={()=>FlowRouter.go('walletAccounts')} data-toggle="collapse" data-target=".navbar-collapse.show">Account</a>
+            </li>
+            <li className="nav-item">
+              <a className="nav-link" onClick={lockWallet} data-toggle="collapse" data-target=".navbar-collapse.show">Lock</a>
+            </li>
+
+          </>)}
+
         </ul>
       </div>
 
