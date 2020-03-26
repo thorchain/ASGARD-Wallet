@@ -1,34 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
+
+import { Row, Col, Typography, Tabs } from 'antd'
+const { Title } = Typography
+const { TabPane } = Tabs;
 
 import ImportKeystoreForm from './walletImportKeystoreForm'
 import ImportMnemonicForm from './walletImportMnemonicForm'
 
 const ImportScreen: React.FC = (): JSX.Element => {
-  const [isMnemonic, setIsMnemonic] = useState(false)
-
+  const [activeTab, setActiveTab] = useState('1')
+  const handleTabsChange = useCallback((activeKey:string) => { setActiveTab(activeKey) },[activeTab])
+  const isActiveTab = (keynum:string) => { return (keynum === activeTab) }
   return (
-    <div className="row">
-      <div className="col-md-8 mr-auto ml-auto">
-        <h4 className="text-center mb-4">Import existing</h4>
-
-        <ul className="nav nav-tabs d-flex justify-content-center mb-4">
-          <li className="nav-item">
-            <a className={"nav-link" + (!isMnemonic && (" active") || "")} href="#" onClick={() => setIsMnemonic(false)}>Keystore</a>
-          </li>
-          <li className="nav-item">
-            <a className={"nav-link" + (isMnemonic && (" active") || "")} href="#" onClick={() => setIsMnemonic(true)}>Mnemonic</a>
-          </li>
-        </ul>
-
-        {isMnemonic ? (
-          <ImportMnemonicForm/>
-        ):(
-          <ImportKeystoreForm/>
-        )}
-
-      </div>
-
-    </div>
+    <Row>
+      <Col md={{span:16,offset:4}}>
+        <Title level={4}>Import Existing</Title>
+        <Tabs defaultActiveKey="1" size="large" onChange={handleTabsChange}>
+          <TabPane tab="Keystore" key="1">
+            <ImportKeystoreForm activetab={isActiveTab('1')}/>
+          </TabPane>
+          <TabPane tab="Mnemonic" key="2">
+            <ImportMnemonicForm activetab={isActiveTab('2')}/>
+          </TabPane>
+        </Tabs>
+      </Col>
+    </Row>
   )
 }
 export default ImportScreen

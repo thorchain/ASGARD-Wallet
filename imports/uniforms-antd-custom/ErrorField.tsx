@@ -2,19 +2,19 @@ import React from 'react';
 import { connectField, filterDOMProps} from 'uniforms';
 import Text from 'antd/lib/typography/Text';
 
-const Error = ({ children, error, errorMessage, ...props }: any) =>
+const Error: React.FC = ({ children, error, errorMessage, ...props }: any): JSX.Element =>
   !error ? (
-    <>&nbsp;</>
+    <small>&nbsp;</small>
   ) : (
     <div {...filterDOMProps(props)}>
       {children ? (
         children
       ) : (
-        <>
+        <small>
           <Text type='danger'>
             {errorMessage}
           </Text>
-        </>
+        </small>
       )}
     </div>
   );

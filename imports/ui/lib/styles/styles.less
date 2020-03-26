@@ -1,34 +1,52 @@
 @import './_antd_custom.less';
-
-// these are custom styles
-
-// Layouts
+@import './_OpenSans.less';
+@import './_Montserrat.less';
+@import './_Exo2.less';
 
 // First heading in row
 .ant-row > .ant-col {
-  > h1, h2, h3, h4, h5, h6 {
-    text-align: center;
-    color: @link-color;
+  > h1:first-child, > h2:first-child, > h3:first-child, > h4:first-child, > h5:first-child {
+      text-align: center;
   }
 }
-
-
 
 // Temp simple style hack. Overly generalized? Mostly for mobile.
 .ant-btn {
   width: 100%;
+  letter-spacing: 0.08em;
+  font-family: Exo2;
+  & .ant-btn-primary {
+    &:hover {
+      background-color: darken(@primary-color, 12%)
+    }
+  }
 }
 
-form .ant-btn[type='submit'] {
+.ant-btn {
+  margin-top: .8em;
+  margin-bottom: 1.2em;
+}
+form .ant-btn, form .ant-upload {
   width: 100%;
+  margin-top: unset;
+  margin-bottom: unset;
+}
+.ant-tabs-nav {
+  > .ant-tabs-ink-bar {
+    background-color: @link-color;
+  }
+  .ant-tabs-tab-active, .ant-tabs-tab {
+    font-weight: 500;
+  }
 }
 
-// Specific styles
-.ant-btn-brand {
+// Component Specific styles *****************
+
+// Branded Button
+button.ant-btn.ant-btn-brand {
   position: relative;
   padding: @btn-border-width; // this creates the pseudo border
-  // TODO: Replace this with new darker btn type
-  background-color: darken(@Darker-Gray, 4%); // this is overriden, but for iherit in pseudo below
+  background-color: darken(@Darker-Gray, 4%); // this is overriden, but needed for iherit in pseudo below
   background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
   border: none;
   &:hover {
@@ -49,9 +67,14 @@ form .ant-btn[type='submit'] {
     // required: assummed content
     position: absolute;
     z-index: 1;
-    top: 0;
+    // accomodate shift
+    top: -2px;
     left: 0;
     width: 100%;
     padding: (@btn-padding-horizontal-base / 2) (@input-padding-vertical-base / 2);
+    // Assumed Icon
+    >span {
+      margin-right: 0.4em;
+    }
   }
 }
