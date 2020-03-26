@@ -20,9 +20,15 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
     return obj
   },[])
   const userAccount: UserAccountTypes = useTracker(() => { return UserAccount.findOne()}, [])
+
   const downloadLink: string = useMemo(() => {
     const keystore: string = window.localStorage.getItem('binance') || ""
     return 'data:text/plain;charset=utf-8,' + encodeURIComponent(keystore)
+  }, [])
+
+  const fileName: string = useMemo(() => {
+    const filename = (userAccount.address).concat('-keystore.txt')
+    return filename
   }, [])
 
   // Handlers
@@ -89,7 +95,7 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
             <h5>Wallet Management</h5>
       
             <input type="button" className="btn btn-primary w-100 my-2 disabled" value="View Phrase" data-event="viewPhrase" />
-            <a href={downloadLink} download="keystore.txt" className="btn btn-primary w-100 mb-2">Export Keystore</a>
+            <a href={downloadLink} download={fileName} className="btn btn-primary w-100 mb-2">Export Keystore</a>
             <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={removeWallet} />
       
           </div>
