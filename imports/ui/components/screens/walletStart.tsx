@@ -7,10 +7,10 @@ const { Title } = Typography
 const StartScreen: React.FC = (): JSX.Element => {
   return (
     <Row>
-      <Col xs={{span:12,offset:6}} md={{span:10,offset:7}} lg={{span:8,offset:8}}>
+      <Col xs={{span:12,offset:6}} md={{span:10,offset:7}} lg={{span:8,offset:8}} xl={{span:6,offset:9}}>
         <img src="/img/Asgard-Tri-Gradient.svg" width="100%" style={{padding:"32px"}}/>
       </Col>
-      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}} xl={{span:16,offset:4}}>
+      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}} xl={{span:10,offset:7}}>
 
         <Title level={2}>Asgard Wallet</Title>
         <Button type="primary" size={'large'} className={'ant-btn-brand'} onClick={() => FlowRouter.go('walletCreate')}>
