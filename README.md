@@ -1,5 +1,18 @@
 # Asgard Wallet #
 
+****
+
+> **Mirror**
+>
+> This repo mirrors from THORChain Gitlab to Github. 
+> To contribute, please contact the team and commit to the Gitlab repo:
+>
+> https://gitlab.com/thorchain/asgard-wallet
+
+
+****
+
+
 Asgard wallet is an application for accessing and managing blockchain assets, on the Binance DEX blockchain. It stores the account keys necessary for authorizing transactions on blockchaian ledges.
 
 Developed using well known and open sourced technology, the Asgard wallet is designed as a multi-platform multi-asset fully featured blockchain wallet. Built using standard web technology and deliverable for specific platforms using Electron, ensures consistent delivery of the applicaiton featureset despite the platform, and from a single codebase.
