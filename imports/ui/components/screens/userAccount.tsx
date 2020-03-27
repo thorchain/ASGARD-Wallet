@@ -26,10 +26,7 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
     return 'data:text/plain;charset=utf-8,' + encodeURIComponent(keystore)
   }, [])
 
-  const fileName = useCallback(() => {
-    const filename = (userAccount.address).concat('-keystore.txt')
-    return filename
-  }, [])
+  const fileName = () => userAccount.address.concat('-keystore.txt')
 
   // Handlers
   const lockWallet = async () => {
