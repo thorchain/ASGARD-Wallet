@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserAccountTypes } from '/imports/api/collections/userAccountCollection';
@@ -26,10 +26,7 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
     return 'data:text/plain;charset=utf-8,' + encodeURIComponent(keystore)
   }, [])
 
-  const fileName: string = useMemo(() => {
-    const filename = (userAccount.address).concat('-keystore.txt')
-    return filename
-  }, [])
+  const fileName = () => userAccount.address.concat('-keystore.txt')
 
   // Handlers
   const lockWallet = async () => {
