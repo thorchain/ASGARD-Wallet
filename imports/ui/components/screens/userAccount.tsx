@@ -91,7 +91,7 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
             <h5>Wallet Management</h5>
       
             <input type="button" className="btn btn-primary w-100 my-2 disabled" value="View Phrase" data-event="viewPhrase" />
-            <a href={downloadLink} download={fileName} className="btn btn-primary w-100 mb-2">Export Keystore</a>
+            <a href={downloadLink} download={fileName()} className="btn btn-primary w-100 mb-2">Export Keystore</a>
             <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={removeWallet} />
       
           </div>
