@@ -6,7 +6,7 @@ import { UserAccountTypes } from '/imports/api/collections/userAccountCollection
 import { WALLET } from '/imports/startup/client/init'
 import { Row, Col, Typography, Button, Tabs } from 'antd';
 const { TabPane } = Tabs;
-const { Title } = Typography
+const { Title, Text } = Typography
 
 type ClientTypes = {network: string, chainId: string}
 const UserAccountScreen: React.FC = (): JSX.Element => {
@@ -31,7 +31,6 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
 
   const fileName = () => userAccount.address.concat('-keystore.txt')
 
-  // Handlers
   const lockWallet = async () => {
     try {
       await WALLET.lock()
@@ -43,11 +42,9 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
   const removeWallet = async () => { 
     try {
       await WALLET.resetWallet()
-      // SECURITY NOTE: this needs to await for above, to ensure dependent route's security
       FlowRouter.go('walletStart') 
     } catch (error) {
       console.log(error)
-      // handle the error
     }
   }
 
@@ -60,20 +57,20 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
           <TabPane tab="Testnet" key="1">
             <Row>
               <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small className="font-weight-bold">Account</small>
-                <div className="text-truncate">{userAccount.address}</div>
+                <small><strong>Account</strong></small>
+                <Text ellipsis>{userAccount.address}</Text>
               </Col>
               <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small className="font-weight-bold">Keystore Version</small>
-                <div>{userAccount.keystore.version}</div>
+                <small><strong>Keystore Version</strong></small>
+                <Text>{userAccount.keystore.version}</Text>
               </Col>
               <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small className="font-weight-bold">Network</small>
-                <div className="text-capitalize">{client.network}</div>
+                <small><strong>Network</strong></small>
+                <Text className="text-capitalize">{client.network}</Text>
               </Col>
               <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small className="font-weight-bold">Chain ID</small>
-                <div className="text-capitalize">{client.chainId}</div>
+                <small><strong>Chain ID</strong></small>
+                <Text className="text-capitalize">{client.chainId}</Text>
               </Col>
             </Row>
           </TabPane>
