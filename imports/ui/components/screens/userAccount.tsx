@@ -4,6 +4,9 @@ import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserAccountTypes } from '/imports/api/collections/userAccountCollection';
 
 import { WALLET } from '/imports/startup/client/init'
+import { Row, Col, Typography, Button, Tabs } from 'antd';
+const { TabPane } = Tabs;
+const { Title } = Typography
 
 type ClientTypes = {network: string, chainId: string}
 const UserAccountScreen: React.FC = (): JSX.Element => {
@@ -49,58 +52,55 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
   }
 
   return (
-    <div className="row">
-      <div className="col">
+    <Row>
+      <Col>
+        <Title level={4}>Account</Title>
+      
+        <Tabs defaultActiveKey="1" size="large">
+          <TabPane tab="Testnet" key="1">
+            <Row>
+              <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
+                <small className="font-weight-bold">Account</small>
+                <div className="text-truncate">{userAccount.address}</div>
+              </Col>
+              <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
+                <small className="font-weight-bold">Keystore Version</small>
+                <div>{userAccount.keystore.version}</div>
+              </Col>
+              <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
+                <small className="font-weight-bold">Network</small>
+                <div className="text-capitalize">{client.network}</div>
+              </Col>
+              <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
+                <small className="font-weight-bold">Chain ID</small>
+                <div className="text-capitalize">{client.chainId}</div>
+              </Col>
+            </Row>
+          </TabPane>
+          <TabPane tab="Mainnet" key="2">
+            <div>Coming soon...</div>
+          </TabPane>
+        </Tabs>
 
-        <h5 className="text-center mb-4">Account</h5>
-      
-        <ul className="nav nav-tabs d-flex justify-content-center mb-4">
-          <li className="nav-item">
-            <a className="nav-link active" href="#" data-event="toggleNetwork">Testnet</a>
-          </li>
-          <li className="nav-item disabled">
-            <a className="nav-link" href="#" data-event="toggleNetwork">Mainnet</a>
-          </li>
-        </ul>
-      
-      
-        <div className="row mt-3">
-          <div className="col-md-3 mb-4">
-            <div className="small">Account</div>
-            <div className="text-truncate">{userAccount.address}</div>
-          </div>
-          <div className="col-md-3 mb-4">
-            <div className="small">Keystore Version</div>
-            <div>{userAccount.keystore.version}</div>
-          </div>
-          <div className="col-md-3 mb-4">
-            <div className="small">Network</div>
-            <div className="text-capitalize">{client.network}</div>
-          </div>
-          <div className="col-md-3 mb-4">
-            <div className="small">Chain ID</div>
-            <div className="text-capitalize">{client.chainId}</div>
-          </div>
-        </div>
-      
-        <div className="row">
-          <div className="col-md-8 col-lg-6 ml-auto mr-auto">
-      
-            <input type="button" className="btn btn-primary w-100 my-5" value="Lock Wallet" onClick={lockWallet}/>
-      
-            <h5>Wallet Management</h5>
-      
-            <input type="button" className="btn btn-primary w-100 my-2 disabled" value="View Phrase" data-event="viewPhrase" />
-            <a href={downloadLink} download={fileName()} className="btn btn-primary w-100 mb-2">Export Keystore</a>
-            <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={removeWallet} />
-      
-          </div>
-        </div>
+        <Row>
 
+          <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:6}}>
+            <Button type="primary" onClick={lockWallet} size="large" style={{marginTop:"32px",marginBottom:"32px"}}>Lock Wallet</Button>
+        
+            <Title level={4}>Wallet Management</Title>
+            <div className="input-group">
+              <Button type="primary" size="large" disabled={true}>View Phrase</Button>
+              <a href={downloadLink} download={fileName()} className="ant-btn ant-btn-lg ant-btn-primary">Export Keystore</a>
+            </div>
+            <Button type="danger" size="large" onClick={removeWallet}>Remove Wallet</Button>
+        
+          </Col>
 
-      </div>
+        </Row>
+      
+      </Col>
 
-    </div>
+    </Row>
   )
 }
 

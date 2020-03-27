@@ -53,21 +53,43 @@
 @font-size-sm: @font-size-base * 0.875;
 
 @btn-primary-color: @White-Gray;
-
+@background-color-base: @Dark-Gray;
 
 @link-color: @Accent-Green;
 @link-hover-color: color(~`colorPalette('@{link-color}', 5) `);
 
+@disabled-color: @Middle-Gray;
+@disabled-bg: @background-color-base;
+@disabled-color-dark: @Lighter-Gray;
+
 @border-radius-base: 4px;
 @border-radius-sm: @border-radius-base - 1;
+
+// @tabs-highlight-color: @primary-color;
+// @tabs-hover-color: @primary-5;
+// @tabs-active-color: @primary-7;
 
 @font-family: OpenSans -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
 
-// Overrides
-// Grid
-.ant-row { display: block; }
+// Custom global Overrides
+
+/* **************** Grid *************** */
+
+// Global gutters
+@grid-gutter-width: 32px;
+.ant-row {
+  margin-left: @grid-gutter-width / -2;
+  margin-right: @grid-gutter-width / -2;
+  margin-bottom: @grid-gutter-width;
+  .ant-col {
+    padding-left: @grid-gutter-width / 2;
+    padding-right: @grid-gutter-width / 2;
+  }
+}
+
+form .ant-row { display: block; }
 
 // Icon
 .anticon { vertical-align: 0.12em; }
