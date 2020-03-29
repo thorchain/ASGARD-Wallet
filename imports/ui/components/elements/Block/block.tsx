@@ -40,7 +40,6 @@ function _resolveLayoutPosition(props:any) {
 };
 
 function _resolveLayoutFlex(props:any) {
-  console.log('we resolving layouts....')
   let newClasses = '';
   if(props.layout){
     newClasses +=  prefix + 'layout-'
@@ -58,8 +57,6 @@ function _resolveLayoutFlex(props:any) {
     newClasses += prefix + 'layout-inline-horizontal';
   }
   if (props.flex && !props.layout ) {
-    console.log("wtf.. no layouts please...")
-    console.log(props.layout)
     newClasses += prefix + 'flex-auto'
   } else if (!props.layout) {
     newClasses += prefix + 'flex-none'
