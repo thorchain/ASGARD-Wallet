@@ -3,11 +3,13 @@ import './styles'
 
 /* 
  * This Component borrows the API from 'react-blocks' npm package,
- * and older React-class based package.
- * This is simplified functional component to provide
- * basic 'in-place' simple layouts for flex boxes/grid, in
+ * an older React-class based package.
+ * Other flex alignment pacakges are focued on grid layouts
+ * or are not generalized well.
+ * This is a simplified functional component to provide
+ * basic 'in-place' simple alignments for flex boxes/grid, in
  * order provide easy overrides, and avoid pollution of
- * inline styles, for easier component based styling.
+ * inline styles, for easier future component based styling.
  */
 
 const prefix = " ant-block-"
