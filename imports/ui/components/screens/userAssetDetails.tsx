@@ -10,7 +10,7 @@ import { TokenDataTypes } from '/imports/api/collections/tokenDataCollection'
 import TransactionsTable from '/imports/ui/components/screens/transactions/transactionsTable'
 
 import CircleIcon, { Sizes } from '/imports/ui/components/elements/circleIcon'
-import Block from '../elements/Block/block'
+import Block from '/imports/ui/components/elements/Block/block'
 import { Row, Col, Typography, Divider, Button } from 'antd'
 const { Title } = Typography
 
@@ -61,6 +61,29 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
           <div>{balances.symbol}</div>
           <Title level={3}>{balances.full?.toLocaleString()} <small>{balances.shortSymbol}</small></Title>
         </Block>
+      </Col>
+
+      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
+        <Block layout justifyAround>
+
+          <Block layout vertical center>
+            <div>Free:</div>
+            <div className="font-size-h4">{balances.free.toLocaleString()}</div>
+          </Block>
+
+          <Block layout vertical center>
+            <div>Frozen:</div>
+            <div className="font-size-h4">{balances.frozen.toLocaleString()}</div>
+          </Block>
+
+          <Block layout vertical center>
+            <div>Locked:</div>
+            <div className="font-size-h4">{balances.locked.toLocaleString()}</div>
+          </Block>
+
+        </Block>
+
+
       </Col>
 
       <Divider/>
