@@ -73,7 +73,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
             <Button type="primary" size="large" disabled={(!sendable())} onClick={() => goRoute('walletSend')}>Send</Button>
             <Block layout vertical center>
               <Button type="link" disabled={(!freezable())} onClick={() => goRoute('walletFreeze')}>Freeze</Button>
-              <div className="small">Freeze assets on address</div>
+              <small>Freeze assets on address</small>
             </Block>
           </Col>
 
