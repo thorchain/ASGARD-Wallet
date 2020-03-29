@@ -85,22 +85,17 @@ function _resolveLayoutAlign(props:any) {
 };
 
 function _resolveLayoutSelf(props:any) {
-  // let newStyle = {};
   let newClasses = ''
   if(props.selfStart) {
-    // newStyle = assign(newStyle, style, layout.selfAlignStart);
     newClasses += prefix + 'self-align-start';
   }
   if(props.selfCenter) {
-    // newStyle = assign(newStyle, style, layout.selfAlignCenter);
     newClasses += prefix + 'self-align-center';
   }
   if(props.selfEnd) {
-    // newStyle = assign(newStyle, style, layout.selfAlignEnd);
     newClasses += prefix + 'self-align-end';
   }
   if(props.selfStretch){
-    // newStyle = assign(newStyle, style, layout.selfAlignStretch);
     newClasses += prefix + 'self-align-stretch';
   }
 
@@ -108,30 +103,23 @@ function _resolveLayoutSelf(props:any) {
 };
 
 function _resolveLayoutJustify(props:any) {
-  // let newStyle = {};
   let newClasses = ''
   if(props.justifyStart) {
-    // newStyle = assign(newStyle, style, layout.justifyStart);
     newClasses += prefix + 'justify-start';
   }
   if(props.justifyCenter) {
-    // newStyle = assign(newStyle, style, layout.justifyCenter);
     newClasses += prefix + 'justify-center';
   }
   if(props.justifyEnd) {
-    // newStyle = assign(newStyle, style, layout.justifyEnd);
     newClasses += prefix + 'justify-end';
   }
   if(props.justifyStretch) {
-    // newStyle = assign(newStyle, style, layout.justifyStretch);
     newClasses += prefix + 'justify-stretch';
   }
   if(props.justifyBetween) {
-    // newStyle = assign(newStyle, style, layout.justifyBetween);
     newClasses += prefix + 'justify-between';
   }
   if(props.justifyAround) {
-    // newStyle = assign(newStyle, style, layout.justifyAround);
     newClasses += prefix + 'justify-around';
   }
 
