@@ -10,6 +10,10 @@ import './styles'
  * basic 'in-place' simple alignments for flex boxes/grid, in
  * order provide easy overrides, and avoid pollution of
  * inline styles, for easier future component based styling.
+ * 
+ * Documentation
+ * https://gitlab.com/thorchain/asgard-wallet/-/wikis/docs/custom-components/block
+ * 
  */
 
 const prefix = " ant-block-"
@@ -74,6 +78,8 @@ function _resolveLayoutAlign(props:any) {
     newClasses += prefix + 'align-start';
   } else if(props.center) {
     newClasses += prefix + 'align-center';
+  } else if(props.baseline) {
+    newClasses += prefix + 'align-baseline';
   } else if(props.end) {
     newClasses += prefix + 'align-end';
   } else if(props.centered){
@@ -164,6 +170,7 @@ interface BlockPropTypes {
   reverse?: boolean,
   start?: boolean,
   center?: boolean,
+  baseline?: boolean,
   end?: boolean,
   stretch?: boolean,
   centered?: boolean,
@@ -177,7 +184,8 @@ interface BlockPropTypes {
   justifyBetween?: boolean,
   justifyAround?: boolean,
   style?: object,
-  className?: string
+  className?: string,
+  onClick?: Function
 };
 
 export default Block;

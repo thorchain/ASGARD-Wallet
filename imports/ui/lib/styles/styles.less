@@ -7,6 +7,15 @@
 .ant-row > .ant-col {
   > h1:first-child, > h2:first-child, > h3:first-child, > h4:first-child, > h5:first-child {
       text-align: center;
+      text-transform: uppercase;
+  }
+}
+
+.ant-list-item {
+  & h1, h2, h3, h4, h5 {
+    &.ant-typography {
+      margin-bottom: 2px;
+    }
   }
 }
 
