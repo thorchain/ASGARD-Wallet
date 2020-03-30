@@ -11,7 +11,7 @@ import TransactionsTable from '/imports/ui/components/screens/transactions/trans
 
 import CircleIcon, { Sizes } from '/imports/ui/components/elements/circleIcon'
 import Block from '/imports/ui/components/elements/Block/block'
-import { Row, Col, Typography, Divider, Button } from 'antd'
+import { Row, Col, Typography, Divider, Button, Card } from 'antd'
 const { Title } = Typography
 
 type Props = {symbol: string}
@@ -56,7 +56,9 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
     <Row>
       <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
         <Block layout vertical center>
-          <CircleIcon shortSymbol={balances.shortSymbol} size={Sizes.lg} />
+          <Card bordered={false}>
+            <CircleIcon shortSymbol={balances.shortSymbol} size={Sizes.lg} />
+          </Card>
           <Title level={4}>{token.name} {balances.shortSymbol}</Title>
           <div>{balances.symbol}</div>
           <Title level={3}>{balances.full?.toLocaleString()} <small>{balances.shortSymbol}</small></Title>
