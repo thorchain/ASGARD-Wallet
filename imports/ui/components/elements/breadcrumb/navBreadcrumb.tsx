@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useTracker } from 'meteor/react-meteor-data';
 import { Breadcrumb } from 'antd'
 import { LeftOutlined } from '@ant-design/icons';
-import './breadcrumbStyles.less'
+import './navBreadcrumbStyles.less'
 
 const NavBreadcrumb: React.FC = (): JSX.Element => {
   const [canBack, setCanBack] = useState(false)
