@@ -4,9 +4,9 @@ import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserAccountTypes } from '/imports/api/collections/userAccountCollection';
 
 import { WALLET } from '/imports/startup/client/init'
-import { Row, Col, Typography, Button, Tabs } from 'antd';
+import { Row, Col, Typography, Button, Tabs, Skeleton } from 'antd';
 const { TabPane } = Tabs;
-const { Title, Text } = Typography
+const { Title, Text, Paragraph } = Typography
 
 type ClientTypes = {network: string, chainId: string}
 const UserAccountScreen: React.FC = (): JSX.Element => {
@@ -57,25 +57,26 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
           <TabPane tab="Testnet" key="1">
             <Row>
               <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small><strong>Account</strong></small>
+                <Text strong>Account</Text>
                 <Text ellipsis>{userAccount.address}</Text>
               </Col>
-              <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small><strong>Keystore Version</strong></small>
-                <Text>{userAccount.keystore.version}</Text>
+              <Col md={{span:12}} lg={{span:6}}>
+                <Text strong>Keystore Version</Text>
+                <Paragraph>{userAccount.keystore.version}</Paragraph>
               </Col>
-              <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small><strong>Network</strong></small>
-                <Text className="text-capitalize">{client.network}</Text>
+              <Col md={{span:12}} lg={{span:6}}>
+                <Text strong>Network</Text>
+                <Paragraph className="text-capitalize">{client.network}</Paragraph>
               </Col>
-              <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
-                <small><strong>Chain ID</strong></small>
-                <Text className="text-capitalize">{client.chainId}</Text>
+              <Col md={{span:12}} lg={{span:6}}>
+                <Text strong>Chain ID</Text>
+                <Paragraph className="text-capitalize">{client.chainId}</Paragraph>
               </Col>
             </Row>
           </TabPane>
           <TabPane tab="Mainnet" key="2">
-            <div>Coming soon...</div>
+            <h5><Text type="secondary">Coming soon...</Text></h5>
+            <Skeleton title={false} loading={true} paragraph={{ rows: 3 }}></Skeleton>
           </TabPane>
         </Tabs>
 

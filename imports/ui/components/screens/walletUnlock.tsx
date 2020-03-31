@@ -22,11 +22,11 @@ const UnlockScreen: React.FC = (): JSX.Element => {
   return (
     <Row>
 
-      <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:9,offset:0}}>
+      <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:9,offset:0}}>
         <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Tri-Gradient.svg"/>
       </Col>
 
-      <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:0}}>
+      <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:0}}>
         <AutoForm
           model={WalletUnlockFormSchema.clean({})}
           schema={WalletUnlockFormBridge}

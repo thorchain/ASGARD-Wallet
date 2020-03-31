@@ -54,7 +54,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
 
   return (
     <Row>
-      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
+      <Col span={24} md={{span:16,offset:4}} lg={{span:12,offset:6}}>
         <Block layout vertical center>
           <Card bordered={false}>
             <CircleIcon shortSymbol={balances.shortSymbol} size={Sizes.lg} />
@@ -65,32 +65,30 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
         </Block>
       </Col>
 
-      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
+      <Col span={24} md={{span:16,offset:4}} lg={{span:12,offset:6}}>
         <Block layout justifyAround>
 
           <Block layout vertical center>
             <div>Free:</div>
-            <div className="font-size-h4">{balances.free.toLocaleString()}</div>
+            <Title level={4}>{balances.free.toLocaleString()}</Title>
           </Block>
 
           <Block layout vertical center>
             <div>Frozen:</div>
-            <div className="font-size-h4">{balances.frozen.toLocaleString()}</div>
+            <Title level={4}>{balances.frozen.toLocaleString()}</Title>
           </Block>
 
           <Block layout vertical center>
             <div>Locked:</div>
-            <div className="font-size-h4">{balances.locked.toLocaleString()}</div>
+            <Title level={4}>{balances.locked.toLocaleString()}</Title>
           </Block>
 
         </Block>
-
-
       </Col>
 
       <Divider/>
 
-      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
+      <Col span={24} md={{span:16,offset:4}} lg={{span:12,offset:6}}>
 
         <Row>
 
@@ -105,7 +103,7 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
           <Col span={12}>
             <Button type="primary" size="large" onClick={() => goRoute('walletReceive')}>Receive</Button>
             <Block layout vertical center>
-              <Button type="link" disabled={(!unfreezable())}>Unfreeze</Button>
+              <Button type="link" disabled={(!unfreezable())} onClick={() => goRoute('walletUnfreeze')}>Unfreeze</Button>
               <small>Unfreeze assets on address</small>
             </Block>
           </Col>
