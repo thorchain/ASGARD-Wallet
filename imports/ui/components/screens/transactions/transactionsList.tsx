@@ -40,61 +40,30 @@ const ItemRow: React.FC<ItemProps> = (props): JSX.Element => {
       case 'UN_FREEZE_TOKEN':
         return {msg:"unfreeze", label: "to", address:from, color:"warning", op:"+"}
       default:
-        break;
+        return {msg:'',label:'',address:'',color:'',op:''}
     }
-    // return empty
-    return {msg:'',label:'',address:'',color:'',op:''}
-
   },[])
   const shortSym = (symbol: string) => {
     return symbol.split("-")[0].substr(0,4)
   }
 
   return (
-    // <li className="media list-group-item p-1">
     <Block layout center>
 
-      <Block style={{width:'84px'}}>
+      <Block flex style={{maxWidth:'84px'}}>
         <Text className={"text-color-" + party.color}>{party.msg}</Text>
       </Block>
 
-      <Block>
+      <Block layout horizontal center style={{flexWrap:'nowrap',overflow:'hidden',whiteSpace:'wowrap'}}>
         <Text ellipsis>
-          <div><strong className="font-weight-bold small pr-2">{party.label}:</strong><span className="small text-monospace">{party.address}</span></div>
+          <strong style={{textTransform:'capitalize',marginRight:12}}>{party.label}:</strong><span className="small text-monospace">{party.address}</span>
         </Text>
-      </Block>
-
-      {/* <div className="pl-1"> */}
-      <Block layout vertical end>
-
-        {/* <div className="text-right"> */}
+        <Block layout vertical end style={{width:62}}>
           <div className={"text-color-" + party.color}>{party.op}{toCrypto(tx.value)}</div>
-          <div className={"text-color-secondary"} style={{width: "62px"}}>[{shortSym(tx.txAsset)}]</div>
-          {/* <span className="d-block d-md-none small text-muted">[{shortSym(tx.txAsset)}]</span> */}
-        {/* </div> */}
-
+          <div className={"text-color-secondary"}>[{shortSym(tx.txAsset)}]</div>
+        </Block>
       </Block>
-      {/* </div> */}
 
     </Block>
-    // <div className="media-body d-flex align-items-center justify-content-start">
-
-    //   <div className={"d-md-none col-2 col-lg-1 px-1 font-weight-bold small text-uppercase text-" + party.color}>{party.msg}</div>
-    //   <div className={"d-none d-md-block col-2 col-lg-1 px-1 font-weight-bold text-uppercase text-" + party.color }>{party.msg}</div>
-
-    //   <div className="text-truncate mr-auto p-1">
-    //     <div className="text-truncate"><strong className="font-weight-bold small pr-2">{party.label}:</strong><span className="small text-monospace">{party.address}</span></div>
-    //   </div>
-
-    //   <div className="pl-1">
-    //     <div className="text-right">
-    //       <span className={"d-block text-" + party.color}>{party.op}{toCrypto(tx.value)}</span>
-    //       <span className="d-none d-md-inline-block text-muted" style={{width: "62px"}}>[{shortSym(tx.txAsset)}]</span>
-    //       <span className="d-block d-md-none small text-muted">[{shortSym(tx.txAsset)}]</span>
-    //     </div>
-    //   </div>
-
-    // </div>
-  // </li>
   )
 }
