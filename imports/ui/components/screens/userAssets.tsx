@@ -5,9 +5,9 @@ import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
 import { TokenData } from '/imports/api/collections/client_collections'
 import { TokenDataTypes } from '/imports/api/collections/tokenDataCollection'
 
+import { Row, Col, Typography, List } from 'antd'
+import Block from "/imports/ui/components/elements/block/block";
 import CircleIcon, { Sizes } from '/imports/ui/components/elements/circleIcon'
-import { Row, Col, Typography, List, Divider, Button } from 'antd'
-import Block from "../elements/Block/block";
 const { Title, Text } = Typography
 
 const UserAssetsScreen: React.FC = (): JSX.Element => {
