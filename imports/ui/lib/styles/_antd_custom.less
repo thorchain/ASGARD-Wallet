@@ -26,12 +26,6 @@
 @Highlight-Gray: #90A1B0;
 @White-Gray: #EBEBEB;
 
-@body-background: @Darker-Gray;
-@component-background: @body-background;
-
-@text-color: @White-Gray;
-@text-color-secondary: @Lighter-Gray;
-
 
 // -------- Colors -----------
 @primary-color: @Primary-Gray;
@@ -46,6 +40,18 @@
 @black: @Black-Gray;
 
 @text-selection-bg: @highlight-color;
+@body-background: @Darker-Gray;
+@component-background: @body-background;
+
+@text-color: @White-Gray;
+@text-color-secondary: @Lighter-Gray;
+@text-color-inverse: @Black-Gray;
+// @icon-color-hover: fade(@white, 75%);
+@heading-color: @text-color;
+
+// Border color
+@border-color-base: @Middle-Gray; // base border outline a component
+@border-color-split: @Middle-Gray; // split border inside a component
 
 
 @font-size-base: 16px;
@@ -91,6 +97,30 @@
 
 @skeleton-color: darken(@Dark-Gray, 8%);
 @skeleton-to-color: fade(@Black-Gray, 16%);
+
+
+
+// Table
+// --
+@table-header-bg: @Darker-Gray;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 form .ant-row { display: block; }
 
 // Icon

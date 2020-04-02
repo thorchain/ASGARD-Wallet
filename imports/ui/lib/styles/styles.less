@@ -61,6 +61,37 @@ span.ant-typography-ellipsis {
   display: block !important;
 }
 
+// ICONS
+.ant-empty-img-simple {
+  g {
+    > ellipsis { display: none; }
+    > path {
+      &:not(:first-child) {fill: @Dark-Gray;}
+      stroke: darken(@text-color-secondary, 8%)
+    }
+
+  }
+  .ant-empty-img-simple-path {
+
+  }
+}
+
+
+// Tables
+
+.ant-table table {
+  th, td {
+    &.table-col-min {
+      white-space: nowrap;
+      width: 1px;
+    }
+    &.table-col-max {
+      white-space: nowrap;
+      max-width: 1px;
+    }
+  }
+}
+
 // Component Specific styles *****************
 
 // Branded Button
@@ -102,9 +133,10 @@ button.ant-btn.ant-btn-brand {
 
 /* *********** Utilitites ************* */
 
-// Text
+// Text transform
 .text-capitalize { text-transform: capitalize !important; }
 .text-uppercase { text-transform: uppercase !important; }
+// Text Colors
 .text-color-primary { color: @primary-color !important; }
 .text-color-secondary { color: @text-color-secondary !important; }
 .text-color-info { color: @info-color !important; }
@@ -117,15 +149,3 @@ button.ant-btn.ant-btn-brand {
 .text-color-white { color: @white !important; }
 .text-color-black { color: @black !important; }
 
-// Text Colors
-
-// @primary-color: @Primary-Gray;
-// @info-color: @Accent-Blue;
-// @success-color: @Asgard-Green;
-// @processing-color: @Accent-Green;
-// @error-color: @Warning-Red;
-// @highlight-color: @Accent-Green;
-// @warning-color: @Caution-Yellow;
-// @normal-color: #d9d9d9;
-// @white: @White-Gray;
-// @black: @Black-Gray;
