@@ -4,11 +4,85 @@ import { UserTransactionTypes } from '/imports/api/collections/userTransactionsC
 import { toCrypto } from '/imports/ui/lib/numbersHelpers'
 import { shortSymbol } from '/imports/ui/lib/tokenHelpers'
 import { BNB } from '/imports/api/wallet'
+import { Typography, Table } from 'antd'
+import { useTracker } from 'meteor/react-meteor-data'
+const { Text } = Typography
 const momentShort = require('moment-shortformat')
 
 type Props = {transactions: UserTransactionTypes[]}
 const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
-  return (
+
+  const usr = useTracker(() =>UserAccount.findOne(),[UserAccount])
+  // type PartyTypes = {msg: string, label: string, address: string, color: string, op: string}
+  // msg
+  // label
+  // address
+  // color
+  // op
+  const party = (tx:any) => {
+    const from = tx.fromAddr
+    const to = tx.toAddr
+    // const usr = UserAccount.findOne()
+    switch (tx.txType) {
+      case 'TRANSFER':
+        if (from === usr.address) {
+          return {msg:"send", label: "to", address:to, color:"danger", op:"-"}
+        } else {
+          return {msg:"receive", label: "from", address:from, color:"success", op:"+"}
+        }
+      case 'FREEZE_TOKEN':
+        return {msg:"freeze", label: "from", address:from, color:"info", op:"-"}
+      case 'UN_FREEZE_TOKEN':
+        return {msg:"unfreeze", label: "to", address:from, color:"warning", op:"+"}
+      default:
+        return {msg:'',label:'',address:'',color:'',op:''}
+    }
+
+  }
+  return (<>
+    <Table size="small" dataSource={transactions} rowKey="_id" pagination={false}>
+      <Table.Column
+        title="Date"
+        dataIndex="timeStamp"
+        // key="timeStamp"
+        // render={(timeStamp) => { console.log(timeStamp); return timeStamp}}
+        render={timeStamp => {return momentShort(timeStamp).short()}}
+        // render={tx => (
+        //   <span>
+        //     {tags.map(tag => (
+        //       <Tag color="blue" key={tag}>
+        //         {tag}
+        //       </Tag>
+        //     ))}
+        //   </span>
+        // )}
+      />
+      <Table.Column
+        title="Type"
+        dataIndex="txType"
+        render={(text, record, index) => {
+          const p = party(record)
+          return (
+          <span className={"text-color-" + p.color}>{p.msg}</span>
+        )}}
+        // key="txType"
+        // onCell={someData => {console.log(someData); return (<span>'test'</span>)}}
+        // render={type => party(type)}
+      />
+      <Table.Column
+        title="With"
+        dataIndex="txFrom"
+        render={(text, record, index) => {
+          const p = party(record)
+          return (<>
+            <div>{p.label}&nbsp;{p.address}</div>
+        </>)}}
+        // key="txType"
+        // onCell={someData => {console.log(someData); return (<span>'test'</span>)}}
+        // render={type => party(type)}
+      />
+
+    </Table>
     <table className="table table-sm table-dark table-borderless">
       <thead>
         <tr>
@@ -29,7 +103,7 @@ const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
 
     </table>
 
-  )
+  </>)
 }
 export default TransactionsTable
 
@@ -58,10 +132,8 @@ const TableRow: React.FC<RowProps> = (props): JSX.Element => {
       case 'UN_FREEZE_TOKEN':
         return {msg:"unfreeze", label: "to", address:from, color:"warning", op:"+"}
       default:
-        break;
+        return {msg:'',label:'',address:'',color:'',op:''}
     }
-    // return empty to match type
-    return {msg:'',label:'',address:'',color:'',op:''}
 
   },[])
   return (
@@ -79,7 +151,7 @@ const TableRow: React.FC<RowProps> = (props): JSX.Element => {
         </div>
       </td>
 
-      <td className="text-right"><span className={"text-" + party.color }>{party.op}{toCrypto(tx.value)}</span> <span>{shortSymbol(tx.txAsset)}</span></td>
+      <td className="text-right"><Text className={"text-color-" + party.color }>{party.op}{toCrypto(tx.value)}</Text> <Text>{shortSymbol(tx.txAsset)}</Text></td>
       <td className="text-center"><a href={link(tx.txHash)} target="_blank"><i className="fa fa-external-link-square-alt"></i></a></td>
 
     </tr>
