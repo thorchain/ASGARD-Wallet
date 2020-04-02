@@ -6,19 +6,13 @@ import { shortSymbol } from '/imports/ui/lib/tokenHelpers'
 import { BNB } from '/imports/api/wallet'
 import { Typography, Table } from 'antd'
 import { useTracker } from 'meteor/react-meteor-data'
+import Block from '../../elements/block/block'
 const { Text } = Typography
 const momentShort = require('moment-shortformat')
 
 type Props = {transactions: UserTransactionTypes[]}
 const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
-
   const usr = useTracker(() =>UserAccount.findOne(),[UserAccount])
-  // type PartyTypes = {msg: string, label: string, address: string, color: string, op: string}
-  // msg
-  // label
-  // address
-  // color
-  // op
   const party = (tx:any) => {
     const from = tx.fromAddr
     const to = tx.toAddr
@@ -39,71 +33,48 @@ const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
     }
 
   }
-  return (<>
+  return (
     <Table size="small" dataSource={transactions} rowKey="_id" pagination={false}>
       <Table.Column
         title="Date"
         dataIndex="timeStamp"
-        // key="timeStamp"
-        // render={(timeStamp) => { console.log(timeStamp); return timeStamp}}
+        width={78}
         render={timeStamp => {return momentShort(timeStamp).short()}}
-        // render={tx => (
-        //   <span>
-        //     {tags.map(tag => (
-        //       <Tag color="blue" key={tag}>
-        //         {tag}
-        //       </Tag>
-        //     ))}
-        //   </span>
-        // )}
       />
       <Table.Column
         title="Type"
         dataIndex="txType"
-        render={(text, record, index) => {
-          const p = party(record)
+        width={96}
+        render={(value, record, index) => { const p = party(record)
           return (
           <span className={"text-color-" + p.color}>{p.msg}</span>
         )}}
-        // key="txType"
-        // onCell={someData => {console.log(someData); return (<span>'test'</span>)}}
-        // render={type => party(type)}
       />
       <Table.Column
         title="With"
         dataIndex="txFrom"
-        render={(text, record, index) => {
-          const p = party(record)
-          return (<>
-            <div>{p.label}&nbsp;{p.address}</div>
-        </>)}}
-        // key="txType"
-        // onCell={someData => {console.log(someData); return (<span>'test'</span>)}}
-        // render={type => party(type)}
+        ellipsis
+        render={(value, tx:UserTransactionTypes, index) => { const p = party(tx)
+          return (
+            <span>{p.label}&nbsp;{p.address}</span>
+        )}}
+      />
+      <Table.Column
+        title="Amount"
+        dataIndex="txValue"
+        align="right"
+        width={122}
+        render={(value, tx:UserTransactionTypes, index) => { const p = party(tx)
+          return (
+            <Block style={{whiteSpace:"nowrap",flexWrap:"nowrap"}}>
+              <Text className={"text-color-" + p.color }>{p.op}{toCrypto(tx.value)}&nbsp;</Text>
+              <Text type="secondary">{shortSymbol(tx.txAsset)}</Text>
+            </Block>
+        )}}
       />
 
     </Table>
-    <table className="table table-sm table-dark table-borderless">
-      <thead>
-        <tr>
-          <th scope="col">Date</th>
-          <th scope="col">Type</th>
-          <th scope="col">With</th>
-          <th scope="col"></th>
-          <th scope="col">Amount</th>
-          <th scope="col">View</th>
-        </tr>
-      </thead>
-      
-      <tbody>
-        {transactions.map((transaction) => (
-          <TableRow transaction={transaction} key={transaction._id} />
-        ))}
-      </tbody>
-
-    </table>
-
-  </>)
+  )
 }
 export default TransactionsTable
 
