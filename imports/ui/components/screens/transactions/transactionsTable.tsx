@@ -13,7 +13,7 @@ type Props = {transactions: UserTransactionTypes[]}
 const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
   const link = (hash:string) => { return `${BNB.explorerBaseURL}/tx/${hash}` }
   const usr = useTracker(() =>UserAccount.findOne(),[UserAccount])
-  const party = (tx:any) => {
+  const party = (tx:UserTransactionTypes) => {
     const from = tx.fromAddr
     const to = tx.toAddr
     switch (tx.txType) {
