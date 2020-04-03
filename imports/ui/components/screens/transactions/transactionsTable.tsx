@@ -56,7 +56,7 @@ const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
         dataIndex="txType"
         className="table-col-min"
         width="1px"
-        render={(value, record) => { const p = party(record)
+        render={(value, tx:UserTransactionTypes) => { const p = party(tx)
           return (
           <span className={"text-color-" + p.color}>{p.msg}</span>
         )}}
@@ -78,7 +78,7 @@ const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
         className="table-col-min"
         render={(value, tx:UserTransactionTypes) => { const p = party(tx)
           return (<>
-              <Text className={"text-color-" + p.color }>{p.op}{toCrypto(tx.value)}&nbsp;</Text>
+              <Text className={`text-color-${p.color}` }>{p.op}{toCrypto(tx.value)}&nbsp;</Text>
               <Text type="secondary">{shortSymbol(tx.txAsset)}</Text>
         </>)}}
       />
