@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserTransactionTypes } from '/imports/api/collections/userTransactionsCollection'
 import { toCrypto } from '/imports/ui/lib/numbersHelpers'
@@ -11,7 +11,7 @@ const momentShort = require('moment-shortformat')
 
 type Props = {transactions: UserTransactionTypes[]}
 const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
-  const link = (hash:string) => { return BNB.explorerBaseURL + "/tx/" + hash }
+  const link = (hash:string) => { return `${BNB.explorerBaseURL}/tx/${hash}` }
   const usr = useTracker(() =>UserAccount.findOne(),[UserAccount])
   const party = (tx:any) => {
     const from = tx.fromAddr
