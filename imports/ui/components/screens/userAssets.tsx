@@ -13,7 +13,7 @@ const { Title, Text } = Typography
 const UserAssetsScreen: React.FC = (): JSX.Element => {
   const userAssets: UserAssetsTypes[] = useTracker(() => {
     return UserAssets.find({},{sort: {symbol: 1}}).fetch()
-  }, [])
+  }, [UserAssets])
   return (
     <Row>
       <Col>
