@@ -11,6 +11,9 @@ export default class WalletController extends EventEmitter{
     let locked = true
     this.getIsUnlocked = function () { return !locked }
     this.setIsUnlocked = function (v) { locked = v === true ? false : true }
+    let connected = navigator.onLine || false
+    this.getConnected = function () { return connected }
+    this.setConnected = function (v) { connected = v === true ? true : false }
   }
   isUnlocked () { return this.getIsUnlocked() }
 
@@ -195,10 +198,14 @@ export default class WalletController extends EventEmitter{
     // subscribe transactions
     
     this.conn.onopen = (evt) => {
+      this.setConnected(true)
       console.log("socket connected")
       this.conn.send(JSON.stringify({ method: "subscribe", topic: "transfers", address: address }))
       this.conn.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
     }
+    this.conn.onerror = (msg) => {this.setConnected(false)}
+    this.conn.onclose = (msg) => {this.setConnected(false)}
+    
     this.conn.onmessage = (msg) => {
       const data = JSON.parse(msg.data)
       switch (data.stream) {

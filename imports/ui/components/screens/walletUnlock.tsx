@@ -3,7 +3,7 @@ import { FlowRouter } from 'meteor/kadira:flow-router'
 import { WALLET } from "/imports/startup/client/init"
 import { WalletUnlockFormSchema, WalletUnlockFormBridge } from '/imports/lib/schemas/walletUnlockFormSchema'
 
-import { Row, Col } from 'antd'
+import { Row, Col, Card } from 'antd'
 import { AutoForm, AutoField, SubmitField } from 'uniforms-antd'
 import { ErrorField } from '/imports/uniforms-antd-custom/'
 
@@ -23,7 +23,7 @@ const UnlockScreen: React.FC = (): JSX.Element => {
     <Row>
 
       <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:9,offset:0}}>
-        <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Tri-Gradient.svg"/>
+        <Card bordered={false}><img className="mx-auto d-block w-25" src="/img/Asgard-Tri-Gradient.svg"/></Card>
       </Col>
 
       <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:0}}>

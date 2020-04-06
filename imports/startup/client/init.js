@@ -7,5 +7,6 @@ export const WALLET = new WalletController();
 FlowRouter.wait();
 
 Meteor.startup(function() {
+  // Meteor.disconnect() // Enable for client only operation
   FlowRouter.initialize();
 })

@@ -146,3 +146,34 @@ button.ant-btn.ant-btn-brand {
 .text-color-white { color: @white !important; }
 .text-color-black { color: @black !important; }
 
+
+// AntD Mobile
+
+#app-wrapper > .am-navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 54px;
+  .ant-btn {
+    width: unset;
+  }
+}
+
+.my-drawer .am-drawer-sidebar {
+  margin-top: 2px; // gives room for pseudo-border below
+  background-color: @Dark-Gray !important;
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+    height: 2px;
+    background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
+  }
+  li.ant-menu-item {
+    text-align: right;
+  }
+}

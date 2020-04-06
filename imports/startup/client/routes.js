@@ -1,16 +1,18 @@
 import React from 'react';
-import ReactDOM from "react-dom";
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { mount, withOptions } from 'react-mounter';
+import ReactDOM from 'react-dom'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { mount, withOptions } from 'react-mounter'
 
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
-import NavbarMain from '/imports/ui/components/elements/navbarMain'
-import NavbarSimple from '/imports/ui/components/elements/navbarSimple'
+import NavMenuMain from '/imports/ui/components/elements/header/menuMain'
+import NavMenuSimple from '/imports/ui/components/elements/header/navMenuSimple'
+import NavbarMain from '/imports/ui/components/elements/header/navbarMain'
+import NavbarSimple from '/imports/ui/components/elements/header/navbarSimple'
 
 import StartScreen from '/imports/ui/components/screens/walletStart'
 import ImportScreen from '/imports/ui/components/screens/walletNew/walletImport'
-import CreateScreen from "/imports/ui/components/screens/walletNew/walletCreate"
+import CreateScreen from '/imports/ui/components/screens/walletNew/walletCreate'
 import MnemonicConfirmScreen from '/imports/ui/components/screens/walletNew/walletImportMnemonicConfirm'
 
 import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
@@ -109,7 +111,7 @@ appRoutes.route('/unlock', {
 	name: 'walletUnlock',
 	action() {
 		mounter(BareLayout, {
-			header: () => (<NavbarSimple/>),
+			header: () => (<NavMenuSimple/>),
       content: () => (<UnlockScreen/>),
     });
 	},
@@ -119,7 +121,7 @@ appRoutes.route('/options', {
 	name: 'options',
 	action: function (params, queryParams) {
 		mounter(BareLayout, {
-			header: () => (<NavbarSimple/>),
+			header: () => (<NavMenuSimple/>),
       content: () => (<UnlockOptionsScreen/>),
     });
 	},
@@ -152,7 +154,7 @@ walletRoutes.route('/accounts', {
 	name: 'walletAccounts',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserAccountScreen/>),
     });
 	},
@@ -162,7 +164,7 @@ walletRoutes.route('/assets', {
 	name: 'walletAssets',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserAssetsScreen/>),
     });
 	},
@@ -171,7 +173,7 @@ walletRoutes.route('/assetDetails/:symbol', {
 	name: 'walletAssetDetails',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserAssetDetailsScreen symbol={params.symbol}/>),
     });
 	},
@@ -183,7 +185,7 @@ walletRoutes.route('/transactionsList', {
 	name: "walletTransactionsList",
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserTransactionsScreen/>),
     });
 	},
@@ -195,7 +197,7 @@ walletRoutes.route('/send/:symbol?', {
 	name: "walletSend",
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<SendFundsScreen symbol={params.symbol}/>),
     });
 	},
@@ -207,7 +209,7 @@ walletRoutes.route('/receive', {
 	name: "walletReceive",
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<ReceiveFundsScreen/>),
     });
 	},
@@ -219,7 +221,7 @@ walletRoutes.route('/freeze/:symbol', {
 	name: 'walletFreeze',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<FreezeFundsScreen symbol={params.symbol}/>),
     });
 	},
@@ -231,7 +233,7 @@ walletRoutes.route('/unfreeze/:symbol', {
 	name: 'walletUnfreeze',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UnfreezeFundsScreen symbol={params.symbol}/>),
     });
 	},
