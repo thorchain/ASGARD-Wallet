@@ -26,7 +26,7 @@ const NavBreadcrumb: React.FC = (): JSX.Element => {
     <Breadcrumb>
       {canBack && (
         <Breadcrumb.Item key="0">
-          <a href="" onClick={goBack}><LeftOutlined />&nbsp;Back</a>
+          <a href="" onClick={goBack}><LeftOutlined />&nbsp;<span>Back</span></a>
         </Breadcrumb.Item>
       )}
     </Breadcrumb>

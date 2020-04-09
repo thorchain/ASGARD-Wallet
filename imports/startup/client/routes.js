@@ -6,12 +6,14 @@ import { mount, withOptions } from 'react-mounter'
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
 import NavMenuMain from '/imports/ui/components/elements/header/menuMain'
+import NavMenuPlain from '/imports/ui/components/elements/header/navMenuPlain'
 import NavMenuSimple from '/imports/ui/components/elements/header/navMenuSimple'
 import NavbarMain from '/imports/ui/components/elements/header/navbarMain'
 import NavbarSimple from '/imports/ui/components/elements/header/navbarSimple'
 
 import StartScreen from '/imports/ui/components/screens/walletStart'
 import ImportScreen from '/imports/ui/components/screens/walletNew/walletImport'
+import WalletNewOptionsScreen from '/imports/ui/components/screens/walletNew/walletNewOptions'
 import CreateScreen from '/imports/ui/components/screens/walletNew/walletCreate'
 import MnemonicConfirmScreen from '/imports/ui/components/screens/walletNew/walletImportMnemonicConfirm'
 
@@ -45,8 +47,8 @@ const mounter = withOptions({
 const appRoutes = FlowRouter.group({
 	name: 'mainAppRoutes',
 	triggersEnter: [function (context, redirect) {
-		
-		if (context.route.name !== "options") {
+		const route = context.route
+		if (route.name !== "walletUnlockOptions") {
 			if (isVault() && !isUnlocked()) {
 				FlowRouter.go('walletUnlock')
 			} else if (isVault() && isUnlocked()) {
@@ -56,7 +58,11 @@ const appRoutes = FlowRouter.group({
 				// There should be no possibility of missing 'oldRoute'
 				// ie. history since there is no way into this group of routes
 				// except create/import/unlock
-				FlowRouter.go(context.oldRoute.name)
+				if (context.oldRoute && context.oldRoute.name) {
+					FlowRouter.go(context.oldRoute.name)
+				}
+			} else if (!isVault() && (route.name === 'walletUnlock' || route.name === 'walletUnlockOptions')) {
+				FlowRouter.go('walletStart')
 			}
 		}
 	}],
@@ -75,7 +81,7 @@ appRoutes.route('/create/:type?', {
 	name: 'walletCreate',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuSimple/>),
       content: () => (<CreateScreen type={params.type}/>),
     });
 	},
@@ -89,18 +95,30 @@ appRoutes.route('/mnemonic-confirm', {
 	// restric/direct access to this route
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuSimple/>),
       content: () => (<MnemonicConfirmScreen/>),
     });
 	},
 })
 
-appRoutes.route('/import', {
+appRoutes.route('/import/:type?', {
 	name: 'walletImport',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuSimple/>),
       content: () => (<ImportScreen/>),
+    });
+	},
+	back: {
+		route: 'walletStart',
+	},
+});
+appRoutes.route('/import-options', {
+	name: 'walletImportOptions',
+	action: function (params, queryParams) {
+		mounter(MainLayout, {
+			header: () => (<NavMenuSimple/>),
+      content: () => (<WalletNewOptionsScreen/>),
     });
 	},
 	back: {
@@ -111,17 +129,17 @@ appRoutes.route('/unlock', {
 	name: 'walletUnlock',
 	action() {
 		mounter(BareLayout, {
-			header: () => (<NavMenuSimple/>),
+			header: () => (<NavMenuPlain/>),
       content: () => (<UnlockScreen/>),
     });
 	},
 })
 
-appRoutes.route('/options', {
-	name: 'options',
+appRoutes.route('/unlock-options', {
+	name: 'walletUnlockOptions',
 	action: function (params, queryParams) {
 		mounter(BareLayout, {
-			header: () => (<NavMenuSimple/>),
+			header: () => (<NavMenuPlain/>),
       content: () => (<UnlockOptionsScreen/>),
     });
 	},

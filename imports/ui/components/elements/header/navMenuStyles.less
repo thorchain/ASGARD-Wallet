@@ -10,66 +10,7 @@
   overflow: auto;
   // box-shadow: 0 0 30px #f3f1f1;
 }
-.logo{
-  width: 150px;
-  float: left;
-}
-.logo a{
-  display: inline-block;
-  font-size: 20px;
-  padding: 19px 20px;
-  text-transform: capitalize;
-}
-.menuCon{
-  width: calc(100% - 150px);
-  float: left;
-}
-.menuCon .ant-menu-item{
-  padding: 0px 5px;
-}
-.menuCon .ant-menu-submenu-title{
-  padding: 10px 20px;
-}
-.menuCon .ant-menu-item a, .menuCon .ant-menu-submenu-title a{
-  padding: 10px 15px;
-}
-.menuCon .ant-menu-horizontal{
-  border-bottom: none;
-}
-.menuCon .leftMenu{
-  float: left;
-}
-.menuCon .rightMenu{
-  float: right;
-}
-.barsMenu{
-  float: right;
-  height: 32px;
-  padding: 6px;
-  margin-top: 8px;
-  display: none;
-  background: none;
-}
-.barsBtn{
-  display: block;
-  width: 20px;
-  height: 2px;
-  background: #1890ff;
-  position: relative;
-}
-.barsBtn:after,.barsBtn:before{
-  content: attr(x);
-  width: 20px;
-  position: absolute;
-  top: -6px;
-  left: 0;
-  height: 2px;
-  background: #1890ff;
-}
-.barsBtn:after{
-  top: auto;
-  bottom: -6px;
-}
+
 .ant-drawer-body{
   padding: 0;
 }
@@ -121,4 +62,62 @@
 
 .am-navbar.am-navbar-mobile {
   z-index: 1010;
+}
+
+.my-drawer > .am-drawer-sidebar {
+  overflow: visible;
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    bottom: -2px;
+    left: 0px;
+    height: 2px;
+    background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
+  }
+  .ant-menu {
+    &.ant-menu-dark {
+      background: @Primary-Gray !important;
+      li.ant-menu-item {
+        color: @White-Gray !important;
+      }
+      li.ant-menu-item-selected {
+        // background-color: @Darker-Gray !important;
+        background: @Dark-Gray !important;
+        // color: @Light-Gray !important;
+        > a { color: @Light-Gray !important; }
+      }
+    }
+    li.ant-menu-item {
+      text-align: right;
+      margin-top:0;
+      margin-bottom:0;
+    }
+    li.ant-menu-item-selected {
+      pointer-events: none;
+      cursor: default;
+    }
+
+  }
+}
+.ant-menu-vertical .ant-menu-item {
+  font-size: @font-size-lg;
+}
+#app-wrapper > .am-navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 54px;
+  z-index: 1000;
+  .am-navbar-right {
+    >.ant-btn {
+      width: unset;
+      margin: 0;
+      >.anticon {
+        font-size: @font-size-lg;
+      }
+    }
+  }
 }

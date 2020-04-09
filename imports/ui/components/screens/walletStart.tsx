@@ -12,7 +12,7 @@ const StartScreen: React.FC = (): JSX.Element => {
       </Col>
       <Col md={{span:16,offset:4}} lg={{span:12,offset:6}} xl={{span:10,offset:7}}>
 
-        <Title level={2}>Asgard Wallet</Title>
+        <Title className="font-brand" level={2}>Asgard Wallet</Title>
         <Button type="primary" size={'large'} className={'ant-btn-brand'} onClick={() => FlowRouter.go('walletCreate')}>
           New
         </Button>

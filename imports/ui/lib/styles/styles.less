@@ -56,10 +56,6 @@ form .ant-btn, form .ant-upload {
   }
 }
 
-span.ant-typography-ellipsis {
-  // TODO: Confirm this is not a correction for Bootstrap
-  display: block !important;
-}
 
 // ICONS
 .ant-empty-img-simple {
@@ -75,7 +71,6 @@ span.ant-typography-ellipsis {
 
 
 // Tables
-
 .ant-table table {
   th, td {
     &.table-col-min {
@@ -130,6 +125,14 @@ button.ant-btn.ant-btn-brand {
 
 /* *********** Utilitites ************* */
 
+span.ant-typography-ellipsis {
+  // TODO: Confirm this is not a correction for Bootstrap
+  display: block !important;
+}
+.font-brand { font-family: Exo2; }
+// .font-serif {}
+// .font-monospace {}
+// .font-sans-serif {}
 // Text transform
 .text-capitalize { text-transform: capitalize !important; }
 .text-uppercase { text-transform: uppercase !important; }
@@ -148,32 +151,3 @@ button.ant-btn.ant-btn-brand {
 
 
 // AntD Mobile
-
-#app-wrapper > .am-navbar {
-  position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  height: 54px;
-  .ant-btn {
-    width: unset;
-  }
-}
-
-.my-drawer .am-drawer-sidebar {
-  margin-top: 2px; // gives room for pseudo-border below
-  background-color: @Dark-Gray !important;
-  &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    width: 100%;
-    bottom: 0px;
-    left: 0px;
-    height: 2px;
-    background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
-  }
-  li.ant-menu-item {
-    text-align: right;
-  }
-}
