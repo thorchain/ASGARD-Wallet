@@ -22,7 +22,7 @@ const NavMenuSimple: React.FC = (): JSX.Element => {
     <NavBar
       className="navbar-mobile"
       mode="dark"
-      leftContent={[<Button><NavBreadcrumb/></Button>]}
+      leftContent={[<NavBreadcrumb/>]}
       rightContent={[
         <Button size="large" key="0" onClick={handleChangeDrawer}>
           <MenuOutlined />
