@@ -1,6 +1,13 @@
 @import '/imports/ui/lib/styles/_antd_custom.less';
 // Breadcrumb
+
+
+// Component specific styles only
 .ant-breadcrumb {
+  // display:none;
+  @media (min-width: @screen-md-min) {
+    display: block;
+  }
   position: absolute;
   z-index: 900;
   background: none;

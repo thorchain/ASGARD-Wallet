@@ -4,32 +4,27 @@ import { Menu, Button } from 'antd'
 import { NavBar, Drawer } from 'antd-mobile'
 import { MenuOutlined } from '@ant-design/icons'
 
-import NavBreadcrumb from '/imports/ui/components/elements/breadcrumb/navBreadcrumb'
 import './navMenuStyles.less'
 
-// This menu specific for create/new/import screens
-const NavMenuSimple: React.FC = (): JSX.Element => {
+const NavMenuPlain: React.FC = (): JSX.Element => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false)
   const handleChangeDrawer = () => {
     setDrawerIsOpen(!drawerIsOpen)
   }
   const handleMenuClick = () => {
-    console.log('clicked the menu item...')
     setDrawerIsOpen(!drawerIsOpen)
   }
   return (<>
-
     <NavBar
-      className="navbar-mobile"
+      className="navbar-mobile navbar-transparent"
       mode="dark"
-      leftContent={[<NavBreadcrumb/>]}
       rightContent={[
         <Button size="large" key="0" onClick={handleChangeDrawer}>
           <MenuOutlined />
         </Button>
       ]}
     >
-      <a className="navbar-brand text-uppercase font-size-h5" href={FlowRouter.path('home')}>
+      <a className="navbar-brand text-uppercase font-size-h5" href={FlowRouter.path('home')} key="0">
         <img src="/img/Asgard-Tri-White.png" className="float-left mr-2" width="28" height="28" alt="" />
         <strong className="font-brand">Asgard</strong><small className='text-color-secondary'>&nbsp;BETA</small>
       </a>
@@ -47,7 +42,7 @@ const NavMenuSimple: React.FC = (): JSX.Element => {
   </>)
 }
 
-export default NavMenuSimple
+export default NavMenuPlain
 
 const SimpleTopMenu: React.FC<{handler:()=>void}> = ({handler}): JSX.Element => {
   const [selected, setSelected] = useState([''])
@@ -60,14 +55,11 @@ const SimpleTopMenu: React.FC<{handler:()=>void}> = ({handler}): JSX.Element => 
       selectedKeys={selected}
       theme="dark"
     >
-      <Menu.Item key="walletCreate">
-        <a href="" onClick={() => FlowRouter.go('walletCreate')}>Create</a>
+      <Menu.Item key="walletUnlockOptions">
+        <a href="" onClick={() => FlowRouter.go('walletUnlockOptions')}>Options</a>
       </Menu.Item>
-      <Menu.Item key="walletImport">
-        <a href="" onClick={() => FlowRouter.go('walletImport')}>Import</a>
-      </Menu.Item>
-      <Menu.Item key="walletImportOptions">
-        <a href="" onClick={() => FlowRouter.go('walletImportOptions')}>Options</a>
+      <Menu.Item key="walletUnlock">
+        <a href="" onClick={() => FlowRouter.go('walletUnlock')}>Unlock</a>
       </Menu.Item>
     </Menu>
   )
