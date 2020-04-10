@@ -10,7 +10,7 @@ import { TokenDataTypes } from '/imports/api/collections/tokenDataCollection'
 import TransactionsTable from '/imports/ui/components/screens/transactions/transactionsTable'
 
 import CircleIcon, { Sizes } from '/imports/ui/components/elements/circleIcon'
-import Block from '/imports/ui/components/elements/block/block'
+import Block from '/imports/ui/components/elements/renewBlock/block'
 import { Row, Col, Typography, Divider, Button, Card } from 'antd'
 const { Title } = Typography
 

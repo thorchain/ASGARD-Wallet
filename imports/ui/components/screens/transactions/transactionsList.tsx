@@ -4,7 +4,7 @@ import { UserTransactionTypes } from '/imports/api/collections/userTransactionsC
 import { toCrypto } from '/imports/ui/lib/numbersHelpers'
 import { List, Typography } from 'antd'
 const { Text } = Typography
-import Block from '/imports/ui/components/elements/block/block'
+import Block from '/imports/ui/components/elements/renewBlock/block'
 
 type Props = {transactions: UserTransactionTypes[]}
 const TransactionsList: React.FC<Props> = ({transactions}): JSX.Element => {

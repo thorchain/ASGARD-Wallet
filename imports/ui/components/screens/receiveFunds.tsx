@@ -6,7 +6,7 @@ import { UserAccount } from '/imports/api/collections/client_collections'
 import Clipboard from 'clipboard'
 import QRCode from 'qrcode'
 import { Row, Col, Typography, Card, Button } from "antd"
-import Block from "../elements/block/block"
+import Block from "/imports/ui/components/elements/renewBlock/block"
 const { Title, Text } = Typography
 
 const RecieveFundsScreen: React.FC = (): JSX.Element => {
