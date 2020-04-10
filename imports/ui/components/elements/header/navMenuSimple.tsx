@@ -4,7 +4,6 @@ import { Menu, Button } from 'antd'
 import { NavBar, Drawer } from 'antd-mobile'
 import { MenuOutlined } from '@ant-design/icons'
 
-import NavBreadcrumb from '/imports/ui/components/elements/breadcrumb/navBreadcrumb'
 import './navMenuStyles.less'
 
 // This menu specific for create/new/import screens
@@ -22,7 +21,6 @@ const NavMenuSimple: React.FC = (): JSX.Element => {
     <NavBar
       className="navbar-mobile"
       mode="dark"
-      leftContent={[<NavBreadcrumb/>]}
       rightContent={[
         <Button size="large" key="0" onClick={handleChangeDrawer}>
           <MenuOutlined />

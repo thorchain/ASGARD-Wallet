@@ -5,14 +5,22 @@
 // Component specific styles only
 .ant-breadcrumb {
   // display:none;
-  @media (min-width: @screen-md-min) {
-    display: block;
+  // @media (max-width: @screen-md-min) { 
+    position: fixed;
+    top: 15px;
+    z-index: 1100;
+  // }
+
+  @media (min-width: @screen-md-min + 1) {
+    // display: block;
   }
-  position: absolute;
-  z-index: 900;
-  background: none;
+  // position: absolute;
+  // z-index: 900;
+  // background: none;
   // override default color
   > span:last-child a {
-    color: @Accent-Green !important;
+    @media (min-width: @screen-md-min + 1) {
+      color: @Accent-Green !important;
+    }
   }
 }

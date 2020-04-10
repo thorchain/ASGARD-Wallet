@@ -5,6 +5,9 @@ import { UserAccount } from '/imports/api/collections/client_collections'
 
 import Clipboard from 'clipboard'
 import QRCode from 'qrcode'
+import { Row, Col, Typography, Card, Button } from "antd"
+import Block from "../elements/block/block"
+const { Title, Text } = Typography
 
 const RecieveFundsScreen: React.FC = (): JSX.Element => {
   const [copyMsg, setCopyMsg] = useState<string>('')
@@ -41,36 +44,28 @@ const RecieveFundsScreen: React.FC = (): JSX.Element => {
   },[UserAccount])
   
   return (
-    <div className="row">
-      <h5 className="col-12 text-center mb-4">Receive Funds</h5>
+    <Row>
+      <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:9,offset:0}}>
+        <Title level={4}>Receive Funds</Title>
+        <Card bordered={false}>
+          <div style={{display:'flex',justifyContent:'center'}} id="qr-container"></div>
+        </Card>
+      </Col>
+      <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:9,offset:0}}>
+        <Block layout vertical center>
 
-      <div className="col-md-8 mx-auto">
+          <label htmlFor="clipboard-btn" style={{display:'block'}}>
+            <Text ellipsis className="text-monospace">{userAccount.address}</Text>
+          </label>
+          <Button id="clipboard-btn" type='primary' size='large' data-clipboard-text={userAccount.address}>
+            Copy&nbsp;<i className="fa fa-copy"></i>
+          </Button>
+          <div><small id="copyBtnHelp">{copyMsg}</small></div>
 
-        <div className="card mt-3 border-0">
-          <div className="card-body text-center">
+        </Block>
 
-            <div className="rounded d-inline-block mx-auto mb-3" id="qr-container"></div>
-
-          </div>
-        </div>
-
-
-      </div>
-
-      <div className="form-group col-md-8 mx-auto text-center">
-
-        <label htmlFor="clipboard-btn" className="d-block">
-          <div className="text-truncate text-monospace">{userAccount.address}</div>
-        </label>
-        <button type='button' id="clipboard-btn" className="btn btn-primary my-4 px-5" data-clipboard-text={userAccount.address} aria-describedby="copyBtnHelp">
-          Copy&nbsp;<i className="fa fa-copy"></i>
-        </button>
-        <small id="copyBtnHelp" className="form-text text-muted text-centered w-100 col-m-correct">{copyMsg}</small>
-
-      </div>
-
-    </div>
-
+      </Col>
+    </Row>
   )
 }
 

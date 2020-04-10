@@ -5,7 +5,6 @@ import { Menu, Button } from 'antd'
 import { NavBar, Drawer } from 'antd-mobile'
 import { MenuOutlined } from '@ant-design/icons'
 
-import NavBreadcrumb from '/imports/ui/components/elements/breadcrumb/navBreadcrumb'
 import './navMenuStyles.less'
 
 const NavMenuMain: React.FC = (): JSX.Element => {
@@ -17,16 +16,10 @@ const NavMenuMain: React.FC = (): JSX.Element => {
   const handleMenuClick = () => {
     setDrawerOpen(!drawerOpen)
   }
-  const handleLeftClick = () => {
-    console.log("clicked left menu")
-  }
   return (<>
     <NavBar
       className="navbar-mobile"
       mode="dark"
-      // icon={<Icon type="left" />}
-      onLeftClick={handleLeftClick}
-      leftContent={[<NavBreadcrumb/>]}
       rightContent={[
         <Button size="large" key="0" onClick={handleChangeDrawer}>
           <MenuOutlined/>
@@ -35,7 +28,7 @@ const NavMenuMain: React.FC = (): JSX.Element => {
     >
       <a href={FlowRouter.path('home')} key="0">
         <img src="/img/Asgard-Tri-White.png" className="float-left mr-2" width="28" height="28" alt="" />
-        <strong className="text-uppercase">Asgard</strong><small className='text-color-secondary'>&nbsp;BETA</small>
+        <strong className="font-brand text-uppercase">Asgard</strong><small className='text-color-secondary'>&nbsp;BETA</small>
       </a>
     </NavBar>
     <Drawer
@@ -54,7 +47,6 @@ export default NavMenuMain
 const TopMenu: React.FC<{handler:()=>void}> = ({handler}): JSX.Element => {
   const [selected, setSelected] = useState([''])
   useTracker(() => {
-    console.log('set selected menu item')
     setSelected([FlowRouter.current().route.name])
     FlowRouter.watchPathChange();
   },[FlowRouter])

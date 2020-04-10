@@ -24,9 +24,9 @@ const NavMenuPlain: React.FC = (): JSX.Element => {
         </Button>
       ]}
     >
-      <a className="navbar-brand text-uppercase font-size-h5" href={FlowRouter.path('home')} key="0">
+      <a href={FlowRouter.path('home')} key="0">
         <img src="/img/Asgard-Tri-White.png" className="float-left mr-2" width="28" height="28" alt="" />
-        <strong className="font-brand">Asgard</strong><small className='text-color-secondary'>&nbsp;BETA</small>
+        <strong className="font-brand text-uppercase">Asgard</strong><small className='text-color-secondary'>&nbsp;BETA</small>
       </a>
     </NavBar>
     <Drawer
