@@ -6,7 +6,7 @@ import { TokenData } from '/imports/api/collections/client_collections'
 import { TokenDataTypes } from '/imports/api/collections/tokenDataCollection'
 
 import { Row, Col, Typography, List } from 'antd'
-import Block from "/imports/ui/components/elements/renewBlock/block";
+import Block from "/imports/ui/components/elements/block/block";
 import CircleIcon, { Sizes } from '/imports/ui/components/elements/circleIcon'
 const { Title, Text } = Typography
 
