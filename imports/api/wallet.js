@@ -487,7 +487,6 @@ export default class WalletController extends EventEmitter{
 
   syncUserData = async () => {
     // This can be called after unlock
-    // potentially automaticallyl do this on unlock
     await this.updateUserBalances()
     await this.updateTransactionData()
     // TODO: update token data. Is this necessary?
@@ -523,8 +522,7 @@ export default class WalletController extends EventEmitter{
   
   resetWallet = async () => {
     // SECURITY: This is descrutive removal of all user account data and keystores
-    // TODO: Add a second 'confirmResetWallet()' method
-    // set local member/flag "resetting" or something prior executing below
+    // TODO: Add a second 'confirmResetWallet()' method ?
     try {
       this.lock() // this is to flag for app security
       await UserAccount.remove({})
@@ -543,48 +541,48 @@ export default class WalletController extends EventEmitter{
     console.log('sending from wallet method...')
     const userAccount = UserAccount.findOne()
 
-        try {
-          let keystore = window.localStorage.getItem("binance")
-          
-          let privateKey = BNB.sdk.crypto.getPrivateKeyFromKeyStore(keystore, password)
-          password = null // SECURITY: unset
-          await BNB.bnbClient.setPrivateKey(privateKey, true)
-          privateKey = null // SECURITY: unset
+    try {
+      let keystore = window.localStorage.getItem("binance")
+      
+      let privateKey = BNB.sdk.crypto.getPrivateKeyFromKeyStore(keystore, password)
+      password = null // SECURITY: unset
+      await BNB.bnbClient.setPrivateKey(privateKey, true)
+      privateKey = null // SECURITY: unset
 
-          // setLoadingMsg("sending tx")
-          console.log("emitting...")
-          this.emit('transfer','Sending funds')
-          
-          BNB.transfer(sender, recipient, amount, asset).then((e) => {
-            // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
-            return true
-          }).catch((e) => {
-            // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
-            console.log(e.message);
-            
-            if (e.message.includes("insufficient fund")) { // this is how insufficient fees return
-              if (e.message.includes("fee needed")) {
-                const res = e.message.split("but")[1].trim().split(" ")[0]
-                const amount = res.substring(0, res.length - 3)
-                const num = parseInt(amount)
-                // TODO: Add to form validation, get the fee schedule ahead of actually accessing client
-                const fee = BNB.calculateFee(num)
-                throw Error('Insufficient fee funds: ' + fee + ' (BNB) required')
-              } else {
-                // What other errors are there?
-              }
+      // setLoadingMsg("sending tx")
+      console.log("emitting...")
+      this.emit('transfer','Sending funds')
+      
+      BNB.transfer(sender, recipient, amount, asset).then((e) => {
+        // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
+        return true
+      }).catch((e) => {
+        // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
+        console.log(e.message);
+        
+        if (e.message.includes("insufficient fund")) { // this is how insufficient fees return
+          if (e.message.includes("fee needed")) {
+            const res = e.message.split("but")[1].trim().split(" ")[0]
+            const amount = res.substring(0, res.length - 3)
+            const num = parseInt(amount)
+            // TODO: Add to form validation, get the fee schedule ahead of actually accessing client
+            const fee = BNB.calculateFee(num)
+            throw Error('Insufficient fee funds: ' + fee + ' (BNB) required')
+          } else {
+            // What other errors are there?
+          }
 
-            } else if (e.message.includes("<")) { // this is how insuficient funds return
-              throw Error('Insufficient funds')
-            } else {
-              throw Error(e)
-            }
-
-          })
-          
-        } catch (error) {
-          throw Error(error)
+        } else if (e.message.includes("<")) { // this is how insuficient funds return
+          throw Error('Insufficient funds')
+        } else {
+          throw Error(e)
         }
+
+      })
+      
+    } catch (error) {
+      throw Error(error)
+    }
 
   }
 
@@ -594,40 +592,31 @@ export default class WalletController extends EventEmitter{
       const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
       await BNB.bnbClient.setPrivateKey(privateKey)
       await BNB.bnbTokens.freeze(userAccount.address, asset, amount)
-      // .then((e) => {
-      //       BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
-      // }).catch((e) => {
-      // })
-      // SECURITY: This creates errors, as key swap happens too soon...
       // TODO: private key should be unset
-      // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
-      
-      // return res
+      // This will be addressed with new Binance lib.
     } catch (e) {
-      // return Error(error)
+      if (e.message.includes("insufficient fund")) {
+        let msg
+        if (e.message.includes("fee needed")) {
+          // get the amount.
+          const res = e.message.split("but")[1].trim().split(" ")[0]
+          // const res2 = res.split(" ")
+          const amount = res.substring(0, res.length - 3)
+          const num = parseInt(amount)
+          const fee = BNB.calculateFee(num)
+          
+          msg = "Insufficient fee funds: " + fee + " (BNB) required"
+          // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
+        } else {
+          msg = "Error freezing funds"
+        }
+        throw Error(msg)
 
-            if (e.message.includes("insufficient fund")) {
-              let msg
-              if (e.message.includes("fee needed")) {
-                // get the amount.
-                const res = e.message.split("but")[1].trim().split(" ")[0]
-                // const res2 = res.split(" ")
-                const amount = res.substring(0, res.length - 3)
-                const num = parseInt(amount)
-                const fee = BNB.calculateFee(num)
-                
-                msg = "Insufficient fee funds: " + fee + " (BNB) required"
-                // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
-              } else {
-                msg = "Error freezing funds"
-              }
-              throw Error(msg)
-
-            } else if (e.message.includes("<")) { // this is how insuficient funds come back
-              const res = e.message.split(",").find(f => { return f.includes("<")} )
-              // TODO: Handle all errors
-              throw Error("Insufficient funds");
-            }
+      } else if (e.message.includes("<")) { // this is how insuficient funds come back
+        const res = e.message.split(",").find(f => { return f.includes("<")} )
+        // TODO: Handle all errors
+        throw Error("Insufficient funds");
+      }
       throw Error(e)
     }
 
@@ -638,33 +627,32 @@ export default class WalletController extends EventEmitter{
       const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
       await BNB.bnbClient.setPrivateKey(privateKey)
       await BNB.bnbTokens.unfreeze(userAccount.address, asset, amount)
-      // SECURITY: This creates errors, as key swap happens too soon...
       // TODO: private key should be unset
-      // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
+      // See above...
       
     } catch (e) {
-            if (e.message.includes("insufficient fund")) {
-              let msg
-              if (e.message.includes("fee needed")) {
-                // get the amount.
-                const res = e.message.split("but")[1].trim().split(" ")[0]
-                // const res2 = res.split(" ")
-                const amount = res.substring(0, res.length - 3)
-                const num = parseInt(amount)
-                const fee = BNB.calculateFee(num)
-                
-                msg = "Insufficient fee funds: " + fee + " (BNB) required"
-                // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
-              } else {
-                msg = "Error freezing funds"
-              }
-              throw Error(msg)
+      if (e.message.includes("insufficient fund")) {
+        let msg
+        if (e.message.includes("fee needed")) {
+          // get the amount.
+          const res = e.message.split("but")[1].trim().split(" ")[0]
+          // const res2 = res.split(" ")
+          const amount = res.substring(0, res.length - 3)
+          const num = parseInt(amount)
+          const fee = BNB.calculateFee(num)
+          
+          msg = "Insufficient fee funds: " + fee + " (BNB) required"
+          // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
+        } else {
+          msg = "Error freezing funds"
+        }
+        throw Error(msg)
 
-            } else if (e.message.includes("<")) { // this is how insuficient funds come back
-              const res = e.message.split(",").find(f => { return f.includes("<")} )
-              // TODO: Handle all errors
-              throw Error("Insufficient funds");
-            }
+      } else if (e.message.includes("<")) { // this is how insuficient funds come back
+        const res = e.message.split(",").find(f => { return f.includes("<")} )
+        // TODO: Handle all errors
+        throw Error("Insufficient funds");
+      }
       throw Error(e)
     }
   }

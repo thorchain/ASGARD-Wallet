@@ -1,14 +1,6 @@
-// const cosmosjs = require("@cosmostation/cosmosjs");
 import axios from 'axios';
 import bnbClient from '@binance-chain/javascript-sdk';
-// import { NET, isTestnet } from '../env';
-// const prod_hostnames = ['bepswap.com'];
-// const dev_hostnames = ['localhost'];
 
-// const isMainnet = prod_hostnames.includes(window.location.hostname);
-// const isTestnet = true;
-// const isTestnet = !isMainnet;
-// const isDevnet = dev_hostnames.includes(window.location.hostname);
 const networks = {
   mainnet: {
     name: 'mainnet',
@@ -30,25 +22,14 @@ const TokenManagement = bnbClient;
 
 class Binance {
   constructor() {
+    // Defaults to testnet
+    this.net = networks.testnet
+    this.sdk = bnbClient;
     this.baseURL = networks.testnet.baseURL
     this.explorerBaseURL = networks.testnet.explorerBaseURL
-
-    this.net = networks.testnet
-
-    // this.httpClient = axios.create({
-    //   baseURL: this.baseURL + '/api/v1',
-    //   contentType: 'application/json',
-    // });
-
-    this.sdk = bnbClient;
-    // this.bnbClient = new bnbClient(this.baseURL);
   }
   setNetwork = (network) => {
-    console.warn('trying to set network in binance client...');
-    console.log(network)
-    
     if (networks[network]) {
-      console.log('sending it...')
       this.net = networks[network]
       this.baseURL = this.net.baseURL
       this.explorerBaseURL = this.net.explorerBaseURL
@@ -58,8 +39,6 @@ class Binance {
   }
 
   initializeClient = async privateKey => {
-    console.log('initializing client...')
-    console.log(this.net)
     try {
       this.bnbClient = new bnbClient(this.baseURL);
       this.httpClient = axios.create({
