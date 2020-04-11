@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { WALLET } from '/imports/startup/client/init'
 import { NewWalletFormSchema } from '/imports/lib/schemas/newWalletFormSchemas'
+import { Session } from 'meteor/session'
 
 const WalletCreateForm: React.FC = (): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState<string>('')
@@ -8,8 +9,13 @@ const WalletCreateForm: React.FC = (): JSX.Element => {
   const [repeatPasswordError, setRepeatPasswordError] = useState<string>('')
   
   const generateNewWallet = (pw:string) => {
-    WALLET.generateNewWallet(pw, null).then(async () => {
+    // set the network...
+    console.log('creating new wallet')
+    const network = Session.get('network')
+    console.log(network)
+    WALLET.generateNewWallet(pw, null, null, network).then(async () => {
       await WALLET.unlock(pw)
+      Session.set('network', null)
       FlowRouter.go('walletAccounts')
     })
   }

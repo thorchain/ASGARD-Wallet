@@ -1,52 +1,77 @@
-const cosmosjs = require("@cosmostation/cosmosjs");
+// const cosmosjs = require("@cosmostation/cosmosjs");
 import axios from 'axios';
 import bnbClient from '@binance-chain/javascript-sdk';
 // import { NET, isTestnet } from '../env';
-const prod_hostnames = ['bepswap.com'];
-const dev_hostnames = ['localhost'];
+// const prod_hostnames = ['bepswap.com'];
+// const dev_hostnames = ['localhost'];
 
 // const isMainnet = prod_hostnames.includes(window.location.hostname);
-const isTestnet = true;
+// const isTestnet = true;
 // const isTestnet = !isMainnet;
 // const isDevnet = dev_hostnames.includes(window.location.hostname);
-
-const NET = isTestnet ? 'testnet' : 'mainnet';
-const CHAIN_ID = isTestnet ? 'Binance-Chain-Nile' : 'Binance-Chain-Tigris';
-
+const networks = {
+  mainnet: {
+    name: 'mainnet',
+    chainId: 'Binance-Chain-Tigris',
+    baseURL: 'https://dex.binance.org',
+    explorerBaseURL: 'https://explorer.binance.org',
+    addressPrefix: 'bnb'
+  },
+  testnet: {
+    name: 'testnet',
+    chainId: 'Binance-Chain-Nile',
+    baseURL: 'https://testnet-dex.binance.org',
+    explorerBaseURL: 'https://testnet-explorer.binance.org',
+    addressPrefix: 'tbnb'
+  }
+}
 
 const TokenManagement = bnbClient;
 
 class Binance {
   constructor() {
-    this.baseURL = 'https://dex.binance.org';
-    this.explorerBaseURL = 'https://explorer.binance.org';
-    if (isTestnet) {
-      this.baseURL = 'https://testnet-dex.binance.org';
-      this.explorerBaseURL = 'https://testnet-explorer.binance.org';
-    }
+    this.baseURL = networks.testnet.baseURL
+    this.explorerBaseURL = networks.testnet.explorerBaseURL
 
-    this.net = NET;
+    this.net = networks.testnet
 
-    this.httpClient = axios.create({
-      baseURL: this.baseURL + '/api/v1',
-      contentType: 'application/json',
-    });
+    // this.httpClient = axios.create({
+    //   baseURL: this.baseURL + '/api/v1',
+    //   contentType: 'application/json',
+    // });
 
     this.sdk = bnbClient;
-    this.bnbClient = new bnbClient(this.baseURL);
-    this.bnbClient.chooseNetwork(this.net);
-    this.bnbClient.initChain();
-    this.bnbTokens = new TokenManagement(this.bnbClient).tokens;
+    // this.bnbClient = new bnbClient(this.baseURL);
+  }
+  setNetwork = (network) => {
+    console.warn('trying to set network in binance client...');
+    console.log(network)
+    
+    if (networks[network]) {
+      console.log('sending it...')
+      this.net = networks[network]
+      this.baseURL = this.net.baseURL
+      this.explorerBaseURL = this.net.explorerBaseURL
+    } else {
+      throw Error('Incorrect network name')
+    }
   }
 
   initializeClient = async privateKey => {
-    // TODO: Add switch for types of networks (test/main)
+    console.log('initializing client...')
+    console.log(this.net)
     try {
+      this.bnbClient = new bnbClient(this.baseURL);
+      this.httpClient = axios.create({
+        baseURL: this.baseURL + '/api/v1',
+        contentType: 'application/json',
+      });
       if (privateKey) {
         await this.bnbClient.setPrivateKey(privateKey);
       }
-      this.bnbClient.chooseNetwork(this.net);
+      await this.bnbClient.chooseNetwork(this.net.name);
       await this.bnbClient.initChain();
+      this.bnbTokens = new TokenManagement(this.bnbClient).tokens;
     } catch (error) {
       return error;
     }
@@ -77,7 +102,7 @@ class Binance {
   };
 
   getPrefix = () => {
-    return isTestnet ? 'tbnb' : 'bnb';
+    return this.net.name === 'testnet' ? 'tbnb' : 'bnb';
   };
 
   isValidAddress = address => {
@@ -263,7 +288,7 @@ class Binance {
     //       }
     //     }
     //   ],
-    //   chain_id: CHAIN_ID,
+    //   chain_id: CHAIN_ID, // replace with local member
     //   fee: { amount: [ { amount: String(5000), denom: "bnb" } ], gas: String(200000) },
     //   memo: "",
     //   account_number: String(data.result.value.account_number),

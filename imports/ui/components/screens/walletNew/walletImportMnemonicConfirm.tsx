@@ -144,6 +144,7 @@ const MnemonicConfirmScreen: React.FC = (): JSX.Element => {
             WALLET.generateNewWallet(obj.password, mnemonic).then(async () => {
               await WALLET.unlock(obj.password)
               Session.set('mnemonic', null) // SECURITY: unset
+              Session.set('network', null) // SECURITY: unset
               FlowRouter.go('walletAccounts')
             })
           } catch (err) {

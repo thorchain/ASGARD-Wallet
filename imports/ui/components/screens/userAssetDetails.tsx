@@ -93,17 +93,17 @@ const UserAssetDetailsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
         <Row>
 
           <Col span={12}>
-            <Button type="primary" size="large" disabled={(!sendable())} onClick={() => goRoute('walletSend')}>Send</Button>
+            <Button type="primary" size="large" block disabled={(!sendable())} onClick={() => goRoute('walletSend')}>Send</Button>
             <Block layout vertical center>
-              <Button type="link" disabled={(!freezable())} onClick={() => goRoute('walletFreeze')}>Freeze</Button>
+              <Button type="link" block disabled={(!freezable())} onClick={() => goRoute('walletFreeze')}>Freeze</Button>
               <small>Freeze assets on address</small>
             </Block>
           </Col>
 
           <Col span={12}>
-            <Button type="primary" size="large" onClick={() => goRoute('walletReceive')}>Receive</Button>
+            <Button type="primary" size="large" block onClick={() => goRoute('walletReceive')}>Receive</Button>
             <Block layout vertical center>
-              <Button type="link" disabled={(!unfreezable())} onClick={() => goRoute('walletUnfreeze')}>Unfreeze</Button>
+              <Button type="link" block disabled={(!unfreezable())} onClick={() => goRoute('walletUnfreeze')}>Unfreeze</Button>
               <small>Unfreeze assets on address</small>
             </Block>
           </Col>

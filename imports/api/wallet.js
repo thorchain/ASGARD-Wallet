@@ -365,6 +365,7 @@ export default class WalletController extends EventEmitter{
     }
 
     this.emit('walletKeystoreCreated', 'Wallet keystore created')
+    console.log('created keystsore')
     return account
   }
 
@@ -372,7 +373,7 @@ export default class WalletController extends EventEmitter{
     return await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
   }
 
-  generateNewWallet = async (pw, mnemonic, keystore) => {
+  generateNewWallet = async (pw, mnemonic, keystore, network) => {
     return new Promise(async (resolve, reject) => {
       // do a thing, possibly async, then…
       // TODO: below, refactor to store agnostic method call adapter
@@ -385,6 +386,15 @@ export default class WalletController extends EventEmitter{
       } else {
         
         try {
+          if (network) { 
+            try {
+              await BNB.setNetwork(network)
+            } catch (error) {
+              console.error(error)
+              throw Error('Wrong network name')
+            }
+          }
+          
           // TODO: Replace with promiseAll()?
           // TODO: remove dependency on params by referencing local elements instead
           if (keystore) {
@@ -437,8 +447,8 @@ export default class WalletController extends EventEmitter{
   }
   unlock = async (pw) => {
     // intended only for just created wallets, no sync, no init conn
+    // DO NOT USE FOR UNLOCKING ON SIGNUP/NEW app instance... use below
     const check = await this.checkUserAuth(pw)
-    // const account = UserAccount.findOne()
     if (check) {
       await BNB.initializeClient() // pubkey only?
       this.setIsUnlocked(true) // SECURITY: leave last
@@ -453,11 +463,16 @@ export default class WalletController extends EventEmitter{
     const account = UserAccount.findOne()
     if (await this.checkUserAuth(pw)) {
       try {
+        // Very simple but non-extensible way of checking for testnet
+        console.warn(account.address.charAt(0))
+        if (account.address.charAt(0) === 'b') {
+          BNB.setNetwork('mainnet')
+        }
 
         await BNB.initializeClient() // pubkey only?
         await this.initializeConn(account.address) // this should fail gracefully for offline use
         await this.syncUserData()
-        this.setIsUnlocked(true) // SECURITY: leave last
+        this.setIsUnlocked(true) // SECURITY: leave last of internal methods
         UserAccount.update({_id:account._id},{$set: {locked: false}})
         
       } catch (error) {
@@ -481,10 +496,13 @@ export default class WalletController extends EventEmitter{
 
   updateUserBalances = async () => {
     console.log("updating user balances");
+    console.log(this.getClient())
+    BNB.bnbClient.chooseNetwork('mainnet')
 
     const user = UserAccount.findOne()
     let balances = {}
     await BNB.getBalances(user.address).then(e => {
+      console.log('did we get SOME BALANCES?')
       balances = e.map(function(elem) {
         elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
         elem.free = parseFloat(elem.free)
@@ -498,6 +516,8 @@ export default class WalletController extends EventEmitter{
         UserAccount.update({_id:doc._id}, {$set: {assets: balances}})
         this.updateUserAssetsStore(balances)
       }
+    }).catch(e => {
+      console.log('we caught the error')
     })
   }
   

@@ -1,10 +1,16 @@
-import React from 'react';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import React, { useEffect } from 'react'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { Session } from 'meteor/session'
 
 import { Row, Col, Button, Typography } from 'antd'
 const { Title } = Typography
 
 const StartScreen: React.FC = (): JSX.Element => {
+  useEffect(() => {
+    if (!Session.get('network')) {
+      Session.set('network', 'testnet')
+    }
+  },[])
   return (
     <Row>
       <Col xs={{span:12,offset:6}} md={{span:10,offset:7}} lg={{span:8,offset:8}} xl={{span:6,offset:9}}>
@@ -13,10 +19,10 @@ const StartScreen: React.FC = (): JSX.Element => {
       <Col md={{span:16,offset:4}} lg={{span:12,offset:6}} xl={{span:10,offset:7}}>
 
         <Title className="font-brand" level={2}>Asgard Wallet</Title>
-        <Button type="primary" size={'large'} className={'ant-btn-brand'} onClick={() => FlowRouter.go('walletCreate')}>
+        <Button type="primary" size={'large'} className={'ant-btn-brand'} block onClick={() => FlowRouter.go('walletCreate')}>
           New
         </Button>
-        <Button type="primary" size={'large'} onClick={() => FlowRouter.go('walletImport')}>
+        <Button type="primary" size={'large'} block onClick={() => FlowRouter.go('walletImport')}>
           Import
         </Button>
         <div>

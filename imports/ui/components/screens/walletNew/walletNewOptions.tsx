@@ -1,34 +1,38 @@
-import React, { useMemo, useCallback }from 'react'
-import { WALLET } from '/imports/startup/client/init'
-// import { UserAccount } from '/imports/api/collections/client_collections'
+import React, { useMemo, useCallback, useState, useEffect }from 'react'
+import { Session } from 'meteor/session'
+import { Session } from 'meteor/session'
 
 import { Row, Col, Typography, Button } from 'antd'
 const { Title } = Typography
 
 const WalletNewOptionsScreen: React.FC = (): JSX.Element => {
-  const lockWallet = useCallback(async () => {
-    try {
-      await WALLET.lock()
-      FlowRouter.go('walletUnlock')
-    } catch (error) {
-      console.log(error)
-    }
-  },[])
-  const setNetwork = useCallback(async () => {
-    console.log("selecting network...")
-    try {
-      // await WALLET.resetWallet()
-      // FlowRouter.go('walletStart') 
-    } catch (error) {
-      // console.log(error)
-    }
-  },[])
+  const [selectedNetwork, setSelectedNetwork] = useState('testnet')
+  useEffect(() => {
+    const net = Session.get('network')
+    if (net) {setSelectedNetwork(net)}
+  })
+  const setNetwork = (param:string) => {
+    setSelectedNetwork(param)
+    Session.set('network', param)
+  }
+  const activeClass = (which:string) => useMemo(() => {
+    // override adding class because AntD has no 'success' color button...
+    return which === selectedNetwork ? 'ant-button-success' : ''
+  },[selectedNetwork])
   return (
     <Row>
       <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
-        <Title level={4}>Import Options</Title>
-        <Button type="primary" onClick={lockWallet} size="large">Lock Wallet</Button>
-        <Button type="default" onClick={setNetwork} size="large">Network</Button>
+        <Title level={4}>New Wallet Options</Title>
+        <Button type="primary" size="large" block disabled>Test Wallet</Button>
+        <label>Choose Network</label>
+        <Row>
+          <Col>
+            <Button type="default" size="large" className={activeClass('testnet')} block onClick={(e) => setNetwork('testnet',e)}>Test Network</Button>
+          </Col>
+          <Col>
+            <Button type="default" size="large" className={activeClass('mainnet')} block onClick={(e) => setNetwork('mainnet',e)}>Main Network</Button>
+          </Col>
+        </Row>
       </Col>
     </Row>
   )

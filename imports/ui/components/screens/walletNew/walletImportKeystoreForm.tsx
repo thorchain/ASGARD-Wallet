@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { FlowRouter } from 'meteor/kadira:flow-router'
+import { Session } from 'meteor/session'
 import { WALLET } from '/imports/startup/client/init'
 import { ImportKeystoreFormSchema, ImportKeystoreFormBridge } from '/imports/lib/schemas/importWalletFormSchemas'
 
@@ -51,13 +52,17 @@ const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
   }
 
   const handleImportFormSubmit = useCallback(async (model:{password:string}) => {
+    console.log('we need to put network type')
+    const network = Session.get('network')
+    console.log(network)
     if (!keystore) {
       setKeystoreError('Keystore file required')
     } else {
       setLoadingMsg("Processing file")
       await delay(200)
-      WALLET.generateNewWallet(model.password, null, keystore).then(async () => {
+      WALLET.generateNewWallet(model.password, null, keystore, network).then(async () => {
         await WALLET.unlock(model.password)
+        Session.set('network', null)
         FlowRouter.go("home")
       }).catch(err => {
         if (err.message.includes('wrong password')) {
