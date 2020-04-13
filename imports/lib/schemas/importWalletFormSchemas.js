@@ -6,7 +6,7 @@ import { HiddenField } from 'uniforms-antd';
 
 
 validateMnemonic = function () {
-  if (!BNB.sdk.crypto.validateMnemonic(this.value.trim())) { return "invalidMnemonic"}
+  if (!BNB.sdk.crypto.validateMnemonic(this.value)) { return "invalidMnemonic"}
 }
 
 const File = new SimpleSchema({

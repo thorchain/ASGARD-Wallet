@@ -13,7 +13,6 @@ const NavMenuSimple: React.FC = (): JSX.Element => {
     setDrawerIsOpen(!drawerIsOpen)
   }
   const handleMenuClick = () => {
-    console.log('clicked the menu item...')
     setDrawerIsOpen(!drawerIsOpen)
   }
   return (<>

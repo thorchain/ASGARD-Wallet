@@ -31,22 +31,22 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
 
   const fileName = () => userAccount.address.concat('-keystore.txt')
 
-  const lockWallet = async () => {
+  const lockWallet = useCallback(async () => {
     try {
       await WALLET.lock()
       FlowRouter.go('walletUnlock')
     } catch (error) {
       console.log(error)
     }
-  }
-  const removeWallet = async () => { 
+  },[])
+  const removeWallet = useCallback(async () => { 
     try {
       await WALLET.resetWallet()
       FlowRouter.go('walletStart') 
     } catch (error) {
       console.log(error)
     }
-  }
+  },[])
 
   return (
     <Row>
@@ -83,14 +83,14 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
         <Row>
 
           <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:6}}>
-            <Button type="primary" onClick={lockWallet} size="large" style={{marginTop:"32px",marginBottom:"32px"}}>Lock Wallet</Button>
+            <Button type="primary" block onClick={lockWallet} size="large" style={{marginTop:"32px",marginBottom:"32px"}}>Lock Wallet</Button>
         
             <Title level={4}>Wallet Management</Title>
             <div className="input-group">
-              <Button type="primary" size="large" disabled={true}>View Phrase</Button>
-              <a href={downloadLink} download={fileName()} className="ant-btn ant-btn-lg ant-btn-primary">Export Keystore</a>
+              <Button type="primary" size="large" block disabled={true}>View Phrase</Button>
+              <a href={downloadLink} download={fileName()} className="ant-btn ant-btn-lg ant-btn-primary" style={{width:'100%'}}>Export Keystore</a>
             </div>
-            <Button type="danger" size="large" onClick={removeWallet}>Remove Wallet</Button>
+            <Button type="danger" size="large" block onClick={removeWallet}>Remove Wallet</Button>
         
           </Col>
 

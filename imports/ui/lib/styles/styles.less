@@ -19,9 +19,8 @@
   }
 }
 
-// Temp simple style hack. Overly generalized? Mostly for mobile.
 .ant-btn {
-  width: 100%;
+  // width: 100%;
   letter-spacing: 0.08em;
   font-family: Exo2;
   & .ant-btn-primary {
@@ -29,7 +28,17 @@
       background-color: darken(@primary-color, 12%)
     }
   }
+  &.ant-button-success {
+    background-color: @success-color !important;
+    color: @text-color-inverse;
+    transition: background-color 0.5s ease;
+  }
+  &.ant-button-warning { background-color: @warning-color !important; }
+  &.ant-button-info { background-color: @info-color !important; }
+  &.ant-button-danger { background-color: @error-color !important; }
 }
+
+
 
 .ant-btn {
   margin-top: .8em;

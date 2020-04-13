@@ -35,9 +35,9 @@ const UnlockOptionsScreen: React.FC = (): JSX.Element => {
     <Row>
       <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
         <Title level={4}>Options</Title>
-        <Button type="primary" onClick={lockWallet} size="large">Lock Wallet</Button>
-        <a href={downloadLink} download={fileName} className="ant-btn ant-btn-lg ant-btn-primary">Export Keystore</a>
-        <Button type="danger" onClick={removeWallet} size="large">Remove Wallet</Button>
+        <Button type="primary" block onClick={lockWallet} size="large">Lock Wallet</Button>
+        <a href={downloadLink} download={fileName} className="ant-btn ant-btn-lg ant-btn-primary" style={{width:'100%'}}>Export Keystore</a>
+        <Button type="danger" block onClick={removeWallet} size="large">Remove Wallet</Button>
       </Col>
     </Row>
   )
