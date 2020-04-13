@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback, useState, useEffect }from 'react'
 import { Session } from 'meteor/session'
-import { Session } from 'meteor/session'
 
 import { Row, Col, Typography, Button } from 'antd'
 const { Title } = Typography

@@ -244,8 +244,6 @@ export default class WalletController extends EventEmitter{
         asset.shortSymbol = asset.symbol.split("-")[0].substr(0,4)
         return asset
       })
-      // IF this is a new asset, then we need to get the token data
-      // TODO: replace with 'updateTokenData()' method
       const account = UserAccount.findOne();
       if (assets.length !== account.assets.length) {
         // Check to only add new tokens
@@ -256,9 +254,6 @@ export default class WalletController extends EventEmitter{
         })
         TokenData.batchInsert(addTokens)
       }
-      // const select = account && account._id ? {_id: account._id} : {};
-      // This method should only ever be called after instatiation of wallet/account
-      // Refactor into seperate 'updateUserAccount' method
       UserAccount.update({_id: account._id}, {$set: {assets: assets}})
       this.updateUserAssetsStore(assets)
 
@@ -499,8 +494,6 @@ export default class WalletController extends EventEmitter{
   }
 
   updateUserBalances = async () => {
-    BNB.bnbClient.chooseNetwork('mainnet')
-
     const user = UserAccount.findOne()
     let balances = {}
     await BNB.getBalances(user.address).then(e => {

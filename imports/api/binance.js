@@ -22,8 +22,7 @@ const TokenManagement = bncClient;
 
 class Binance {
   constructor() {
-    // Defaults to testnet
-    console.log("constructed binance...")
+    // Defaults to testnet in case
     this.net = networks.testnet
     this.sdk = bncClient
     this.baseURL = networks.testnet.baseURL
@@ -34,17 +33,9 @@ class Binance {
       this.net = networks[network]
       this.baseURL = this.net.baseURL
       this.explorerBaseURL = this.net.explorerBaseURL
-      if (!this.bnbClient) {
-        console.log('this is the binance client api url...')
-        console.log(this.baseURL);
-        this.bnbClient = await new bncClient(this.baseURL)
-      }
-      console.log('this is the binance client network name')
-      console.log(this.net.name)
+      this.bnbClient = await new bncClient(this.baseURL)
       await this.bnbClient.chooseNetwork(this.net.name)
       await this.bnbClient.initChain()
-      console.log(' this is the client...')
-      console.log(this.bnbClient)
       this.bnbTokens = await new TokenManagement(this.bnbClient).tokens;
       this.httpClient = await axios.create({
         baseURL: this.baseURL + '/api/v1',
@@ -54,18 +45,6 @@ class Binance {
       throw Error('Incorrect network name')
     }
   }
-
-  // initializeClient = async privateKey => {
-  //   try {
-  //     if (privateKey) {
-  //       await this.bnbClient.setPrivateKey(privateKey);
-  //     }
-  //     await this.bnbClient.initChain();
-  //     this.bnbTokens = await new TokenManagement(this.bnbClient).tokens;
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // };
 
   useLedgerSigningDelegate = (
     ledgerApp,
@@ -130,12 +109,11 @@ class Binance {
     return this.httpClient.get(query);
   }
   getTokenInfo = (symbol) => {
-    // const query = "/tokens?token=" + symbol
-    // return this.httpClient.get(query)
+    const query = "/tokens?token=" + symbol
+    return this.httpClient.get(query)
   }
 
   setMarketRates = async symbols => {
-    // TODO: Make to handle an array
     const bnb = await axios.get(
       'https://api.cryptonator.com/api/ticker/bnb-usd',
     );
@@ -198,16 +176,6 @@ class Binance {
         MarketData.batchInsert(pairsFound)
     /* ***************************** */
 
-    // const rune = await this.httpClient.get('/markets?limit=200');
-    // console.log(rune);
-    // const symbol_data = rune.data.find(s => {
-    //   // must also have bnb as quote asset
-    //   return s.base_asset_symbol === symbol;
-    // });
-    
-    // return (
-    //   parseFloat(bnb.data.ticker.price) * parseFloat(symbol_data.list_price)
-    // );
   };
 
   // convert fee number into BNB tokens
@@ -258,45 +226,9 @@ class Binance {
     return result;
   };
 
-  // SECURITY: Private keys are here
-  sendRawTransaction = (sender, recipient, amount, asset, key) => {
-    // let stdSignMsg = cosmosjs.newStdMsg({
-    //   msgs: [
-    //     {
-    //       type: "cosmos-sdk/MsgSend",
-    //       value: {
-    //         amount: [
-    //           {
-    //             amount: String(amount),
-    //             denom: asset
-    //             // denom: "uatom"
-    //           }
-    //         ],
-    //         from_address: sender,
-    //         to_address: recipient
-    //       }
-    //     }
-    //   ],
-    //   chain_id: CHAIN_ID, // replace with local member
-    //   fee: { amount: [ { amount: String(5000), denom: "bnb" } ], gas: String(200000) },
-    //   memo: "",
-    //   account_number: String(data.result.value.account_number),
-    //   sequence: String(data.result.value.sequence)
-    // });
-
-    // const signedTx = cosmosjs.sign(stdSignMsg, ecpairPriv);
-
-  }
 
 }
 
-// NOTE: cypress expects this here
-// window.binance = new Binance();
-
-// const { binance } = window;
-
-// export default binance;
-// Letting Meteor component handle context
 export default Binance;
 
 
