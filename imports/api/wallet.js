@@ -88,7 +88,6 @@ export default class WalletController extends EventEmitter{
 
     const duplicates = UserTransactions.find({txHash:{$in:txHashes}}).fetch()
     if (duplicates.length > 0) {
-      console.log("we found duplicate transactions!");
       transactions = txs.filter(e => {
         return duplicates.find(f => { return e.txHash !== f.txHash})
       })
@@ -162,7 +161,7 @@ export default class WalletController extends EventEmitter{
     }
   }
   updateTokenData = async () => {
-    console.log('updating token data')
+    console.log('updating token data...')
     // This is better than a sync, since we don't have
     // `updateMultiple` for mongo on the client.
     await this.initializeTokenData()
@@ -257,37 +256,6 @@ export default class WalletController extends EventEmitter{
       UserAccount.update({_id: account._id}, {$set: {assets: assets}})
       this.updateUserAssetsStore(assets)
 
-
-
-    // this.watchTxsLoop()
-  }
-  connHanleTransferMessage = () => {
-    // TODO: parse ws event and pre-load tx with 'unconfirmed' status
-    // this will need to be updated later after the actual tx even is in block
-    //   // This data is missing too much (timestamp for instance)
-    //   // Its possible if we want full speed to do as below, then update later
-    //   // this has to match existing schema
-    //   // {
-    //   //   "stream": "transfers",
-    //   //   "data": {
-    //   //     "e": "outboundTransferInfo",
-    //   //     "E": 64970606,
-    //   //     "H": "613970E613792738E00854F06567EB7531B22C9CB033DAB4653A81DA37B4BE8B",
-    //   //     "M": "",
-    //   //     "f": "tbnb1ewk0yypfhuw358qw35rw059jkfym96rt7hrykm",
-    //   //     "t": [
-    //   //       {
-    //   //         "o": "tbnb1u4s75mmna5mwqzkj63vye5ykq4numzrnww4rnu",
-    //   //         "c": [
-    //   //           {
-    //   //             "a": "TCAN-014",
-    //   //             "A": "77.00000000"
-    //   //           }
-    //   //         ]
-    //   //       }
-    //   //     ]
-    //   //   }
-    //   // }
   }
 
   updateUserAssetsStore = (assets) => {
@@ -366,7 +334,6 @@ export default class WalletController extends EventEmitter{
     }
 
     this.emit('walletKeystoreCreated', 'Wallet keystore created')
-    console.log('created keystsore')
     return account
   }
 
@@ -458,10 +425,8 @@ export default class WalletController extends EventEmitter{
     if (await this.checkUserAuth(pw)) {
       try {
         if (account.address.charAt(0) === 't') {
-          console.log('calling set test net')
           await BNB.setNetwork('testnet')
         } else {
-          console.log('calling set main net')
           await BNB.setNetwork('mainnet')
         }
         await this.initializeConn(account.address) // this should fail gracefully for offline use
