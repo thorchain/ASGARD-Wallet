@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { FlowRouter } from 'meteor/kadira:flow-router'
+import { Session } from 'meteor/session'
 import { WALLET } from '/imports/startup/client/init'
 import { ImportMnemonicFormSchema, ImportMnemonicFormBridge } from '/imports/lib/schemas/importWalletFormSchemas'
 
@@ -14,7 +15,8 @@ const ImportMnemonicForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
   },[activetab])
 
   const importMnemonicWallet = (mnemonic: string, password: string) => {
-    WALLET.generateNewWallet(password, mnemonic).then(async () => {
+    const network = Session.get('network')
+    WALLET.generateNewWallet(password, mnemonic, null, network).then(async () => {
       await WALLET.unlock(password)
       FlowRouter.go("home")
     }).catch(e => { throw Error(e)}) // TODO: Display some error

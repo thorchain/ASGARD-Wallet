@@ -10,7 +10,6 @@ import './navMenuStyles.less'
 const NavMenuMain: React.FC = (): JSX.Element => {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const handleChangeDrawer = () => {
-    console.log('clicked toggle menu')
     setDrawerOpen(!drawerOpen)
   }
   const handleMenuClick = () => {

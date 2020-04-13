@@ -1,5 +1,5 @@
 import axios from 'axios';
-import bnbClient from '@binance-chain/javascript-sdk';
+import bncClient from '@binance-chain/javascript-sdk';
 
 const networks = {
   mainnet: {
@@ -18,43 +18,54 @@ const networks = {
   }
 }
 
-const TokenManagement = bnbClient;
+const TokenManagement = bncClient;
 
 class Binance {
   constructor() {
     // Defaults to testnet
+    console.log("constructed binance...")
     this.net = networks.testnet
-    this.sdk = bnbClient;
+    this.sdk = bncClient
     this.baseURL = networks.testnet.baseURL
     this.explorerBaseURL = networks.testnet.explorerBaseURL
   }
-  setNetwork = (network) => {
+  setNetwork = async (network) => {
     if (networks[network]) {
       this.net = networks[network]
       this.baseURL = this.net.baseURL
       this.explorerBaseURL = this.net.explorerBaseURL
+      if (!this.bnbClient) {
+        console.log('this is the binance client api url...')
+        console.log(this.baseURL);
+        this.bnbClient = await new bncClient(this.baseURL)
+      }
+      console.log('this is the binance client network name')
+      console.log(this.net.name)
+      await this.bnbClient.chooseNetwork(this.net.name)
+      await this.bnbClient.initChain()
+      console.log(' this is the client...')
+      console.log(this.bnbClient)
+      this.bnbTokens = await new TokenManagement(this.bnbClient).tokens;
+      this.httpClient = await axios.create({
+        baseURL: this.baseURL + '/api/v1',
+        contentType: 'application/json',
+      });
     } else {
       throw Error('Incorrect network name')
     }
   }
 
-  initializeClient = async privateKey => {
-    try {
-      this.bnbClient = new bnbClient(this.baseURL);
-      this.httpClient = axios.create({
-        baseURL: this.baseURL + '/api/v1',
-        contentType: 'application/json',
-      });
-      if (privateKey) {
-        await this.bnbClient.setPrivateKey(privateKey);
-      }
-      await this.bnbClient.chooseNetwork(this.net.name);
-      await this.bnbClient.initChain();
-      this.bnbTokens = new TokenManagement(this.bnbClient).tokens;
-    } catch (error) {
-      return error;
-    }
-  };
+  // initializeClient = async privateKey => {
+  //   try {
+  //     if (privateKey) {
+  //       await this.bnbClient.setPrivateKey(privateKey);
+  //     }
+  //     await this.bnbClient.initChain();
+  //     this.bnbTokens = await new TokenManagement(this.bnbClient).tokens;
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
 
   useLedgerSigningDelegate = (
     ledgerApp,
@@ -99,7 +110,6 @@ class Binance {
     try {
 
       const res = await this.fees()
-      console.log(res)
       const fee = res.data.find((item) => {
         return item.msg_type === txType
       })
@@ -220,7 +230,7 @@ class Binance {
         }
       }
     }
-    return this.httpClient(query)
+    return this.httpClient.get(query)
   }
 
   getAccount = address => {

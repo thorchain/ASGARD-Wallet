@@ -161,6 +161,12 @@ export default class WalletController extends EventEmitter{
       TokenData.batchInsert(tokens)
     }
   }
+  updateTokenData = async () => {
+    console.log('updating token data')
+    // This is better than a sync, since we don't have
+    // `updateMultiple` for mongo on the client.
+    await this.initializeTokenData()
+  }
   watchTxsLoop = async () => {
     // IF this is running, just extend it to a max amount
     // track as member to class
@@ -370,7 +376,9 @@ export default class WalletController extends EventEmitter{
   }
 
   generateAccountFromKeystore = async (pw, keystore) => {
-    return await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+    const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+    delete account.privateKey // SECURITY: imperative
+    return account
   }
 
   generateNewWallet = async (pw, mnemonic, keystore, network) => {
@@ -393,14 +401,13 @@ export default class WalletController extends EventEmitter{
               console.error(error)
               throw Error('Wrong network name')
             }
+          } else {
+            // we default to testnet for now
+            await BNB.setNetwork('testnet')
           }
           
-          // TODO: Replace with promiseAll()?
-          // TODO: remove dependency on params by referencing local elements instead
           if (keystore) {
-            // this is where passwor errors come
             account = await this.generateAccountFromKeystore(pw, keystore)
-            delete account.privateKey // SECURITY: imperative
             account.keystore = keystore
           } else {
             account = await this.generateAccount(pw, mnemonic)
@@ -419,7 +426,6 @@ export default class WalletController extends EventEmitter{
           //
           resolve("resolved")
         } catch (error) {
-          console.log(Error(error))
           reject(Error(error));
         }
         
@@ -436,8 +442,6 @@ export default class WalletController extends EventEmitter{
     if (this.getIsUnlocked() === true) {
       this.conn.close()
     }
-    // handle if this is broken data source during wallet reset
-    // we unlock before reset in case the reset fails
     const account = UserAccount.findOne()
     if (account && account._id) {
       UserAccount.update({_id:account._id},{$set: {locked: true}})
@@ -447,10 +451,10 @@ export default class WalletController extends EventEmitter{
   }
   unlock = async (pw) => {
     // intended only for just created wallets, no sync, no init conn
-    // DO NOT USE FOR UNLOCKING ON SIGNUP/NEW app instance... use below
+    // DO NOT USE FOR login or new app instance... use below
     const check = await this.checkUserAuth(pw)
     if (check) {
-      await BNB.initializeClient() // pubkey only?
+      // await BNB.initializeClient() // pubkey only?
       this.setIsUnlocked(true) // SECURITY: leave last
       const account = UserAccount.findOne()
       UserAccount.update({_id:account._id},{$set: {locked: false}})
@@ -463,13 +467,13 @@ export default class WalletController extends EventEmitter{
     const account = UserAccount.findOne()
     if (await this.checkUserAuth(pw)) {
       try {
-        // Very simple but non-extensible way of checking for testnet
-        console.warn(account.address.charAt(0))
-        if (account.address.charAt(0) === 'b') {
-          BNB.setNetwork('mainnet')
+        if (account.address.charAt(0) === 't') {
+          console.log('calling set test net')
+          await BNB.setNetwork('testnet')
+        } else {
+          console.log('calling set main net')
+          await BNB.setNetwork('mainnet')
         }
-
-        await BNB.initializeClient() // pubkey only?
         await this.initializeConn(account.address) // this should fail gracefully for offline use
         await this.syncUserData()
         this.setIsUnlocked(true) // SECURITY: leave last of internal methods
@@ -489,19 +493,17 @@ export default class WalletController extends EventEmitter{
     // This can be called after unlock
     await this.updateUserBalances()
     await this.updateTransactionData()
+    await this.updateTokenData()
     // TODO: update token data. Is this necessary?
     // TODO: update market data
   }
 
   updateUserBalances = async () => {
-    console.log("updating user balances");
-    console.log(this.getClient())
     BNB.bnbClient.chooseNetwork('mainnet')
 
     const user = UserAccount.findOne()
     let balances = {}
     await BNB.getBalances(user.address).then(e => {
-      console.log('did we get SOME BALANCES?')
       balances = e.map(function(elem) {
         elem.shortSymbol = elem.symbol.split("-")[0].substr(0,4)
         elem.free = parseFloat(elem.free)
@@ -516,7 +518,7 @@ export default class WalletController extends EventEmitter{
         this.updateUserAssetsStore(balances)
       }
     }).catch(e => {
-      console.log('we caught the error')
+      console.log(e)
     })
   }
   
@@ -538,7 +540,6 @@ export default class WalletController extends EventEmitter{
   }
 
   transferFunds = async (sender, recipient, amount, asset, password) => {
-    console.log('sending from wallet method...')
     const userAccount = UserAccount.findOne()
 
     try {
@@ -550,7 +551,6 @@ export default class WalletController extends EventEmitter{
       privateKey = null // SECURITY: unset
 
       // setLoadingMsg("sending tx")
-      console.log("emitting...")
       this.emit('transfer','Sending funds')
       
       BNB.transfer(sender, recipient, amount, asset).then((e) => {

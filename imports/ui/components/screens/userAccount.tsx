@@ -31,22 +31,22 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
 
   const fileName = () => userAccount.address.concat('-keystore.txt')
 
-  const lockWallet = async () => {
+  const lockWallet = useCallback(async () => {
     try {
       await WALLET.lock()
       FlowRouter.go('walletUnlock')
     } catch (error) {
       console.log(error)
     }
-  }
-  const removeWallet = async () => { 
+  },[])
+  const removeWallet = useCallback(async () => { 
     try {
       await WALLET.resetWallet()
       FlowRouter.go('walletStart') 
     } catch (error) {
       console.log(error)
     }
-  }
+  },[])
 
   return (
     <Row>
