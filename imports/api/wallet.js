@@ -187,11 +187,12 @@ export default class WalletController extends EventEmitter{
     }
   }
 
-  initializeConn = async (address) => {
+  initializeConn = async (address, network) => {
     console.log("initializing sockets...");
     try {
       // todo: do we need to use '/stream' ?
-      this.conn = new WebSocket('wss://testnet-dex.binance.org/api/ws')
+      const url = network === 'testnet' ? 'wss://testnet-dex.binance.org/api/ws' : 'wss://dex.binance.org/api/ws'
+      this.conn = new WebSocket(url)
     } catch (error) {
       // For debugging
       console.log("socket error");
@@ -379,7 +380,7 @@ export default class WalletController extends EventEmitter{
           await this.initializeTokenData(account)
           await this.initializeTransactionData(account.address)
           // Binance network websocket
-          await this.initializeConn(account.address)
+          await this.initializeConn(account.address, network)
           //
           resolve("resolved")
         } catch (error) {
@@ -424,12 +425,9 @@ export default class WalletController extends EventEmitter{
     const account = UserAccount.findOne()
     if (await this.checkUserAuth(pw)) {
       try {
-        if (account.address.charAt(0) === 't') {
-          await BNB.setNetwork('testnet')
-        } else {
-          await BNB.setNetwork('mainnet')
-        }
-        await this.initializeConn(account.address) // this should fail gracefully for offline use
+        const network = account.address.charAt(0) === 't' ? 'testnet' : 'mainnet'
+        await BNB.setNetwork(network)
+        await this.initializeConn(account.address, network) // this should fail gracefully for offline use
         await this.syncUserData()
         this.setIsUnlocked(true) // SECURITY: leave last of internal methods
         UserAccount.update({_id:account._id},{$set: {locked: false}})
