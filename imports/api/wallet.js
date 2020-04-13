@@ -390,14 +390,9 @@ export default class WalletController extends EventEmitter{
         
         try {
           if (network) { 
-            try {
-              await BNB.setNetwork(network)
-            } catch (error) {
-              console.error(error)
-              throw Error('Wrong network name')
-            }
+            await BNB.setNetwork(network)
           } else {
-            // we default to testnet for now
+            // We default to testnet for now
             await BNB.setNetwork('testnet')
           }
           
@@ -543,14 +538,11 @@ export default class WalletController extends EventEmitter{
       await BNB.bnbClient.setPrivateKey(privateKey, true)
       privateKey = null // SECURITY: unset
 
-      // setLoadingMsg("sending tx")
       this.emit('transfer','Sending funds')
       
       BNB.transfer(sender, recipient, amount, asset).then((e) => {
-        // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
         return true
       }).catch((e) => {
-        // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")// SECURITY: Unset with useless key... remove when replaced with raw tx
         console.log(e.message);
         
         if (e.message.includes("insufficient fund")) { // this is how insufficient fees return
@@ -599,7 +591,6 @@ export default class WalletController extends EventEmitter{
           const fee = BNB.calculateFee(num)
           
           msg = "Insufficient fee funds: " + fee + " (BNB) required"
-          // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
         } else {
           msg = "Error freezing funds"
         }
@@ -607,7 +598,6 @@ export default class WalletController extends EventEmitter{
 
       } else if (e.message.includes("<")) { // this is how insuficient funds come back
         const res = e.message.split(",").find(f => { return f.includes("<")} )
-        // TODO: Handle all errors
         throw Error("Insufficient funds");
       }
       throw Error(e)
@@ -620,8 +610,6 @@ export default class WalletController extends EventEmitter{
       const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
       await BNB.bnbClient.setPrivateKey(privateKey)
       await BNB.bnbTokens.unfreeze(userAccount.address, asset, amount)
-      // TODO: private key should be unset
-      // See above...
       
     } catch (e) {
       if (e.message.includes("insufficient fund")) {
@@ -635,7 +623,6 @@ export default class WalletController extends EventEmitter{
           const fee = BNB.calculateFee(num)
           
           msg = "Insufficient fee funds: " + fee + " (BNB) required"
-          // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
         } else {
           msg = "Error freezing funds"
         }

@@ -52,9 +52,7 @@ const ImportKeystoreForm: React.FC<{activetab?:boolean}> = ({activetab}): JSX.El
   }
 
   const handleImportFormSubmit = useCallback(async (model:{password:string}) => {
-    console.log('we need to put network type')
     const network = Session.get('network')
-    console.log(network)
     if (!keystore) {
       setKeystoreError('Keystore file required')
     } else {

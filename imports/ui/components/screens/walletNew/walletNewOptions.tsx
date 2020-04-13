@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect }from 'react'
+import React, {useState, useEffect } from 'react'
 import { Session } from 'meteor/session'
 
 import { Row, Col, Typography, Button } from 'antd'
@@ -14,10 +14,10 @@ const WalletNewOptionsScreen: React.FC = (): JSX.Element => {
     setSelectedNetwork(param)
     Session.set('network', param)
   }
-  const activeClass = (which:string) => useMemo(() => {
+  const activeClass = (which:string) => {
     // override adding class because AntD has no 'success' color button...
     return which === selectedNetwork ? 'ant-button-success' : ''
-  },[selectedNetwork])
+  }
   return (
     <Row>
       <Col md={{span:16,offset:4}} lg={{span:12,offset:6}}>
