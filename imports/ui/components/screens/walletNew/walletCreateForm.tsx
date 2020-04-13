@@ -9,10 +9,7 @@ const WalletCreateForm: React.FC = (): JSX.Element => {
   const [repeatPasswordError, setRepeatPasswordError] = useState<string>('')
   
   const generateNewWallet = (pw:string) => {
-    // set the network...
-    console.log('creating new wallet')
     const network = Session.get('network')
-    console.log(network)
     WALLET.generateNewWallet(pw, null, null, network).then(async () => {
       await WALLET.unlock(pw)
       Session.set('network', null)
