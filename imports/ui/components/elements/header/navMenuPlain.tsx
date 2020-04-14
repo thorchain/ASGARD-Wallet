@@ -6,6 +6,8 @@ import { MenuOutlined } from '@ant-design/icons'
 
 import './navMenuStyles.less'
 
+import NetworkIndicator from '/imports/ui/components/elements/networkIndicator'
+
 const NavMenuPlain: React.FC = (): JSX.Element => {
   const [drawerIsOpen, setDrawerIsOpen] = useState(false)
   const handleChangeDrawer = () => {
@@ -19,9 +21,12 @@ const NavMenuPlain: React.FC = (): JSX.Element => {
       className="navbar-mobile navbar-transparent"
       mode="dark"
       rightContent={[
-        <Button size="large" key="0" onClick={handleChangeDrawer}>
-          <MenuOutlined />
-        </Button>
+        <div key="0">
+          <NetworkIndicator/>
+          <Button size="large" onClick={handleChangeDrawer}>
+            <MenuOutlined />
+          </Button>
+        </div>
       ]}
     >
       <a href={FlowRouter.path('home')} key="0">
