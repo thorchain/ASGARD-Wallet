@@ -28,6 +28,7 @@ const UnlockScreen: React.FC = (): JSX.Element => {
 
       <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:0}}>
         <AutoForm
+          validator={{ clean: true }}
           model={WalletUnlockFormSchema.clean({})}
           schema={WalletUnlockFormBridge}
           onSubmit={handleUnlockFormSubmit}

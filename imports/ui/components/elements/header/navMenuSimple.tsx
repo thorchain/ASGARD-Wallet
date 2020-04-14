@@ -64,7 +64,7 @@ const SimpleTopMenu: React.FC<{handler:()=>void}> = ({handler}): JSX.Element => 
         <a href="" onClick={() => FlowRouter.go('walletImport')}>Import</a>
       </Menu.Item>
       <Menu.Item key="walletImportOptions">
-        <a href="" onClick={() => FlowRouter.go('walletImportOptions')}>Options</a>
+        <a href="" onClick={() => FlowRouter.go('walletStart')}>Start</a>
       </Menu.Item>
     </Menu>
   )

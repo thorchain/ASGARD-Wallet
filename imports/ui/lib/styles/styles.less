@@ -19,8 +19,8 @@
   }
 }
 
+// Buttons
 .ant-btn {
-  // width: 100%;
   letter-spacing: 0.08em;
   font-family: Exo2;
   & .ant-btn-primary {
@@ -38,8 +38,6 @@
   &.ant-button-danger { background-color: @error-color !important; }
 }
 
-
-
 .ant-btn {
   margin-top: .8em;
   margin-bottom: 1.2em;
@@ -55,9 +53,15 @@ form .ant-btn, form .ant-upload {
   margin-top: unset;
   margin-bottom: unset;
 }
+
+
+// Tabs
 .ant-tabs-nav {
   > .ant-tabs-ink-bar {
     background-color: @link-color;
+  }
+  .ant-tabs-tab-active {
+    color: @Accent-Green !important;
   }
   .ant-tabs-tab-active, .ant-tabs-tab {
     font-weight: 500;
@@ -65,8 +69,7 @@ form .ant-btn, form .ant-upload {
   }
 }
 
-
-// ICONS
+// Icons
 .ant-empty-img-simple {
   g {
     > ellipsis { display: none; }
@@ -133,7 +136,6 @@ button.ant-btn.ant-btn-brand {
 }
 
 /* *********** Utilitites ************* */
-
 span.ant-typography-ellipsis {
   // TODO: Confirm this is not a correction for Bootstrap
   display: block !important;

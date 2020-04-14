@@ -7,6 +7,7 @@ const { Title } = Typography
 const WalletNewOptionsScreen: React.FC = (): JSX.Element => {
   const [selectedNetwork, setSelectedNetwork] = useState('testnet')
   useEffect(() => {
+    console.log('set the network')
     const net = Session.get('network')
     if (net) {setSelectedNetwork(net)}
   })
