@@ -1,21 +1,22 @@
 import React, { useMemo } from 'react'
+import { Session } from 'meteor/session'
 import { WALLET } from '/imports/startup/client/init'
 import { DeploymentUnitOutlined } from '@ant-design/icons'
 import { Tooltip } from 'antd'
 
 const NetworkIndicator: React.FC = (): JSX.Element => {
   const networkTypeClass = useMemo(() => {
-    const client = WALLET.getClient()
-    if (client?.network === 'mainnet') {
+    const network = Session.get('network') ? Session.get('network') : WALLET.getClient()
+    if (network === 'mainnet') {
       return 'text-color-success'
     } else {
       return 'text-color-warning'
     }
-  },[WALLET])
+  },[WALLET, Session])
   const titleText = useMemo(() => {
-    const client = WALLET.getClient()
-    return client?.network === 'mainnet' ? 'mainnet' : 'testnet'
-  },[WALLET])
+    const network = Session.get('network') ? Session.get('network') : WALLET.getClient()
+    return network === 'mainnet' ? 'mainnet' : 'testnet'
+  },[WALLET, Session])
   return (
     <Tooltip title={titleText}>
       <div style={{display:"inline-flex",marginRight:"12px"}}>
