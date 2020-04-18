@@ -35,6 +35,12 @@ const ItemRow: React.FC<ItemProps> = (props): JSX.Element => {
         } else {
           return {msg:"receive", label: "from", address:from, color:"success", op:"+"}
         }
+      case "outboundTransferInfo":
+        if (from === usr.address) {
+          return {msg:"pending", label: "to", address:to, color:"secondary", op:"-"}
+        } else {
+          return {msg:"pending", label: "from", address:from, color:"secondary", op:"+"}
+        }
       case 'FREEZE_TOKEN':
         return {msg:"freeze", label: "from", address:from, color:"info", op:"-"}
       case 'UN_FREEZE_TOKEN':

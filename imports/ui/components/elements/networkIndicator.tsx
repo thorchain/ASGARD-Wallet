@@ -6,16 +6,22 @@ import { Tooltip } from 'antd'
 
 const NetworkIndicator: React.FC = (): JSX.Element => {
   const networkTypeClass = useMemo(() => {
-    const network = Session.get('network') ? Session.get('network') : WALLET.getClient()
-    if (network === 'mainnet') {
+    const network = Session.get('network') ? Session.get('network') : WALLET.getClient()?.network
+    if (typeof network === 'undefined') {
+      return 'text-color-secondary'
+    } else if (network === 'mainnet') {
       return 'text-color-success'
     } else {
       return 'text-color-warning'
     }
   },[WALLET, Session])
   const titleText = useMemo(() => {
-    const network = Session.get('network') ? Session.get('network') : WALLET.getClient()
-    return network === 'mainnet' ? 'mainnet' : 'testnet'
+    const network = Session.get('network') ? Session.get('network') : WALLET.getClient()?.network
+    if (typeof network === 'undefined') {
+      return 'disconnected'
+    } else {
+      return network
+    }
   },[WALLET, Session])
   return (
     <Tooltip title={titleText}>
