@@ -71,7 +71,7 @@ export default class WalletController extends EventEmitter{
   updateTransactionData = async () => {
     console.log("updating transactions...");
     const address = UserAccount.findOne().address
-    const lastTx = UserTransactions.find({},{sort: {timeStamp: -1}, limit: 1}).fetch()
+    const lastTx = UserTransactions.find({pending: {$ne:true}},{sort: {timeStamp: -1}, limit: 1}).fetch()
     let epoch, d, transactions
 
     if (lastTx[0]) {
@@ -88,14 +88,15 @@ export default class WalletController extends EventEmitter{
 
     const duplicates = UserTransactions.find({txHash:{$in:txHashes}}).fetch()
     if (duplicates.length > 0) {
-      transactions = txs.filter(e => {
-        return duplicates.find(f => { return e.txHash !== f.txHash})
-      })
-    } else {transactions = txs}
+      console.log('handling duplicates')
+      for (let i = 0; i < duplicates.length; i++) {
+        const e = duplicates[i]
+        const result = UserTransactions.remove({txHash:e.txHash})
+      }
+    } 
     
-    // TODO: Filter for existing txs
-    if (transactions.length > 0) {
-      return UserTransactions.batchInsert(transactions)
+    if (txs.length > 0) {
+      return UserTransactions.batchInsert(txs)
     } else {
       return []
     }
@@ -219,7 +220,7 @@ export default class WalletController extends EventEmitter{
           this.connHandleAccountMessage(data)
           break;
         case "transfers":
-          this.connHanleTransferMessage(data)
+          this.connHandleTransferMessage(data)
           break;
       
         default:
@@ -229,6 +230,31 @@ export default class WalletController extends EventEmitter{
       this.watchTxsLoop()
     }
 
+  }
+  connHandleTransferMessage = async (data) => {
+    console.log('we got the transfer message')
+    console.log(data.data)
+    const time = new Date(Date.now()).toISOString()
+    if (data.data) {
+
+      const tx = {
+        txHash: data.data.H,
+        memo: data.data.M,
+        fromAddr: data.data.f,
+        toAddr: data.data.t[0].o,
+        txAsset: data.data.t[0].c[0].a,
+        value: data.data.t[0].c[0].A,
+        blockHeight: data.data.E,
+        txType: data.data.e,
+        timeStamp: time,
+        pending: true
+      }
+      console.log('we are inserting temporary record')
+      const res = UserTransactions.upsert({txHash:tx.txHash},tx)
+      console.log(UserTransactions.findOne(res.insertedId))
+      return res
+      
+    }
   }
   connHandleAccountMessage = async (data) => {
       const balances = data.data.B

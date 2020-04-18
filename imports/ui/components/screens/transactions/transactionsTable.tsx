@@ -27,8 +27,15 @@ const TransactionsTable: React.FC<Props> = ({transactions}): JSX.Element => {
         return {msg:"freeze", label: "from", address:from, color:"info", op:"-"}
       case 'UN_FREEZE_TOKEN':
         return {msg:"unfreeze", label: "to", address:from, color:"warning", op:"+"}
+      case "outboundTransferInfo":
+        if (from === usr.address) {
+          return {msg:"pending", label: "to", address:to, color:"secondary", op:"-"}
+        } else {
+          return {msg:"pending", label: "from", address:from, color:"secondary", op:"+"}
+        }
+
       default:
-        return {msg:'',label:'',address:'',color:'',op:''}
+        return {msg:'pending',label:'',address:'',color:'',op:''}
     }
 
   }

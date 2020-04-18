@@ -23,7 +23,7 @@ const NavMenuPlain: React.FC = (): JSX.Element => {
       rightContent={[
         <div key="0">
           <NetworkIndicator/>
-          <Button size="large" onClick={handleChangeDrawer}>
+          <Button size="large" style={{border:"none"}} onClick={handleChangeDrawer}>
             <MenuOutlined />
           </Button>
         </div>
