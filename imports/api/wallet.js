@@ -232,8 +232,6 @@ export default class WalletController extends EventEmitter{
 
   }
   connHandleTransferMessage = async (data) => {
-    console.log('we got the transfer message')
-    console.log(data.data)
     const time = new Date(Date.now()).toISOString()
     if (data.data) {
 
@@ -249,11 +247,7 @@ export default class WalletController extends EventEmitter{
         timeStamp: time,
         pending: true
       }
-      console.log('we are inserting temporary record')
-      const res = UserTransactions.upsert({txHash:tx.txHash},tx)
-      console.log(UserTransactions.findOne(res.insertedId))
-      return res
-      
+      return UserTransactions.upsert({txHash:tx.txHash},tx)
     }
   }
   connHandleAccountMessage = async (data) => {
