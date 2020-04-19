@@ -20,12 +20,12 @@ const StartScreen: React.FC = (): JSX.Element => {
   },[])
   return (
     <Row>
-      <Col xs={{span:12,offset:6}} md={{span:10,offset:7}} lg={{span:8,offset:8}} xl={{span:6,offset:9}}>
-        <img src="/img/Asgard-Tri-Gradient.svg" width="100%" style={{padding:"32px"}}/>
+      <Col xs={{span:16,offset:4}} sm={{span:10,offset:7}} md={{span:8,offset:8}} lg={{span:8,offset:8}} xl={{span:6,offset:9}}>
+        <img src="/img/Asgard-Tri-Gradient.svg" width="100%" style={{padding:"32px",paddingTop:"0px"}}/>
       </Col>
       <Col md={{span:16,offset:4}} lg={{span:12,offset:6}} xl={{span:10,offset:7}}>
 
-        <Title className="font-brand" level={2}>Asgard Wallet</Title>
+        <Title className="font-brand" level={2}>Asgard <span style={{fontWeight:"lighter"}}>Wallet</span></Title>
         <Tabs defaultActiveKey={activeTab} size="large" onChange={handleTabChange}>
 
           <TabPane tab="Testnet" key="testnet">

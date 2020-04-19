@@ -21,7 +21,7 @@ export const WalletUnlockFormSchema = new SimpleSchema({
     label: "pwHash",
     autoValue() {
       const res = UserAccount.findOne()
-      return res.pwHash
+      return res?.pwHash
     },
     uniforms: HiddenField
   }
