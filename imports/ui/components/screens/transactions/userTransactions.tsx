@@ -4,19 +4,20 @@ import { UserTransactionTypes } from '/imports/api/collections/userTransactionsC
 import { UserTransactions } from '/imports/api/collections/client_collections'
 
 import TransactionsList from './transactionsList'
+import { Row, Col, Typography } from 'antd';
+const { Title } = Typography
 
 const UserTransactionsScreen: React.FC = (): JSX.Element => {
   const userTransactions: UserTransactionTypes[] = useTracker(() => {
     return UserTransactions.find({},{sort: {timeStamp: -1}}).fetch()
   }, [])
   return (
-    <div className="row">
-      <div className="col">
-        <h5 className="text-center mb-4">Transactions</h5>
+    <Row>
+      <Col>
+        <Title level={4}>Transactions</Title>
         <TransactionsList transactions={userTransactions} />
-      </div>
-
-    </div>
+      </Col>
+    </Row>
   )
 }
 export default UserTransactionsScreen

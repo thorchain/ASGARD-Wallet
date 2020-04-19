@@ -1,0 +1,123 @@
+@import '/imports/ui/lib/styles/_antd_custom.less';
+
+.menu-bar{
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  padding: 0 20px;
+  border-bottom: solid 1px #e8e8e8;
+  overflow: auto;
+  // box-shadow: 0 0 30px #f3f1f1;
+}
+
+.ant-drawer-body{
+  padding: 0;
+}
+.ant-drawer-body .ant-menu-horizontal > .ant-menu-item, .ant-drawer-body .ant-menu-horizontal > .ant-menu-submenu{
+  display: inline-block;
+  width: 100%;
+}
+.ant-drawer-body .ant-menu-horizontal{
+  border-bottom: none;
+}
+.ant-drawer-body .ant-menu-horizontal > .ant-menu-item:hover{
+  border-bottom-color: transparent;
+}
+
+@media(max-width: @screen-md-max){
+  .barsMenu{
+    display: inline-block;
+  }
+  .leftMenu,.rightMenu{
+    display: none;
+  }
+  .logo a{
+    margin-left: -20px;
+  }
+  .menuCon .ant-menu-item, .menuCon .ant-menu-submenu-title{
+    padding: 1px 20px;
+  }
+  .logo a{
+    padding: 10px 20px;
+  }
+}
+
+.ant-menu-vertical { border: none; }
+.my-drawer {
+  position: absolute;
+  top: 54px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.my-drawer .am-drawer-sidebar {
+  background-color: #fff;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.my-drawer .am-drawer-sidebar .am-list {
+  width: 300px;
+  padding: 0;
+}
+
+.am-navbar.am-navbar-mobile {
+  z-index: 1010;
+}
+
+.my-drawer > .am-drawer-sidebar {
+  overflow: visible;
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    bottom: -2px;
+    left: 0px;
+    height: 2px;
+    background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
+  }
+  .ant-menu {
+    &.ant-menu-dark {
+      background: @Primary-Gray !important;
+      li.ant-menu-item {
+        color: @White-Gray !important;
+      }
+      li.ant-menu-item-selected {
+        // background-color: @Darker-Gray !important;
+        background: @Dark-Gray !important;
+        // color: @Light-Gray !important;
+        > a { color: @Light-Gray !important; }
+      }
+    }
+    li.ant-menu-item {
+      text-align: right;
+      margin-top:0;
+      margin-bottom:0;
+    }
+    li.ant-menu-item-selected {
+      pointer-events: none;
+      cursor: default;
+    }
+
+  }
+}
+.ant-menu-vertical .ant-menu-item {
+  font-size: @font-size-lg;
+}
+#app-wrapper > .am-navbar {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 54px;
+  z-index: 1000;
+  .am-navbar-right {
+    .ant-btn {
+      width: unset;
+      margin: 0;
+      >.anticon {
+        font-size: @font-size-lg;
+      }
+    }
+  }
+}

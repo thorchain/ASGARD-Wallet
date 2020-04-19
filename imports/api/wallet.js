@@ -11,6 +11,9 @@ export default class WalletController extends EventEmitter{
     let locked = true
     this.getIsUnlocked = function () { return !locked }
     this.setIsUnlocked = function (v) { locked = v === true ? false : true }
+    let connected = navigator.onLine || false
+    this.getConnected = function () { return connected }
+    this.setConnected = function (v) { connected = v === true ? true : false }
   }
   isUnlocked () { return this.getIsUnlocked() }
 
@@ -68,7 +71,7 @@ export default class WalletController extends EventEmitter{
   updateTransactionData = async () => {
     console.log("updating transactions...");
     const address = UserAccount.findOne().address
-    const lastTx = UserTransactions.find({},{sort: {timeStamp: -1}, limit: 1}).fetch()
+    const lastTx = UserTransactions.find({pending: {$ne:true}},{sort: {timeStamp: -1}, limit: 1}).fetch()
     let epoch, d, transactions
 
     if (lastTx[0]) {
@@ -85,15 +88,15 @@ export default class WalletController extends EventEmitter{
 
     const duplicates = UserTransactions.find({txHash:{$in:txHashes}}).fetch()
     if (duplicates.length > 0) {
-      console.log("we found duplicate transactions!");
-      transactions = txs.filter(e => {
-        return duplicates.find(f => { return e.txHash !== f.txHash})
-      })
-    } else {transactions = txs}
+      console.log('handling duplicates')
+      for (let i = 0; i < duplicates.length; i++) {
+        const e = duplicates[i]
+        const result = UserTransactions.remove({txHash:e.txHash})
+      }
+    } 
     
-    // TODO: Filter for existing txs
-    if (transactions.length > 0) {
-      return UserTransactions.batchInsert(transactions)
+    if (txs.length > 0) {
+      return UserTransactions.batchInsert(txs)
     } else {
       return []
     }
@@ -158,6 +161,12 @@ export default class WalletController extends EventEmitter{
       TokenData.batchInsert(tokens)
     }
   }
+  updateTokenData = async () => {
+    console.log('updating token data...')
+    // This is better than a sync, since we don't have
+    // `updateMultiple` for mongo on the client.
+    await this.initializeTokenData()
+  }
   watchTxsLoop = async () => {
     // IF this is running, just extend it to a max amount
     // track as member to class
@@ -179,11 +188,12 @@ export default class WalletController extends EventEmitter{
     }
   }
 
-  initializeConn = async (address) => {
+  initializeConn = async (address, network) => {
     console.log("initializing sockets...");
     try {
       // todo: do we need to use '/stream' ?
-      this.conn = new WebSocket('wss://testnet-dex.binance.org/api/ws')
+      const url = network === 'testnet' ? 'wss://testnet-dex.binance.org/api/ws' : 'wss://dex.binance.org/api/ws'
+      this.conn = new WebSocket(url)
     } catch (error) {
       // For debugging
       console.log("socket error");
@@ -195,10 +205,14 @@ export default class WalletController extends EventEmitter{
     // subscribe transactions
     
     this.conn.onopen = (evt) => {
+      this.setConnected(true)
       console.log("socket connected")
       this.conn.send(JSON.stringify({ method: "subscribe", topic: "transfers", address: address }))
       this.conn.send(JSON.stringify({ method: "subscribe", topic: "accounts", address: address}));
     }
+    this.conn.onerror = (msg) => {this.setConnected(false)}
+    this.conn.onclose = (msg) => {this.setConnected(false)}
+    
     this.conn.onmessage = (msg) => {
       const data = JSON.parse(msg.data)
       switch (data.stream) {
@@ -206,7 +220,7 @@ export default class WalletController extends EventEmitter{
           this.connHandleAccountMessage(data)
           break;
         case "transfers":
-          this.connHanleTransferMessage(data)
+          this.connHandleTransferMessage(data)
           break;
       
         default:
@@ -216,6 +230,25 @@ export default class WalletController extends EventEmitter{
       this.watchTxsLoop()
     }
 
+  }
+  connHandleTransferMessage = async (data) => {
+    const time = new Date(Date.now()).toISOString()
+    if (data.data) {
+
+      const tx = {
+        txHash: data.data.H,
+        memo: data.data.M,
+        fromAddr: data.data.f,
+        toAddr: data.data.t[0].o,
+        txAsset: data.data.t[0].c[0].a,
+        value: data.data.t[0].c[0].A,
+        blockHeight: data.data.E,
+        txType: data.data.e,
+        timeStamp: time,
+        pending: true
+      }
+      return UserTransactions.upsert({txHash:tx.txHash},tx)
+    }
   }
   connHandleAccountMessage = async (data) => {
       const balances = data.data.B
@@ -231,8 +264,6 @@ export default class WalletController extends EventEmitter{
         asset.shortSymbol = asset.symbol.split("-")[0].substr(0,4)
         return asset
       })
-      // IF this is a new asset, then we need to get the token data
-      // TODO: replace with 'updateTokenData()' method
       const account = UserAccount.findOne();
       if (assets.length !== account.assets.length) {
         // Check to only add new tokens
@@ -243,43 +274,9 @@ export default class WalletController extends EventEmitter{
         })
         TokenData.batchInsert(addTokens)
       }
-      // const select = account && account._id ? {_id: account._id} : {};
-      // This method should only ever be called after instatiation of wallet/account
-      // Refactor into seperate 'updateUserAccount' method
       UserAccount.update({_id: account._id}, {$set: {assets: assets}})
       this.updateUserAssetsStore(assets)
 
-
-
-    // this.watchTxsLoop()
-  }
-  connHanleTransferMessage = () => {
-    // TODO: parse ws event and pre-load tx with 'unconfirmed' status
-    // this will need to be updated later after the actual tx even is in block
-    //   // This data is missing too much (timestamp for instance)
-    //   // Its possible if we want full speed to do as below, then update later
-    //   // this has to match existing schema
-    //   // {
-    //   //   "stream": "transfers",
-    //   //   "data": {
-    //   //     "e": "outboundTransferInfo",
-    //   //     "E": 64970606,
-    //   //     "H": "613970E613792738E00854F06567EB7531B22C9CB033DAB4653A81DA37B4BE8B",
-    //   //     "M": "",
-    //   //     "f": "tbnb1ewk0yypfhuw358qw35rw059jkfym96rt7hrykm",
-    //   //     "t": [
-    //   //       {
-    //   //         "o": "tbnb1u4s75mmna5mwqzkj63vye5ykq4numzrnww4rnu",
-    //   //         "c": [
-    //   //           {
-    //   //             "a": "TCAN-014",
-    //   //             "A": "77.00000000"
-    //   //           }
-    //   //         ]
-    //   //       }
-    //   //     ]
-    //   //   }
-    //   // }
   }
 
   updateUserAssetsStore = (assets) => {
@@ -362,10 +359,12 @@ export default class WalletController extends EventEmitter{
   }
 
   generateAccountFromKeystore = async (pw, keystore) => {
-    return await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+    const account = await BNB.bnbClient.recoverAccountFromKeystore(keystore, pw)
+    delete account.privateKey // SECURITY: imperative
+    return account
   }
 
-  generateNewWallet = async (pw, mnemonic, keystore) => {
+  generateNewWallet = async (pw, mnemonic, keystore, network) => {
     return new Promise(async (resolve, reject) => {
       // do a thing, possibly async, then…
       // TODO: below, refactor to store agnostic method call adapter
@@ -378,12 +377,15 @@ export default class WalletController extends EventEmitter{
       } else {
         
         try {
-          // TODO: Replace with promiseAll()?
-          // TODO: remove dependency on params by referencing local elements instead
+          if (network) { 
+            await BNB.setNetwork(network)
+          } else {
+            // We default to testnet for now
+            await BNB.setNetwork('testnet')
+          }
+          
           if (keystore) {
-            // this is where passwor errors come
             account = await this.generateAccountFromKeystore(pw, keystore)
-            delete account.privateKey // SECURITY: imperative
             account.keystore = keystore
           } else {
             account = await this.generateAccount(pw, mnemonic)
@@ -398,11 +400,10 @@ export default class WalletController extends EventEmitter{
           await this.initializeTokenData(account)
           await this.initializeTransactionData(account.address)
           // Binance network websocket
-          await this.initializeConn(account.address)
+          await this.initializeConn(account.address, network)
           //
           resolve("resolved")
         } catch (error) {
-          console.log(Error(error))
           reject(Error(error));
         }
         
@@ -419,8 +420,6 @@ export default class WalletController extends EventEmitter{
     if (this.getIsUnlocked() === true) {
       this.conn.close()
     }
-    // handle if this is broken data source during wallet reset
-    // we unlock before reset in case the reset fails
     const account = UserAccount.findOne()
     if (account && account._id) {
       UserAccount.update({_id:account._id},{$set: {locked: true}})
@@ -430,10 +429,10 @@ export default class WalletController extends EventEmitter{
   }
   unlock = async (pw) => {
     // intended only for just created wallets, no sync, no init conn
+    // DO NOT USE FOR login or new app instance... use below
     const check = await this.checkUserAuth(pw)
-    // const account = UserAccount.findOne()
     if (check) {
-      await BNB.initializeClient() // pubkey only?
+      // await BNB.initializeClient() // pubkey only?
       this.setIsUnlocked(true) // SECURITY: leave last
       const account = UserAccount.findOne()
       UserAccount.update({_id:account._id},{$set: {locked: false}})
@@ -446,11 +445,11 @@ export default class WalletController extends EventEmitter{
     const account = UserAccount.findOne()
     if (await this.checkUserAuth(pw)) {
       try {
-
-        await BNB.initializeClient() // pubkey only?
-        await this.initializeConn(account.address) // this should fail gracefully for offline use
+        const network = account.address.charAt(0) === 't' ? 'testnet' : 'mainnet'
+        await BNB.setNetwork(network)
+        await this.initializeConn(account.address, network) // this should fail gracefully for offline use
         await this.syncUserData()
-        this.setIsUnlocked(true) // SECURITY: leave last
+        this.setIsUnlocked(true) // SECURITY: leave last of internal methods
         UserAccount.update({_id:account._id},{$set: {locked: false}})
         
       } catch (error) {
@@ -465,16 +464,14 @@ export default class WalletController extends EventEmitter{
 
   syncUserData = async () => {
     // This can be called after unlock
-    // potentially automaticallyl do this on unlock
     await this.updateUserBalances()
     await this.updateTransactionData()
+    await this.updateTokenData()
     // TODO: update token data. Is this necessary?
     // TODO: update market data
   }
 
   updateUserBalances = async () => {
-    console.log("updating user balances");
-
     const user = UserAccount.findOne()
     let balances = {}
     await BNB.getBalances(user.address).then(e => {
@@ -491,13 +488,14 @@ export default class WalletController extends EventEmitter{
         UserAccount.update({_id:doc._id}, {$set: {assets: balances}})
         this.updateUserAssetsStore(balances)
       }
+    }).catch(e => {
+      console.log(e)
     })
   }
   
   resetWallet = async () => {
     // SECURITY: This is descrutive removal of all user account data and keystores
-    // TODO: Add a second 'confirmResetWallet()' method
-    // set local member/flag "resetting" or something prior executing below
+    // TODO: Add a second 'confirmResetWallet()' method ?
     try {
       this.lock() // this is to flag for app security
       await UserAccount.remove({})
@@ -512,46 +510,79 @@ export default class WalletController extends EventEmitter{
     }
   }
 
+  transferFunds = async (sender, recipient, amount, asset, password) => {
+    const userAccount = UserAccount.findOne()
+
+    try {
+      let keystore = window.localStorage.getItem("binance")
+      
+      let privateKey = BNB.sdk.crypto.getPrivateKeyFromKeyStore(keystore, password)
+      password = null // SECURITY: unset
+      await BNB.bnbClient.setPrivateKey(privateKey, true)
+      privateKey = null // SECURITY: unset
+
+      this.emit('transfer','Sending funds')
+      
+      BNB.transfer(sender, recipient, amount, asset).then((e) => {
+        return true
+      }).catch((e) => {
+        console.log(e.message);
+        
+        if (e.message.includes("insufficient fund")) { // this is how insufficient fees return
+          if (e.message.includes("fee needed")) {
+            const res = e.message.split("but")[1].trim().split(" ")[0]
+            const amount = res.substring(0, res.length - 3)
+            const num = parseInt(amount)
+            // TODO: Add to form validation, get the fee schedule ahead of actually accessing client
+            const fee = BNB.calculateFee(num)
+            throw Error('Insufficient fee funds: ' + fee + ' (BNB) required')
+          } else {
+            // What other errors are there?
+          }
+
+        } else if (e.message.includes("<")) { // this is how insuficient funds return
+          throw Error('Insufficient funds')
+        } else {
+          throw Error(e)
+        }
+
+      })
+      
+    } catch (error) {
+      throw Error(error)
+    }
+
+  }
+
   vaultFreezeFunds = async (amount, asset, password) => {
     const userAccount = UserAccount.findOne()
     try {
       const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
       await BNB.bnbClient.setPrivateKey(privateKey)
       await BNB.bnbTokens.freeze(userAccount.address, asset, amount)
-      // .then((e) => {
-      //       BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
-      // }).catch((e) => {
-      // })
-      // SECURITY: This creates errors, as key swap happens too soon...
       // TODO: private key should be unset
-      // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
-      
-      // return res
+      // This will be addressed with new Binance lib.
     } catch (e) {
-      // return Error(error)
+      if (e.message.includes("insufficient fund")) {
+        let msg
+        if (e.message.includes("fee needed")) {
+          // get the amount.
+          const res = e.message.split("but")[1].trim().split(" ")[0]
+          // const res2 = res.split(" ")
+          const amount = res.substring(0, res.length - 3)
+          const num = parseInt(amount)
+          const fee = BNB.calculateFee(num)
+          
+          msg = "Insufficient fee funds: " + fee + " (BNB) required"
+        } else {
+          msg = "Error freezing funds"
+        }
+        throw Error(msg)
 
-            if (e.message.includes("insufficient fund")) {
-              let msg
-              if (e.message.includes("fee needed")) {
-                // get the amount.
-                const res = e.message.split("but")[1].trim().split(" ")[0]
-                // const res2 = res.split(" ")
-                const amount = res.substring(0, res.length - 3)
-                const num = parseInt(amount)
-                const fee = BNB.calculateFee(num)
-                
-                msg = "Insufficient fee funds: " + fee + " (BNB) required"
-                // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
-              } else {
-                msg = "Error freezing funds"
-              }
-              throw Error(msg)
-
-            } else if (e.message.includes("<")) { // this is how insuficient funds come back
-              const res = e.message.split(",").find(f => { return f.includes("<")} )
-              // TODO: Handle all errors
-              throw Error("Insufficient funds");
-            }
+      } else if (e.message.includes("<")) { // this is how insuficient funds come back
+        const res = e.message.split(",").find(f => { return f.includes("<")} )
+        throw Error("Insufficient funds");
+      }
       throw Error(e)
     }
 
@@ -562,33 +593,29 @@ export default class WalletController extends EventEmitter{
       const privateKey = await crypto.getPrivateKeyFromKeyStore( userAccount.keystore, password)
       await BNB.bnbClient.setPrivateKey(privateKey)
       await BNB.bnbTokens.unfreeze(userAccount.address, asset, amount)
-      // SECURITY: This creates errors, as key swap happens too soon...
-      // TODO: private key should be unset
-      // await BNB.bnbClient.setPrivateKey("37f71205b211f4fd9eaa4f6976fa4330d0acaded32f3e0f65640b4732468c377")
       
     } catch (e) {
-            if (e.message.includes("insufficient fund")) {
-              let msg
-              if (e.message.includes("fee needed")) {
-                // get the amount.
-                const res = e.message.split("but")[1].trim().split(" ")[0]
-                // const res2 = res.split(" ")
-                const amount = res.substring(0, res.length - 3)
-                const num = parseInt(amount)
-                const fee = BNB.calculateFee(num)
-                
-                msg = "Insufficient fee funds: " + fee + " (BNB) required"
-                // self.formErrors.set("amount","Insufficient fee funds: " + fee + " (BNB) required");
-              } else {
-                msg = "Error freezing funds"
-              }
-              throw Error(msg)
+      if (e.message.includes("insufficient fund")) {
+        let msg
+        if (e.message.includes("fee needed")) {
+          // get the amount.
+          const res = e.message.split("but")[1].trim().split(" ")[0]
+          // const res2 = res.split(" ")
+          const amount = res.substring(0, res.length - 3)
+          const num = parseInt(amount)
+          const fee = BNB.calculateFee(num)
+          
+          msg = "Insufficient fee funds: " + fee + " (BNB) required"
+        } else {
+          msg = "Error freezing funds"
+        }
+        throw Error(msg)
 
-            } else if (e.message.includes("<")) { // this is how insuficient funds come back
-              const res = e.message.split(",").find(f => { return f.includes("<")} )
-              // TODO: Handle all errors
-              throw Error("Insufficient funds");
-            }
+      } else if (e.message.includes("<")) { // this is how insuficient funds come back
+        const res = e.message.split(",").find(f => { return f.includes("<")} )
+        // TODO: Handle all errors
+        throw Error("Insufficient funds");
+      }
       throw Error(e)
     }
   }

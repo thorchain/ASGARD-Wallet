@@ -1,0 +1,26 @@
+@import '/imports/ui/lib/styles/_antd_custom.less';
+// Breadcrumb
+
+
+// Component specific styles only
+.ant-breadcrumb {
+  // display:none;
+  // @media (max-width: @screen-md-min) { 
+    position: fixed;
+    top: 15px;
+    z-index: 1100;
+  // }
+
+  @media (min-width: @screen-md-min + 1) {
+    // display: block;
+  }
+  // position: absolute;
+  // z-index: 900;
+  // background: none;
+  // override default color
+  > span:last-child a {
+    @media (min-width: @screen-md-min + 1) {
+      color: @Accent-Green !important;
+    }
+  }
+}

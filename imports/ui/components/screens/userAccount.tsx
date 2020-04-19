@@ -1,9 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { UserAccount } from '/imports/api/collections/client_collections'
 import { UserAccountTypes } from '/imports/api/collections/userAccountCollection';
 
 import { WALLET } from '/imports/startup/client/init'
+import { Row, Col, Typography, Button, Divider } from 'antd';
+const { Title, Text, Paragraph } = Typography
 
 type ClientTypes = {network: string, chainId: string}
 const UserAccountScreen: React.FC = (): JSX.Element => {
@@ -26,85 +28,70 @@ const UserAccountScreen: React.FC = (): JSX.Element => {
     return 'data:text/plain;charset=utf-8,' + encodeURIComponent(keystore)
   }, [])
 
-  const fileName: string = useMemo(() => {
-    const filename = (userAccount.address).concat('-keystore.txt')
-    return filename
-  }, [])
+  const fileName = () => userAccount.address.concat('-keystore.txt')
 
-  // Handlers
-  const lockWallet = async () => {
+  const lockWallet = useCallback(async () => {
     try {
       await WALLET.lock()
       FlowRouter.go('walletUnlock')
     } catch (error) {
       console.log(error)
     }
-  }
-  const removeWallet = async () => { 
-    console.log("trying...")
+  },[])
+  const removeWallet = useCallback(async () => { 
     try {
       await WALLET.resetWallet()
-      // SECURITY NOTE: this needs to await for above, to ensure dependent route's security
       FlowRouter.go('walletStart') 
     } catch (error) {
       console.log(error)
-      // handle the error
     }
-  }
+  },[])
 
   return (
-    <div className="row">
-      <div className="col">
+    <Row>
+      <Col>
+        <Title level={3}>Account</Title>
 
-        <h5 className="text-center mb-4">Account</h5>
-      
-        <ul className="nav nav-tabs d-flex justify-content-center mb-4">
-          <li className="nav-item">
-            <a className="nav-link active" href="#" data-event="toggleNetwork">Testnet</a>
-          </li>
-          <li className="nav-item disabled">
-            <a className="nav-link" href="#" data-event="toggleNetwork">Mainnet</a>
-          </li>
-        </ul>
-      
-      
-        <div className="row mt-3">
-          <div className="col-md-3 mb-4">
-            <div className="small">Account</div>
-            <div className="text-truncate">{userAccount.address}</div>
-          </div>
-          <div className="col-md-3 mb-4">
-            <div className="small">Keystore Version</div>
-            <div>{userAccount.keystore.version}</div>
-          </div>
-          <div className="col-md-3 mb-4">
-            <div className="small">Network</div>
-            <div className="text-capitalize">{client.network}</div>
-          </div>
-          <div className="col-md-3 mb-4">
-            <div className="small">Chain ID</div>
-            <div className="text-capitalize">{client.chainId}</div>
-          </div>
-        </div>
-      
-        <div className="row">
-          <div className="col-md-8 col-lg-6 ml-auto mr-auto">
-      
-            <input type="button" className="btn btn-primary w-100 my-5" value="Lock Wallet" onClick={lockWallet}/>
-      
-            <h5>Wallet Management</h5>
-      
-            <input type="button" className="btn btn-primary w-100 my-2 disabled" value="View Phrase" data-event="viewPhrase" />
-            <a href={downloadLink} download={fileName} className="btn btn-primary w-100 mb-2">Export Keystore</a>
-            <input type="button" className="btn btn-danger w-100 my-3" value="Remove Wallet" onClick={removeWallet} />
-      
-          </div>
-        </div>
+        <Paragraph strong className="text-uppercase" style={{marginBottom:"-1em", marginTop:"1.5em"}}>Details</Paragraph>
+        <Divider/>
+        <Row>
+          <Col sm={{span:24}} md={{span:12}} lg={{span:6}}>
+            <Text strong>Account:</Text>
+            <Text ellipsis>{userAccount.address}</Text>
+          </Col>
+          <Col md={{span:12}} lg={{span:6}}>
+            <Text strong>Keystore Version:</Text>
+            <Paragraph>{userAccount.keystore.version}</Paragraph>
+          </Col>
+          <Col md={{span:12}} lg={{span:6}}>
+            <Text strong>Type:</Text>
+            <Paragraph className="text-capitalize">{client.network}</Paragraph>
+          </Col>
+          <Col md={{span:12}} lg={{span:6}}>
+            <Text strong>Chain ID:</Text>
+            <Paragraph className="text-capitalize">{client.chainId}</Paragraph>
+          </Col>
+        </Row>
+  
+        <Divider/>
 
+        <Row>
 
-      </div>
+          <Col md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:6}}>
+        
+            <Title level={4}>Wallet Management</Title>
+            <Button type="primary" size="large" block onClick={lockWallet} style={{marginTop:"32px",marginBottom:"32px"}}>Lock Wallet</Button>
+            <Button type="primary" size="large" block disabled={true}>View Phrase</Button>
+            <a href={downloadLink} download={fileName()} className="ant-btn ant-btn-lg ant-btn-primary" style={{width:'100%'}}>Export Keystore</a>
+            <Button type="danger" size="large" block onClick={removeWallet}>Remove Wallet</Button>
+        
+          </Col>
 
-    </div>
+        </Row>
+      
+      </Col>
+
+    </Row>
   )
 }
 

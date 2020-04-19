@@ -1,5 +1,5 @@
 import React from 'react';
-import Breadcrumb from '/imports/ui/components/elements/breadcrumb'
+import NavBreadcrumb from '/imports/ui/components/elements/breadcrumb/navBreadcrumb'
 
 type MainLayoutProps = { header() : React.Component, content() : React.Component }
 export const MainLayout: React.FC<MainLayoutProps> = ({header, content}): JSX.Element => {
@@ -7,7 +7,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({header, content}): JSX.El
     <div id="app-wrapper">
       {header()}
       <main className="container-fluid">
-        <Breadcrumb/>
+        <NavBreadcrumb/>
         {content()}
       </main>
       <footer>

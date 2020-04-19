@@ -3,7 +3,6 @@ import { useTracker } from 'meteor/react-meteor-data'
 import { WALLET } from '/imports/startup/client/init'
 import { UserAccount, UserAssets } from '/imports/api/collections/client_collections'
 import { UserAssetsTypes } from '/imports/api/collections/userAssetsCollection'
-
 import FreezeFundsFormSchema from '/imports/lib/schemas/freezeFundsFormSchema'
 
 type Props = { symbol: string }
@@ -13,28 +12,27 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState('')
   const freezeFunds = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setLoadingMsg('freezing funds')
-    const t = event.currentTarget
+    const tar = event.currentTarget
     const account = UserAccount.findOne()
     const balances = userAsset
     
-    const validationContext = FreezeFundsFormSchema.namedContext('freezeFunds');
+    const validationContext = FreezeFundsFormSchema.newContext();
     const obj = validationContext.clean({
       pwHash: account.pwHash,
       maxAmount: balances && balances.free || 0,
       sender: account.address,
-      amount: t.amount.value,
+      amount: tar.amount.value,
       asset: symbol,
-      password: t.password.value
+      password: tar.password.value
     });
-    await validationContext.validate(obj)
+    validationContext.validate(obj)
     // delay to show change before crypto ui lag
     const sleep = (m: number) => new Promise(r => setTimeout(r, m))
     if (!validationContext.isValid()) {
       setAmountError(validationContext.keyErrorMessage('amount'))
       setPasswordError(validationContext.keyErrorMessage('password'))
-      setLoadingMsg('')
     } else {
+      setLoadingMsg('freezing funds')
       await sleep(200)
       try {
         await WALLET.vaultFreezeFunds(obj.amount, obj.asset, obj.password)
@@ -80,17 +78,15 @@ const FreezeFundsScreen: React.FC<Props> = ({symbol}): JSX.Element => {
             </div>
 
             <button className="btn btn-primary w-100" type="submit">
-
-              {!loadingMsg &&(
-                <span>Freeze</span>
-              )} 
-              {loadingMsg && (
-                <span>
+              {loadingMsg ? (
+                <>
                   <div className="spinner-border spinner-border-sm" role="status">
                     <span className="sr-only">Loading...</span>
                   </div>
                   <span className="ml-1">{loadingMsg}</span>
-                </span>
+                </>
+              ) : (
+                <>Freeze</>
               )}
               </button>
 

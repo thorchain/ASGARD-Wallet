@@ -1,71 +1,45 @@
-import React, { useState } from 'react';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-import { WALLET } from "/imports/startup/client/init";
+import React, { useState, useCallback } from 'react'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { WALLET } from "/imports/startup/client/init"
+import { WalletUnlockFormSchema, WalletUnlockFormBridge } from '/imports/lib/schemas/walletUnlockFormSchema'
 
-const UnlockScreen: React.FC = () => {
-  const [pwError, setPwError] = useState<string>('');
+import { Row, Col, Card } from 'antd'
+import { AutoForm, AutoField, SubmitField } from 'uniforms-antd'
+import { ErrorField } from '/imports/uniforms-antd-custom/'
+
+const UnlockScreen: React.FC = (): JSX.Element => {
   const [loadingMsg, setLoadingMsg] = useState<string>('');
-
-  const handlePwChange = () => { setPwError('') }
-
-  const unlockWallet = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const tar = event.currentTarget
-
-    if (!tar.password || !tar.password.value || tar.password.value.length === 0) { 
-      setPwError('Password required')
-    } else {
-      setLoadingMsg('unlocking')
-      try {
-        await WALLET.unlockAndSync(tar.password.value)
-        FlowRouter.go('walletAssets')
-      } catch (err) {
-        setPwError(err.message)
-        setLoadingMsg('')
-				throw new Error(err.message)
-      }
-
-    }
-  }
+  const handleUnlockFormSubmit = useCallback((model:{password:string,pwHash:string}) => {
+    setLoadingMsg('Unlocking')
+    WALLET.unlockAndSync(model.password)
+    .then(() => FlowRouter.go('walletAssets'))
+    .catch(e => {
+      setLoadingMsg('')
+      throw Error(e)
+    })
+      
+  },[])
   return (
+    <Row>
 
-    <div className="row">
+      <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:9,offset:0}}>
+        <Card bordered={false}><img className="mx-auto d-block w-25" src="/img/Asgard-Tri-Gradient.svg"/></Card>
+      </Col>
 
-      <div className="col-md-8 col-lg-7 col-xl-7 ml-auto mr-auto">
-        <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Tri-Gradient.svg"/>
-      </div>
+      <Col sm={{span:24}} md={{span:16,offset:4}} lg={{span:14,offset:5}} xl={{span:12,offset:0}}>
+        <AutoForm
+          validator={{ clean: true }}
+          model={WalletUnlockFormSchema.clean({})}
+          schema={WalletUnlockFormBridge}
+          onSubmit={handleUnlockFormSubmit}
+        >
+          <AutoField name="password" type="password" size='large' placeholder="enter password" label={false}/>
+          <ErrorField name='password'/>
+          <SubmitField value='Unlock' size='large' loading={loadingMsg}/>
+        </AutoForm>
+      </Col>
 
-      <div className="col-md-8 col-lg-7 col-xl-7 ml-auto mr-auto">
-
-        <form id="wallet-unlock-form" className="form" onSubmit={unlockWallet}>
-          <fieldset {...(loadingMsg ? {disabled:true} : {})}>
-
-            <div className="form-row">
-              <div className="form-group col-md-12">
-                <input type="password" className="form-control mb-3" name="password" id="inputPassword" aria-describedby="passwordHelp" placeholder="password" onChange={handlePwChange} />
-                <small id="passwordHelp" className="form-text text-warning">{pwError}</small>
-              </div>
-            </div>
-            <button type="submit" className="form-control btn btn-primary">
-              {!loadingMsg &&(
-                <span>Unlock</span>
-              )} 
-              {loadingMsg && (
-                <span>
-                  <div className="spinner-border spinner-border-sm" role="status">
-                    <span className="sr-only">Loading...</span>
-                  </div>
-                  <span className="ml-1">{loadingMsg}</span>
-                </span>
-              )}
-            </button>
-
-          </fieldset>
-        </form>
-
-      </div>
-
-    </div>
+    </Row>
   )
 }
 export default UnlockScreen

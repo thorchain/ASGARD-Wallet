@@ -1,0 +1,164 @@
+@import './_antd_custom.less';
+@import './_OpenSans.less';
+@import './_Montserrat.less';
+@import './_Exo2.less';
+
+// First heading in row
+.ant-row > .ant-col {
+  > h1:first-child, > h2:first-child, > h3:first-child, > h4:first-child, > h5:first-child {
+      text-align: center;
+      text-transform: uppercase;
+  }
+}
+
+.ant-list-item {
+  & h1, h2, h3, h4, h5 {
+    &.ant-typography {
+      margin-bottom: 2px;
+    }
+  }
+}
+
+// Buttons
+.ant-btn {
+  letter-spacing: 0.08em;
+  font-family: Exo2;
+  & .ant-btn-primary {
+    &:hover {
+      background-color: darken(@primary-color, 12%)
+    }
+  }
+  &.ant-button-success {
+    background-color: @success-color !important;
+    color: @text-color-inverse;
+    transition: background-color 0.5s ease;
+  }
+  &.ant-button-warning { background-color: @warning-color !important; }
+  &.ant-button-info { background-color: @info-color !important; }
+  &.ant-button-danger { background-color: @error-color !important; }
+}
+
+.ant-btn {
+  margin-top: .8em;
+  margin-bottom: 1.2em;
+}
+.input-group {
+  > .ant-btn {
+    margin-bottom: @grid-gutter-width / 2;
+    margin-top: 0;
+  }
+}
+form .ant-btn, form .ant-upload {
+  width: 100%;
+  margin-top: unset;
+  margin-bottom: unset;
+}
+
+
+// Tabs
+.ant-tabs-nav {
+  > .ant-tabs-ink-bar {
+    background-color: @link-color;
+  }
+  .ant-tabs-tab-active {
+    color: @Accent-Green !important;
+  }
+  .ant-tabs-tab-active, .ant-tabs-tab {
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+}
+
+// Icons
+.ant-empty-img-simple {
+  g {
+    > ellipsis { display: none; }
+    > path {
+      &:not(:first-child) {fill: @Dark-Gray;}
+      stroke: darken(@text-color-secondary, 8%)
+    }
+
+  }
+}
+
+
+// Tables
+.ant-table table {
+  th, td {
+    &.table-col-min {
+      white-space: nowrap;
+      width: 1px;
+    }
+    &.table-col-max {
+      white-space: nowrap;
+      max-width: 1px;
+    }
+  }
+}
+
+// Component Specific styles *****************
+
+// Branded Button
+button.ant-btn.ant-btn-brand {
+  position: relative;
+  padding: @btn-border-width; // this creates the pseudo border
+  background-color: darken(@Darker-Gray, 4%); // this is overriden, but needed for iherit in pseudo below
+  background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
+  border: none;
+  &:hover {
+    background-color: darken(@Darker-Gray, 12%);
+    background-image: linear-gradient(to right, @Asgard-Green, @Accent-Blue);
+  }
+  &::after {
+    // Pseudo background
+    display: block;
+    position: relative;
+    background-color: inherit;
+    width: 100%;
+    height: 100%;
+    border-radius: @btn-border-radius-base; // needs different sizes
+    content: "";
+  }
+  >span {
+    // required: assummed content
+    position: absolute;
+    z-index: 1;
+    // accomodate shift
+    top: -2px;
+    left: 0;
+    width: 100%;
+    padding: (@btn-padding-horizontal-base / 2) (@input-padding-vertical-base / 2);
+    // Assumed Icon
+    >span {
+      margin-right: 0.4em;
+    }
+  }
+}
+
+/* *********** Utilitites ************* */
+span.ant-typography-ellipsis {
+  // TODO: Confirm this is not a correction for Bootstrap
+  display: block !important;
+}
+.font-brand { font-family: Exo2; }
+// .font-serif {}
+// .font-monospace {}
+// .font-sans-serif {}
+// Text transform
+.text-capitalize { text-transform: capitalize !important; }
+.text-uppercase { text-transform: uppercase !important; }
+// Text Colors
+.text-color-primary { color: @primary-color !important; }
+.text-color-secondary { color: @text-color-secondary !important; }
+.text-color-info { color: @info-color !important; }
+.text-color-success { color: @success-color !important; }
+.text-color-processing { color: @processing-color !important; }
+.text-color-error { color: @error-color !important; }
+.text-color-highlight { color: @highlight-color !important; }
+.text-color-warning { color: @warning-color !important; }
+.text-color-normal { color: @normal-color !important; }
+.text-color-white { color: @white !important; }
+.text-color-black { color: @black !important; }
+
+
+// AntD Mobile

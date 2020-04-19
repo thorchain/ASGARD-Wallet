@@ -1,0 +1,78 @@
+
+.common() {
+  box-sizing: border-box;
+  flex-wrap: wrap;
+}
+.layout() {
+  .common();
+  .flex();
+  display: flex;
+}
+.inline() {
+  .common();
+  display: inline-flex;
+}
+
+.flex() {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0%;
+}
+.flex-auto() {
+  .flex();
+  flex-basis: auto;
+}
+.flex-none() {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+}
+.horizontal() { .layout(); flex-direction: row; }
+.horizontal-reverse() { .layout(); flex-direction: row-reverse; }
+.vertical() { .layout(); flex-direction: column; }
+.vertical-reverse() { .layout(); flex-direction: column-reverse; }
+
+.ant-block {
+  .common();
+  &.ant-block-inline {
+    .inline()
+  }
+  &.ant-block-flex {
+    .flex();
+  }
+  &.ant-block-flex-auto {
+    .flex-auto()
+  }
+  &.ant-block-flex-none { .flex-none() }
+  // Disaply general
+  &.ant-block-block { display: block; }
+  &.ant-block-hidden { display: none; }
+  &.ant-block-invisible { visibility: hidden; }
+  // Block position
+  &.ant-block-relative { position: relative; }
+  &.ant-block-abosolute { position: absolute; }
+  // Flex layout
+  &.ant-block-layout-horizontal { .horizontal(); }
+  &.ant-block-layout-inline-horizontal { .horizontal(); .inline(); }
+  &.ant-block-layout-horizontal-reverse { .horizontal-reverse(); }
+  &.ant-block-layout-vertical { .vertical()}
+  &.ant-block-layout-vertical-reverse { .vertical-reverse() }
+  // Alignment
+  &.ant-block-align-start { align-items: flex-start; }
+  &.ant-block-align-center { align-items: center; }
+  &.ant-block-align-baseline { align-items: baseline; }
+  &.ant-block-align-end { align-items: flex-end; }
+  &.ant-block-align-stretch { align-items: stretch; }
+  // Self alignment
+  &.ant-block-self-align-start { align-self: flex-start; }
+  &.ant-block-self-align-center { align-self: center; }
+  &.ant-block-self-align-end { align-self: flex-end; }
+  &.ant-block-self-align-stretch { align-self: stretch; }
+  // Justification
+  &.ant-block-justify-start { justify-content: flex-start; }
+  &.ant-block-justify-center { justify-content: center; }
+  &.ant-block-justify-end { justify-content: flex-end; }
+  &.ant-block-justify-between { justify-content: space-between; }
+  &.ant-block-justify-around { justify-content: space-around; }
+}

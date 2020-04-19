@@ -1,46 +1,34 @@
 import React from 'react';
-import ReactDOM from "react-dom";
-// import { Blaze } from 'meteor/blaze'
-import { BlazeLayout } from 'meteor/kadira:blaze-layout';
-import { FlowRouter } from 'meteor/kadira:flow-router';
-
-import { mount, withOptions } from 'react-mounter';
-const mounter = withOptions({
-    rootId: '__react-root',
-    rootProps: {'className': 'app-root'}
-}, mount);
-
-import'/client/containers/appFrames.js'
-const mainFrame = 'mainAppFrame';
-// const bareFrame = 'bareAppFrame';
-// const bareNavFrame = 'bareAppNavFrame';
-import '/client/components/wallet/walletNew/walletCreate.js'
-import '/client/components/wallet/walletNew/walletImport.js'
-import '/client/components/wallet/walletNew/walletNewMnemonicConfirm.js'
-
-// import '/client/components/wallet/walletAccounts.js'
-// import '/client/components/wallet/walletAssets.js'
-// import '/client/components/wallet/walletTransactionsList.js'
-// import '/client/components/wallet/walletAssetDetails.js'
-import '/client/components/wallet/walletReceive.js'
-import '/client/components/wallet/walletSend.js'
+import ReactDOM from 'react-dom'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { mount, withOptions } from 'react-mounter'
 
 import { WALLET } from '/imports/startup/client/init'
 import { MainLayout, BareLayout, BareLayoutBranded } from '/imports/ui/components/containers/appFrames'
-import NavbarMain from '/imports/ui/components/elements/navbarMain'
-import NavbarSimple from '/imports/ui/components/elements/navbarSimple'
+import NavMenuMain from '/imports/ui/components/elements/header/menuMain'
+import NavMenuPlain from '/imports/ui/components/elements/header/navMenuPlain'
+import NavMenuSimple from '/imports/ui/components/elements/header/navMenuSimple'
+import NavbarMain from '/imports/ui/components/elements/header/navbarMain'
+import NavbarSimple from '/imports/ui/components/elements/header/navbarSimple'
 
 import StartScreen from '/imports/ui/components/screens/walletStart'
+import ImportScreen from '/imports/ui/components/screens/walletNew/walletImport'
+import WalletNewOptionsScreen from '/imports/ui/components/screens/walletNew/walletNewOptions'
+import CreateScreen from '/imports/ui/components/screens/walletNew/walletCreate'
+import MnemonicConfirmScreen from '/imports/ui/components/screens/walletNew/walletImportMnemonicConfirm'
+
 import UnlockScreen from '/imports/ui/components/screens/walletUnlock'
 import UnlockOptionsScreen from '/imports/ui/components/screens/walletUnlockOptions'
+
 import UserAccountScreen from '/imports/ui/components/screens/userAccount'
 import UserAssetsScreen from '/imports/ui/components/screens/userAssets'
 import UserAssetDetailsScreen from '/imports/ui/components/screens/userAssetDetails'
 import UserTransactionsScreen from '/imports/ui/components/screens/transactions/userTransactions'
 
+import SendFundsScreen from '/imports/ui/components/screens/sendFunds'
+import ReceiveFundsScreen from '/imports/ui/components/screens/receiveFunds'
 import FreezeFundsScreen from '/imports/ui/components/screens/freezeFunds'
 import UnfreezeFundsScreen from '/imports/ui/components/screens/unfreezeFunds'
-
 
 // SECURITY: Application, routing check
 const isVault = () => {
@@ -50,44 +38,17 @@ const isVault = () => {
 const isUnlocked = () => {
 	return WALLET.isUnlocked() === true ? true : false;
 }
+const mounter = withOptions({
+    rootId: '__react-root',
+    rootProps: {'className': 'app-root'}
+}, mount);
 
-// TODO: Remove after full migration to React
-const swapRenderer = (newType) => {
-	if (newType === 'react') {
-		console.info("swapping view layer to react");
-		$("#__blaze-root").hide()
-		try {
-			BlazeLayout.reset()
-		} catch (error) {
-			// fail silently
-		}
-		$("#__react-root").show()
-	} else if (newType === 'blaze') {
-		console.info("swapping view layer to blaze");
-		$("#__react-root").hide()
-		try {
-			const ele = document.getElementById('__react-root')
-			ReactDOM.unmountComponentAtNode(ele)
-		} catch (error) {
-			// fail silently
-		}
-		$("#__blaze-root").show()
-	}
-
-}
 
 const appRoutes = FlowRouter.group({
 	name: 'mainAppRoutes',
 	triggersEnter: [function (context, redirect) {
-		console.log("entering new route");
-		console.log(context);
-		const newType = context.route.options.renderType
-		const oldType = context.oldRoute && context.oldRoute.options && context.oldRoute.options.renderType
-		if (newType !== oldType && typeof oldType !== 'undefined') {
-			swapRenderer(newType)
-		}
-		
-		if (context.route.name !== "options") {
+		const route = context.route
+		if (route.name !== "walletUnlockOptions") {
 			if (isVault() && !isUnlocked()) {
 				FlowRouter.go('walletUnlock')
 			} else if (isVault() && isUnlocked()) {
@@ -97,7 +58,11 @@ const appRoutes = FlowRouter.group({
 				// There should be no possibility of missing 'oldRoute'
 				// ie. history since there is no way into this group of routes
 				// except create/import/unlock
-				FlowRouter.go(context.oldRoute.name)
+				if (context.oldRoute && context.oldRoute.name) {
+					FlowRouter.go(context.oldRoute.name)
+				}
+			} else if (!isVault() && (route.name === 'walletUnlock' || route.name === 'walletUnlockOptions')) {
+				FlowRouter.go('walletStart')
 			}
 		}
 	}],
@@ -110,73 +75,83 @@ appRoutes.route('/', {
       content: () => (<StartScreen/>)
     });
   },
-	renderType: 'react'
 })
 
-appRoutes.route('/create', {
+appRoutes.route('/create/:type?', {
 	name: 'walletCreate',
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletCreate'});
+		mounter(MainLayout, {
+			header: () => (<NavMenuSimple/>),
+      content: () => (<CreateScreen type={params.type}/>),
+    });
 	},
 	back: {
 		route: 'walletStart',
 	},
-	renderType: 'blaze'
 });
+
 appRoutes.route('/mnemonic-confirm', {
 	name: 'walletMnemonicConfirm',
 	// restric/direct access to this route
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletNewMnemonicConfirm'});
+		mounter(MainLayout, {
+			header: () => (<NavMenuSimple/>),
+      content: () => (<MnemonicConfirmScreen/>),
+    });
 	},
-	renderType: 'blaze'
 })
 
-appRoutes.route('/import', {
+appRoutes.route('/import/:type?', {
 	name: 'walletImport',
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletImport'});
+		mounter(MainLayout, {
+			header: () => (<NavMenuSimple/>),
+      content: () => (<ImportScreen/>),
+    });
 	},
 	back: {
 		route: 'walletStart',
 	},
-	renderType: 'blaze'
 });
-
+appRoutes.route('/import-options', {
+	name: 'walletImportOptions',
+	action: function (params, queryParams) {
+		mounter(MainLayout, {
+			header: () => (<NavMenuSimple/>),
+      content: () => (<WalletNewOptionsScreen/>),
+    });
+	},
+	back: {
+		route: 'walletStart',
+	},
+});
 appRoutes.route('/unlock', {
 	name: 'walletUnlock',
 	action() {
 		mounter(BareLayout, {
-			header: () => (<NavbarSimple/>),
+			header: () => (<NavMenuPlain/>),
       content: () => (<UnlockScreen/>),
     });
 	},
-	renderType: 'react'
 })
 
-appRoutes.route('/options', {
-	name: 'options',
+appRoutes.route('/unlock-options', {
+	name: 'walletUnlockOptions',
 	action: function (params, queryParams) {
 		mounter(BareLayout, {
-			header: () => (<NavbarSimple/>),
+			header: () => (<NavMenuPlain/>),
       content: () => (<UnlockOptionsScreen/>),
     });
 	},
 	back: {
 		route: 'home',
 	},
-	renderType: 'react'
 });
 
 const walletRoutes = FlowRouter.group({
 	name: 'walletRoutes',
 	prefix: '/wallet',
 	triggersEnter: [function (context, redirect){
-		const newType = context.route.options.renderType
-		const oldType = context.oldRoute && context.oldRoute.options && context.oldRoute.options.renderType
-		if (newType !== oldType && typeof oldType !== 'undefined') {
-			swapRenderer(newType)
-		}
 		if (!isVault() && !isUnlocked()) {
 			FlowRouter.go('walletStart')
 		} else if (isVault() && !isUnlocked()) {
@@ -188,140 +163,100 @@ const walletRoutes = FlowRouter.group({
 walletRoutes.route('/home', {
 	name: 'home',
 	action: function (params, queryParams) {
+		// Until a dashboard or home view, we redirect
 		FlowRouter.go('walletAssets');
 	},
-	renderType: 'blaze'
 });
 
 walletRoutes.route('/accounts', {
 	name: 'walletAccounts',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserAccountScreen/>),
     });
 	},
-	renderType: 'react'
 })
 
-// walletRoutes.route('/accounts-blaze', {
-// 	name: 'walletAccountsBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletAccounts'});
-// 	},
-// 	back: {
-// 		route: 'walletAssets',
-// 	},
-// 	renderType: 'blaze'
-// })
 walletRoutes.route('/assets', {
 	name: 'walletAssets',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserAssetsScreen/>),
     });
 	},
-	renderType: 'react'
 })
-// walletRoutes.route('/assets-blaze', {
-// 	name: 'walletAssetsBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletAssets'});
-// 	},
-// 	renderType: 'blaze'
-// })
-// walletRoutes.route('/assetDetails-blaze/:symbol', {
-// 	name: 'walletAssetDetailsBlaze',
-// 	action: function (params, queryParams) {
-// 		BlazeLayout.render(mainFrame, {content:'walletAssetDetails'});
-// 	},
-// 	back: {
-// 		route: 'walletAssets',
-// 	},
-// 	renderType: 'blaze'
-// })
 walletRoutes.route('/assetDetails/:symbol', {
 	name: 'walletAssetDetails',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserAssetDetailsScreen symbol={params.symbol}/>),
     });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'react'
 })
 walletRoutes.route('/transactionsList', {
 	name: "walletTransactionsList",
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UserTransactionsScreen/>),
     });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'react'
 });
-walletRoutes.route('/transactionsList-blaze', {
-	name: "walletTransactionsListBlaze",
-	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletTransactionsList'});
-	},
-	back: {
-		route: 'walletAssets',
-	},
-	renderType: 'blaze'
-});
-
-walletRoutes.route('/send/:asset?', {
+walletRoutes.route('/send/:symbol?', {
 	name: "walletSend",
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletSend'});
+		mounter(MainLayout, {
+			header: () => (<NavMenuMain/>),
+      content: () => (<SendFundsScreen symbol={params.symbol}/>),
+    });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'blaze'
 })
 walletRoutes.route('/receive', {
 	name: "walletReceive",
 	action: function (params, queryParams) {
-		BlazeLayout.render(mainFrame, {content:'walletReceive'});
+		mounter(MainLayout, {
+			header: () => (<NavMenuMain/>),
+      content: () => (<ReceiveFundsScreen/>),
+    });
 	},
 	back: {
 		route: 'walletAssets',
 	},
-	renderType: 'blaze'
 })
 walletRoutes.route('/freeze/:symbol', {
 	name: 'walletFreeze',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<FreezeFundsScreen symbol={params.symbol}/>),
     });
 	},
 	back: {
 		route: 'walletAssets'
 	},
-	renderType: 'react'
 })
 walletRoutes.route('/unfreeze/:symbol', {
 	name: 'walletUnfreeze',
 	action: function (params, queryParams) {
 		mounter(MainLayout, {
-			header: () => (<NavbarMain/>),
+			header: () => (<NavMenuMain/>),
       content: () => (<UnfreezeFundsScreen symbol={params.symbol}/>),
     });
 	},
 	back: {
 		route: 'walletAssets'
 	},
-	renderType: 'react'
 })
 

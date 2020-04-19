@@ -1,0 +1,170 @@
+@import '{}/node_modules/antd-mobile/dist/antd-mobile.less';
+@import '{}/node_modules/antd/dist/antd.dark.less';
+@import './_OpenSans.less';
+// Customization of antd only
+// https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
+
+@path-fonts:    '{}/public/fonts';
+
+// Custom Theming
+
+// Brand Colour Pallete: 
+@Asgard-Green: #33FF99;
+@Accent-Green: #58E2C2;
+@Accent-Blue: #00CCFF;
+@Warning-Red: #EC5569;
+@Caution-Yellow: #F0B90B;
+
+
+// Brand Grays Pallete
+@Black-Gray: #000000;
+@Darker-Gray: #101921;
+@Dark-Gray: #1C2731; 
+@Primary-Gray: #2B3947;
+@Middle-Gray: #455767;
+@Light-Gray: #505A64;
+@Lighter-Gray: #848E9B;
+@Highlight-Gray: #90A1B0;
+@White-Gray: #EBEBEB;
+
+
+// -------- Colors -----------
+@primary-color: @Primary-Gray;
+@info-color: @Accent-Blue;
+@success-color: @Accent-Green;
+@processing-color: @Accent-Green;
+@error-color: @Warning-Red;
+@highlight-color: @Accent-Green;
+@warning-color: @Caution-Yellow;
+@normal-color: #d9d9d9;
+@white: @White-Gray;
+@black: @Black-Gray;
+
+@text-selection-bg: @highlight-color;
+@body-background: @Darker-Gray;
+@component-background: @body-background;
+
+@text-color: @White-Gray;
+@text-color-secondary: @Lighter-Gray;
+@text-color-inverse: @Darker-Gray;
+// @icon-color-hover: fade(@white, 75%);
+@heading-color: @text-color;
+
+// Border color
+@border-color-base: @Middle-Gray; // base border outline a component
+@border-color-split: @Middle-Gray; // split border inside a component
+
+
+@font-size-base: 16px;
+@font-size-lg: @font-size-base * 1.125;
+@font-size-sm: @font-size-base * 0.875;
+
+@btn-primary-color: @White-Gray;
+@background-color-base: @Dark-Gray;
+
+@link-color: @Accent-Green;
+@link-hover-color: color(~`colorPalette('@{link-color}', 5) `);
+
+@disabled-color: @Middle-Gray;
+@disabled-bg: @background-color-base;
+@disabled-color-dark: @Lighter-Gray;
+
+@border-radius-base: 4px;
+@border-radius-sm: @border-radius-base - 1;
+
+// @tabs-highlight-color: @primary-color;
+// @tabs-hover-color: @primary-5;
+// @tabs-active-color: @primary-7;
+
+@font-family: OpenSans -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+  'Noto Color Emoji';
+
+
+
+// AntD Mobile overrides
+@brand-primary: @Primary-Gray;
+// @color-text-base: #000;                  // 基本
+// @color-text-base-inverse: #fff;          // 基本 - 反色
+// @color-text-secondary: #a4a9b0;          // 辅助色
+// @color-text-placeholder: #bbb;           // 文本框提示
+// @color-text-disabled: #bbb;              // 失效
+// @color-text-caption: #888;               // 辅助描述
+// @color-text-paragraph: #333;             // 段落
+// @color-link: @brand-primary;             // 链接
+
+// // 背景色
+// @fill-base: #fff;                           // 组件默认背景
+// @fill-body: #f5f5f9;                        // 页面背景
+// @fill-tap: #ddd;                            // 组件默认背景 - 按下
+// @fill-disabled: #ddd;                       // 通用失效背景
+// @fill-mask: rgba(0, 0, 0, 0.4);              // 遮罩背景
+// @color-icon-base: #ccc;                      // 许多小图标的背景，比如一些小圆点，加减号
+// @fill-grey: #f7f7f7;
+
+// // 透明度
+// @opacity-disabled: 0.3;   // switch checkbox radio 等组件禁用的透明度
+
+// // 全局/品牌色
+// @brand-primary: #108ee9;
+// @brand-primary-tap: #0e80d2;
+// @brand-success: #6abf47;
+// @brand-warning: #ffc600;
+// @brand-error: #f4333c;
+// @brand-important: #ff5b05;  // 用于小红点
+// @brand-wait: #108ee9;
+
+// // 边框色
+// @border-color-base: #ddd;
+
+// Custom global Overrides
+
+/* **************** Grid *************** */
+
+// Global gutters
+@grid-gutter-width: 32px;
+.ant-row {
+  margin-left: @grid-gutter-width / -2;
+  margin-right: @grid-gutter-width / -2;
+  margin-bottom: @grid-gutter-width / 2;
+  .ant-col {
+    padding-left: @grid-gutter-width / 2;
+    padding-right: @grid-gutter-width / 2;
+  }
+}
+
+@skeleton-color: darken(@Dark-Gray, 8%);
+@skeleton-to-color: fade(@Black-Gray, 16%);
+
+
+
+// Table
+// --
+@table-header-bg: @Darker-Gray;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+form .ant-row { display: block; }
+
+// Icon
+.anticon { vertical-align: 0.12em; }
+
+// Styles
+.ant-btn { 
+  text-transform: uppercase;
+}

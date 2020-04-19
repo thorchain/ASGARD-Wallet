@@ -12,6 +12,7 @@
 
 ****
 
+=======
 
 Asgard wallet is an application for accessing and managing blockchain assets, on the Binance DEX blockchain. It stores the account keys necessary for authorizing transactions on blockchaian ledges.
 
@@ -122,4 +123,4 @@ As per docs of "meteor-desktop" `--help` file
 
 **Important Note**
 
-On Mac OS Catalina (11.15+) the `.zip` produced by "electron-builder" will not work. This is a known issue: [https://medium.com/cacher-app/getting-your-electron-app-working-on-macos-catalina-10-15-63e53f397da2](https://medium.com/cacher-app/getting-your-electron-app-working-on-macos-catalina-10-15-63e53f397da2). Limiting buid support to `.dmg` for the time being.
+On Mac OS Catalina (11.15+) the `.zip` produced by "electron-builder" will not work. This is a known issue: [https://medium.com/cacher-app/getting-your-electron-app-working-on-macos-catalina-10-15-63e53f397da2](https://medium.com/cacher-app/getting-your-electron-app-working-on-macos-catalina-10-15-63e53f397da2). Limiting build support to `.dmg` for the time being.

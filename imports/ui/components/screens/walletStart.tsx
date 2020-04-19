@@ -1,28 +1,57 @@
-import React from 'react';
-import { FlowRouter } from 'meteor/kadira:flow-router';
+import React, { useEffect, useMemo } from 'react'
+import { FlowRouter } from 'meteor/kadira:flow-router'
+import { Session } from 'meteor/session'
+
+import { Row, Col, Button, Typography, Tabs } from 'antd'
+const { TabPane } = Tabs;
+const { Title, Text } = Typography
 
 const StartScreen: React.FC = (): JSX.Element => {
+  useEffect(() => {
+    if (!Session.get('network')) {
+      Session.set('network', 'testnet')
+    }
+  },[])
+  const handleTabChange = (name:string) => {
+    Session.set('network', name)
+  }
+  const activeTab =  useMemo(() => {
+    return Session.get('network') || 'testnet'
+  },[])
   return (
+    <Row>
+      <Col xs={{span:16,offset:4}} sm={{span:10,offset:7}} md={{span:8,offset:8}} lg={{span:8,offset:8}} xl={{span:6,offset:9}}>
+        <img src="/img/Asgard-Tri-Gradient.svg" width="100%" style={{padding:"32px",paddingTop:"0px"}}/>
+      </Col>
+      <Col md={{span:16,offset:4}} lg={{span:12,offset:6}} xl={{span:10,offset:7}}>
 
-    <div className="row">
+        <Title className="font-brand" level={2}>Asgard <span style={{fontWeight:"lighter"}}>Wallet</span></Title>
+        <Tabs defaultActiveKey={activeTab} size="large" onChange={handleTabChange}>
 
-      <div className="col-md-8 col-lg-6 ml-auto mr-auto">
-        <img className="mx-auto d-block w-25 mb-5" src="/img/Asgard-Tri-Gradient.svg" />
-        <h5 className="text-center mb-5">Asgard Wallet</h5>
-        <a className="form-control btn btn-dark btn-brand-border mb-4" href={FlowRouter.path('walletCreate')}>
-          <span>New</span>
-        </a>
-        <div className="form-group">
-          <a className="form-control btn btn-primary w-100 mb-4" href={FlowRouter.path('walletImport')}>Import</a>
-        </div>
+          <TabPane tab="Testnet" key="testnet">
+
+            <Button type="primary" size={'large'} className={'ant-btn-brand'} block onClick={() => FlowRouter.go('walletCreate')}> New </Button>
+            <Button type="primary" size={'large'} block onClick={() => FlowRouter.go('walletImport')}> Import </Button>
+
+          </TabPane>
+
+          <TabPane tab="Mainnet" key="mainnet">
+
+            <Button type="primary" size={'large'} className={'ant-btn-brand'} block onClick={() => FlowRouter.go('walletCreate')}> New </Button>
+            <Button type="primary" size={'large'} block onClick={() => FlowRouter.go('walletImport')}> Import </Button>
+            <Button type="primary" size="large" block disabled>Connect</Button>
+
+          </TabPane>
+
+        </Tabs>
 
         <div>
-          <div className="h5 text-uppercase text-center">Attention:</div>
-          <p className="text-justify"> This beta software is provided for testing purposes as is, with no warranty. Usage is restricted to Binance testnet.</p>
+          <Text strong>Attention:</Text>
+          <p className="text-justify"> This beta software is provided for testing purposes as is, with no warranty.</p>
         </div>
-      </div>
 
-    </div>
+      </Col>
+    </Row>
   )
 }
 export default StartScreen

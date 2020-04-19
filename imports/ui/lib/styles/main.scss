@@ -1,7 +1,5 @@
 // Below must be a symlink to the actual npm package (as originally above)
 @import './bootstrap_custom';
-// @import '@fortawesome/fontawesome-free/css/all.min.css'; // this don't work from node_modules?
-// use javascript for above instead
 
 // $fa-font-path:  "fonts/";
 $letter-spacing-base: .1rem;
@@ -28,7 +26,6 @@ body > #__blaze-root, body > #__react-root {
 }
 
 h1, h2, h3, h4 ,h5 {
-  text-transform: uppercase;
   letter-spacing: $headings-letter-spacing;
 }
 /* width */
